@@ -432,7 +432,7 @@ footer {
     }
     
     .hero-buttons {
-        justify-content: flex-start;
+        justify-content: flex-center;
     }
 
     .steps {
@@ -575,6 +575,7 @@ footer {
 
         .btn-primary:hover {
             background: #1D4ED8;
+            color: #FFFFFF;
             transform: translateY(-2px);
         }
 

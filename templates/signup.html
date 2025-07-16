@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobStir - Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header-section">
+            <h1>Sign Up for <span class="text-indigo-700">JobStir</span></h1>
+            <a href="{{ url_for('index') }}" class="btn-back-home">
+                Back to Home
+            </a>
+        </header>
+
+        <main>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" required class="input-field" placeholder="Choose a unique username">
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" required class="input-field" placeholder="your@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" required class="input-field" placeholder="Create a strong password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required class="input-field" placeholder="Re-enter your password">
+                </div>
+                <button type="submit" class="btn-primary">
+                    Sign Up
+                </button>
+            </form>
+
+            <div id="messageBox" class="message-box"></div>
+
+            <p class="text-center mt-4 text-sm">
+                Already have an account? <a href="{{ url_for('login') }}" class="text-blue-600 hover:underline">Log In here</a>
+            </p>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const messageBox = document.getElementById('messageBox');
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            // Clear previous messages and hide message box
+            messageBox.classList.remove('show', 'message-success', 'message-error');
+            messageBox.textContent = '';
+
+            // Basic client-side password validation
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirm_password');
+
+            if (password !== confirmPassword) {
+                showMessage('Passwords do not match. Please try again.', 'error');
+                return;
+            }
+
+            submitButton.disabled = true; // Disable button during submission
+            submitButton.textContent = 'Signing Up...'; // Change button text
+
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    body: JSON.stringify(Object.fromEntries(formData)), // Convert FormData to JSON object
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                    form.reset(); // Clear the form on success
+                    // Redirect to login page or dashboard after successful signup
+                    setTimeout(() => {
+                        window.location.href = result.redirect_url || '{{ url_for("login") }}';
+                    }, 1500); // Redirect after 1.5 seconds
+                } else {
+                    showMessage(result.error || 'An error occurred during signup.', 'error');
+                }
+            } catch (error) {
+                console.error('Network error or unexpected response:', error);
+                showMessage('An unexpected error occurred. Please try again.', 'error');
+            } finally {
+                submitButton.disabled = false; // Re-enable button
+                submitButton.textContent = 'Sign Up'; // Reset button text
+            }
+        });
+
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.classList.remove('message-success', 'message-error'); // Remove previous types
+            messageBox.classList.add(`message-${type}`);
+            messageBox.classList.add('show'); // Show the message box
+        }
+    </script>
+</body>
+</html>

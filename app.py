@@ -9,6 +9,7 @@ import time
 import re
 from google.oauth2.service_account import Credentials  
 
+
 # LLM related imports
 from groq import RateLimitError
 from typing import Optional, List
@@ -18,7 +19,8 @@ from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 import fitz  # PyMuPDF
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session, g
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session, g,flash
+from flask import get_flashed_messages
 
 # Google Sheets imports
 import gspread
@@ -39,7 +41,7 @@ DATA_FILE = 'jobs_data.json'
 # Path to your service account key file
 # Make sure 'credentials.json' is in the root directory of your Flask app
 GOOGLE_SHEETS_CREDENTIALS_PATH = 'credentials.json'
-
+contact_form_worksheet = None
 # Define the scope for Google Sheets API
 GOOGLE_SHEETS_SCOPE = [
     "https://spreadsheets.google.com/feeds",
@@ -126,6 +128,8 @@ def initialize_google_sheets():
     and gets references to the Jobs and Candidates worksheets.
     """
     global gs_client, jobs_worksheet, candidates_worksheet
+    
+    global contact_form_worksheet
 
     try:
         # Load credentials from env var
@@ -147,7 +151,19 @@ def initialize_google_sheets():
         # Open master spreadsheet
         master_spreadsheet = gs_client.open_by_key(MASTER_SPREADSHEET_ID)
         print(f"📄 Opened spreadsheet: '{master_spreadsheet.title}'")
+        try:
+            contact_worksheet = master_spreadsheet.worksheet("Contact Submissions")
+            print("✅ Connected to 'Contact Submissions' worksheet.")
+        except gspread.exceptions.WorksheetNotFound:
+            contact_worksheet = master_spreadsheet.add_worksheet(title="Contact Submissions", rows="100", cols="10")
+            print("✅ Created 'Contact Submissions' worksheet.")
 
+        contact_headers = ["Name", "Email", "Message", "Submitted At"]
+        if not contact_worksheet.row_values(1):
+            contact_worksheet.update([contact_headers])
+            print("✅ Headers set in 'Contact Submissions' worksheet.")
+
+        contact_form_worksheet = contact_worksheet
         # --- JOBS SHEET ---
         try:
             jobs_worksheet = master_spreadsheet.worksheet(JOBS_WORKSHEET_NAME)
@@ -166,9 +182,14 @@ def initialize_google_sheets():
             candidates_worksheet = master_spreadsheet.worksheet(CANDIDATES_WORKSHEET_NAME)
             print(f"📌 Connected to '{CANDIDATES_WORKSHEET_NAME}' worksheet.")
         except gspread.exceptions.WorksheetNotFound:
-            candidates_worksheet = master_spreadsheet.add_worksheet(title=CANDIDATES_WORKSHEET_NAME, rows="100", cols="20")
+            candidates_worksheet = master_spreadsheet.add_worksheet(title=CANDIDATES_WORKSHEET_NAME, rows="1000", cols="20")
             print(f"📄 Created '{CANDIDATES_WORKSHEET_NAME}' worksheet.")
-
+        try:
+            contact_worksheet = master_spreadsheet.worksheet("Contact Submissions")
+            print("✅ Connected to 'Contact Submissions' worksheet.")
+        except gspread.exceptions.WorksheetNotFound:
+            contact_worksheet = master_spreadsheet.add_worksheet(title="Contact Submissions", rows="1000", cols="10")
+            print("✅ Created 'Contact Submissions' worksheet.")
         candidates_headers = [
             "Application ID", "Job ID", "Company Name", "Candidate Name", "Email", "Phone", "Submission Date",
             "Eligibility Status", "Match Score", "Evaluation Reason", "Exam Taken",
@@ -865,7 +886,7 @@ def login():
             print(f"DEBUG: HR Login successful for {username}. Session: {session}")
             return jsonify({"message": "HR Login successful!", "redirect": url_for('index')}), 200 
         elif role == 'candidate':
-            # For candidates, any username/password is accepted for this demo
+      
             session['logged_in'] = True
             session['user_id'] = username
             session['user_email'] = f"{username}@example.com"
@@ -878,13 +899,56 @@ def login():
             return jsonify({"error": "Invalid username, password, or role."}), 401
     return render_template('login.html')
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
+@app.route("/submit_contact", methods=["POST"])
+def submit_contact():
+    name = request.form.get("name")
+    email = request.form.get("email")
+    message = request.form.get("message")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    try:
+        contact_form_worksheet.append_row([name, email, message, timestamp])
+        flash("✅ Your query has been submitted successfully!")
+        return redirect(url_for('contact'))
+    except Exception as e:
+        print(f"❌ ERROR submitting contact form: {e}")
+        return "<h3>❌ Something went wrong. Please try again later.</h3><a href='/contact'>Back</a>"
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        # In a real app, you'd create a new user here
-        return jsonify({"message": "Signup simulated. Please log in."}), 200
-    return render_template('signup.html')
+        data = request.get_json()
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        confirm_password = data.get('confirm_password')
 
+        if not username or not email or not password or not confirm_password:
+            return jsonify({'error': 'All fields are required.'}), 400
+
+        if password != confirm_password:
+            return jsonify({'error': 'Passwords do not match.'}), 400
+
+        session['user_id'] = str(uuid.uuid4()) # Generate a unique ID for this transient user
+        session['user_email'] = email
+        session['user_role'] = 'candidate' # Default role for new signups
+
+        print(f"New user '{username}' ({email}) signed up and logged in (transient session).")
+        return jsonify({
+            'message': 'Account created successfully! You are now logged in.',
+            'redirect_url': url_for('index') # Redirect to index or dashboard after automatic login
+        }), 201
+    
+    return render_template('signup.html')
 @app.route('/logout')
 @login_required
 def logout():

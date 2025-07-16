@@ -1,0 +1,150 @@
+/* static/css/style.css */
+
+/* Base styles for the new pages to ensure consistency */
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    background-color: #F9FAFB; /* Warm Gray background */
+    color: #1F2937; /* Deep Slate for primary text */
+    line-height: 1.6;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.page-wrapper {
+    max-width: 64rem; /* max-w-4xl for content */
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem; /* Increased space between sections */
+}
+
+.header-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem; /* mb-8 */
+    padding-bottom: 1.5rem; /* pb-6 */
+    border-bottom: 1px solid #E5E7EB; /* Warm Gray border */
+    gap: 1rem; /* space-y-4 */
+}
+@media (min-width: 640px) {
+    .header-section {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+    }
+}
+.header-section h1 {
+    font-size: 2.75rem; /* Larger heading */
+    font-weight: 800; /* font-extrabold */
+    color: #1F2937; /* Deep Slate */
+    line-height: 1.2;
+}
+
+.btn-back-home {
+    background-color: #FFFFFF; /* Cool White */
+    color: #2563EB; /* Elegant Blue text */
+    border: 1px solid #2563EB; /* Elegant Blue border */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    border-radius: 0.375rem; /* rounded-md */
+    padding: 0.75rem 1.5rem; /* py-3 px-6 */
+    font-weight: 500; /* font-medium */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    cursor: pointer;
+    text-decoration: none; /* Remove underline from link */
+    display: inline-flex; /* Ensure padding and sizing work */
+    align-items: center; /* Vertically align text/icon */
+    justify-content: center; /* Horizontally align text/icon */
+}
+.btn-back-home:hover {
+    background-color: #EFF6FF; /* Very light Elegant Blue */
+    transform: translateY(-1px);
+    color: #1D4ED8; /* Darker Elegant Blue on hover */
+}
+.btn-back-home:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.5);
+}
+
+.content-card {
+    background-color: #FFFFFF; /* Cool White */
+    padding: 2.5rem; /* p-10 */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-2xl */
+    border: 1px solid #E5E7EB; /* Warm Gray border */
+}
+
+/* Specific styles for About page feature cards */
+.feature-card {
+    background-color: #F9FAFB; /* Warm Gray */
+    padding: 1.75rem; /* p-6 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    border: 1px solid #E5E7EB; /* Warm Gray border */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+}
+
+/* Specific styles for Contact page info cards */
+.contact-info-card {
+    background-color: #F9FAFB; /* Warm Gray */
+    padding: 1.75rem; /* p-6 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    border: 1px solid #E5E7EB; /* Warm Gray border */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.contact-info-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-in-out both;
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+.page-wrapper {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.btn-back-home {
+  display: inline-block;
+  margin-top: 1rem;
+  background-color: #2563EB;
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.btn-back-home:hover {
+  background-color: #1e40af;
+}
+
+.feature-card {
+  background-color: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
