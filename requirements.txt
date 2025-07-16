@@ -3,8 +3,7 @@ langgraph
 langsmith 
 numpy
 pandas
-scikit-learn
-tensorflow
+
 python-dotenv
 langchain-groq
 langchain_tavily
