@@ -388,6 +388,7 @@
     <!-- Using local static CSS as per your provided HTML -->
     <link rel="stylesheet" href="static/css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/founder1.png') }}" type="image/png">
 </head>
 <body>
     
@@ -396,6 +397,7 @@
             <nav>
                 
                 <div class="logo">
+                    <img src="{{ url_for('static', filename='images/ok.png') }}" alt="JobStir Logo" class="logo-img" style="height: 40px; width: auto; margin-left: -8px;margin-right: 10px; vertical-align: middle;">                
                     <a href="{{ url_for('index') }}" class="site-title-main">JobStir</a>
                 </div>
                 
