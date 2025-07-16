@@ -1,0 +1,328 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Insights</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/project_insights.css') }}">
+    {# No longer need marked.js for structured insights, but keeping it in case raw README is complex #}
+    <script src="[https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js](https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js)"></script>
+</head>
+<body>
+    <div class="container mx-auto p-6 bg-gray-50 min-h-screen">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center">Project Insights Dashboard</h1>
+        <p class="text-lg text-gray-700 mb-8 text-center">
+            Detailed AI-generated analysis for project "<span class="font-semibold">{{ project.title if project.title else 'N/A' }}</span>"
+            by <span class="font-semibold">{{ candidate_name }}</span> for the <span class="font-semibold">{{ job_title }}</span> role.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-200 pb-2">Project Details</h2>
+                <p class="mb-2"><strong>Title:</strong> <span class="text-gray-800">{{ project.title if project.title else 'N/A' }}</span></p>
+                {% if project.link %}
+                    <p class="mb-2"><strong>Link:</strong> <a href="{{ project.link }}" target="_blank" class="text-blue-600 hover:underline break-all">{{ project.link }}</a></p>
+                {% endif %}
+                {% if project.description %}
+                    <p class="mb-2"><strong>Description:</strong></p>
+                    <ul class="list-disc list-inside text-gray-700 pl-4">
+                        {% for desc_item in project.description %}
+                            <li>{{ desc_item }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-gray-500">No detailed description available.</p>
+                {% endif %}
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-green-700 mb-4 border-b-2 border-green-200 pb-2">AI-Generated Insights Summary</h2>
+                {% if project.insights and project.insights is mapping %}
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Purpose/Goal:</h3>
+                        <p class="text-gray-700">{{ project.insights.purpose if project.insights.purpose else 'N/A' }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Key Features:</h3>
+                        {% if project.insights.key_features %}
+                            <ul class="list-disc list-inside text-gray-700 pl-4">
+                                {% for feature in project.insights.key_features %}
+                                    <li>{{ feature }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">No key features identified.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Technologies Used:</h3>
+                        {% if project.insights.technologies_used %}
+                            <ul class="list-disc list-inside text-gray-700 pl-4">
+                                {% for tech in project.insights.technologies_used %}
+                                    <li>{{ tech }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">No technologies identified.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Target Users:</h3>
+                        <p class="text-gray-700">{{ project.insights.target_users if project.insights.target_users else 'N/A' }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Project Challenges:</h3>
+                        {% if project.insights.project_challenges %}
+                            <ul class="list-disc list-inside text-gray-700 pl-4">
+                                {% for challenge in project.insights.project_challenges %}
+                                    <li>{{ challenge }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">No project challenges identified.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Business Value:</h3>
+                        <p class="text-gray-700">{{ project.insights.business_value if project.insights.business_value else 'N/A' }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Future Scope:</h3>
+                        {% if project.insights.future_scope %}
+                            <ul class="list-disc list-inside text-gray-700 pl-4">
+                                {% for scope in project.insights.future_scope %}
+                                    <li>{{ scope }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">No future scope identified.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Design Considerations:</h3>
+                        {% if project.insights.design_considerations %}
+                            <ul class="list-disc list-inside text-gray-700 pl-4">
+                                {% for design in project.insights.design_considerations %}
+                                    <li>{{ design }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">No design considerations identified.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Potential Interview Questions:</h3>
+                        {% if project.insights.interview_questions %}
+                            <ul class="list-decimal list-inside text-gray-700 pl-4">
+                                {% for question in project.insights.interview_questions %}
+                                    <li>{{ question }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">No interview questions generated.</p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-600">No AI insights available for this project. This might be due to a missing or unreadable README, or an error during insight generation.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
+            <div class="collapsible-header cursor-pointer flex justify-between items-center bg-gray-100 p-4 rounded-md hover:bg-gray-200 transition duration-150 ease-in-out" onclick="toggleCollapsible(this)">
+                <span class="text-xl font-semibold text-gray-800">View Raw README Content (if available)</span>
+                <span class="text-gray-600 text-xl transform transition-transform duration-300">&#9660;</span> {# Down arrow #}
+            </div>
+            <div class="collapsible-content hidden mt-4 p-4 border border-gray-200 rounded-md bg-gray-50">
+                {% if project.readme_content %}
+                    <pre class="raw-readme-content whitespace-pre-wrap font-mono text-sm text-gray-800 bg-gray-100 p-4 rounded-md overflow-auto max-h-96">{{ project.readme_content }}</pre>
+                {% else %}
+                    <p class="text-gray-600">Raw README content not available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="/hr_dashboard" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-150 ease-in-out">
+                Back to HR Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleCollapsible(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                header.querySelector('span:last-child').innerHTML = '&#9660;'; // Down arrow
+            } else {
+                content.style.display = "block";
+                header.querySelector('span:last-child').innerHTML = '&#9650;'; // Up arrow
+            }
+        }
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Insights - {{ project.title }}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e7eb; /* Slightly darker light gray background */
+        }
+        /* Custom styles for a more polished look */
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+        }
+        .btn-primary {
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl w-full bg-white shadow-2xl rounded-xl p-8 space-y-8 border border-gray-200">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-4 sm:mb-0">
+                Project Insights: <span class="text-indigo-700">{{ project.title }}</span>
+            </h1>
+            <a href="{{ url_for('hr_dashboard') }}" class="btn-primary inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="border-b border-gray-200 pb-5">
+            <h2 class="text-2xl font-bold text-gray-800">Overview</h2>
+        </div>
+
+        <!-- Purpose Card -->
+        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Purpose</h3>
+            <p class="text-gray-600 leading-relaxed">{{ project.insights.purpose if project.insights.purpose else 'N/A' }}</p>
+        </div>
+
+        <!-- Key Features Card -->
+        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Key Features</h3>
+            {% if project.insights.key_features %}
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    {% for feature in project.insights.key_features %}
+                        <li>{{ feature }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">N/A</p>
+            {% endif %}
+        </div>
+
+        <!-- Technologies Used Card -->
+        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Technologies Used</h3>
+            {% if project.insights.technologies_used %}
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    {% for tech in project.insights.technologies_used %}
+                        <li>{{ tech }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">N/A</p>
+            {% endif %}
+        </div>
+
+        <!-- Target Users Card -->
+        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Target Users</h3>
+            <p class="text-gray-600 leading-relaxed">{{ project.insights.target_users if project.insights.target_users else 'N/A' }}</p>
+        </div>
+
+        <!-- Project Challenges Card -->
+        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Project Challenges</h3>
+            {% if project.insights.project_challenges %}
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    {% for challenge in project.insights.project_challenges %}
+                        <li>{{ challenge }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">N/A</p>
+            {% endif %}
+        </div>
+
+        <!-- Business Value Card -->
+        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Business Value</h3>
+            <p class="text-gray-600 leading-relaxed">{{ project.insights.business_value if project.insights.business_value else 'N/A' }}</p>
+        </div>
+
+        <!-- Future Scope Card -->
+        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Future Scope</h3>
+            {% if project.insights.future_scope %}
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    {% for scope in project.insights.future_scope %}
+                        <li>{{ scope }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">N/A</p>
+            {% endif %}
+        </div>
+
+        <!-- Design Considerations Card -->
+        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Design Considerations</h3>
+            {% if project.insights.design_considerations %}
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    {% for consideration in project.insights.design_considerations %}
+                        <li>{{ consideration }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">N/A</p>
+            {% endif %}
+        </div>
+
+        <!-- Project Link (if available) -->
+        {% if project.link %}
+            <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Project Link</h3>
+                <a href="{{ project.link }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 break-all underline">
+                    {{ project.link }}
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="text-center pt-8">
+            <a href="{{ url_for('hr_dashboard') }}" class="btn-primary inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-lg shadow-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+

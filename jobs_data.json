@@ -1,0 +1,2160 @@
+{
+    "024d8f2c-8749-4227-a866-32000ca83902": {
+        "company_name": "prodigy",
+        "job_title": "Data Science Intern",
+        "job_description": "\r\nThe Portfolio Valuations and Financial Advisory Services team has multiple Data Science Internships for up to 1 year at our Gurgaon and Mumbai offices. The internship is an excellent opportunity to use your data related skills and learn data science as applicable in investment banking and financial services. You will work with New York and London based senior Data Scientists and develop products and processes, which will address the latest needs of the global financial markets.\r\n\r\nYou will have the opportunity to gain valuable on-the-job training throughout your internship, with similar levels of exposure as a first-year analyst. Depending on both your performance and Houlihan Lokey\u2019s hiring needs, the internship may translate to a full-time offer.\r\n\r\nKey Responsibilities:\r\n\r\nData Collection: Collect and Process data from multiple financial databases that HL has access\r\nExcel-based Analysis: Analyze data using advanced Excel functions such as PivotTables, VLOOKUP, INDEX/MATCH, and complex formulas.\r\nData Extraction and Transformation using Python and tools like Dataiku\r\nData Warehousing in Snowflake\r\nData Visualization: Assist in creating visually appealing and insightful charts, graphs, and dashboards that convey data trends and insights clearly using Power BI or Tableau\r\nDocumentation: Document and share best practices for Excel-based processes\r\n\r\nQualifications / Requirements\r\n\r\nYou must either be in you final year of study or a recent graduate available to work on a full-time basis\r\nYou have or will receive a Bachelor of Engineering, Bachelor of Technology, Bachelor of Science in Mathematics or Statistics or Data Science) from a reputed academic institution\r\nYou will have a strong academic track record\r\nStrong quantitative and analytical skills with knowledge of Excel.\r\nBasic knowledge of SQL and Python programming language\r\nExcellent verbal and written communication skills in English are essential\r\nA demonstrated interest in Data Science\r\nPrevious internship experience within Data Analysis or Data Science is essential\r\nYou must be motivated and have the ability to work cooperatively with all levels of staff in a rapidly changing, demanding, but ultimately rewarding environment\r\nHoulihan Lokey aims to attract talented graduates who share our passion for excellence and commitment.",
+        "candidates": {
+            "07f2fe97-54fc-45cb-b3fa-e80ae0a54992": {
+                "candidate_user_id": "dummy_user",
+                "resume_filename": "Resume_Divyansh.pdf",
+                "extracted_info": {
+                    "name": "Divyansh Gawri",
+                    "email": "dishugawri@gmail.com",
+                    "phone": "+91 7988947904",
+                    "education": [
+                        {
+                            "degree": "B.Sc.",
+                            "university": "Guru Nanak Dev University",
+                            "start_year": "2023",
+                            "end_year": "Present",
+                            "concentration": "Computational Statistics and Data Analytics"
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "C++",
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "Scikit-Learn",
+                        "TensorFlow",
+                        "OpenCV",
+                        "Pandas",
+                        "NumPy",
+                        "Matplotlib",
+                        "Seaborn",
+                        "Tableau",
+                        "Spacy",
+                        "NLTK",
+                        "Database SQL",
+                        "Jupyter Notebook",
+                        "Git",
+                        "GitKraken",
+                        "GitHub Pages",
+                        "Text Preprocessing",
+                        "Keyword Extraction",
+                        "Rule-based Logic",
+                        "Sentiment Analysis",
+                        "Named Entity Recognition (NER)"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Freelance Machine Learning Engineer",
+                            "duration": "Jan 2025 \u2013 Apr 2025",
+                            "location": "Remote",
+                            "description": [
+                                "Collaborated with a skincare startup to build a personalized recommendation engine based on facial condition data.",
+                                "Designed and trained machine learning models to identify condition-specific needs and suggest optimal product compositions.",
+                                "Delivered a deployable ML pipeline and actionable insights for integration into the client\u2019s product strategy."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Face Recognition System",
+                            "link": "https://github.com/divyanshgawri/Image_recognition",
+                            "description": [
+                                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring."
+                            ],
+                            "readme_content": "**Face Recognition Project**\n\nOverview\nThis project is a **Face Recognition Project** that employs deep learning techniques to detect and recognize faces in images. The Project utilizes a Convolutional Neural Network (CNN) model trained on a dataset of various individuals. It processes images to identify faces and matches them against known identities, providing confidence scores for each prediction.\n\n## Project Explanation\n\n### Problem Statement\n\nWith the increasing use of digital images, the need for effective face recognition systems has grown. This project aims to develop a robust application that can accurately identify individuals from photographs, making it applicable in various fields such as security, personal identification, and social media.\n\n### Key Components\n\n1. **Face Detection**:\n   - Uses the `face_recognition` library to locate and crop faces from input images.\n   - Handles cases where no faces are detected and returns the original image for further analysis.\n\n2. **Face Recognition**:\n   - Utilizes a Self-Made CNN model to classify the cropped face images.\n   - Predicts the identity of the individual by comparing the features extracted from the image against those in the training dataset.\n\n3. **Confidence Scoring**:\n   - After making a prediction, the application computes the confidence percentage, indicating how likely the prediction is correct.\n   - Displays this confidence score alongside the predicted identity, enhancing user understanding of the model's reliability.\n\n4. **Sample Visualization**:\n   - Shows the input image and the best-matching image from the dataset, providing a visual representation of the recognition result.\n\n### Technologies Used\n\n- **Python**: The primary programming language for the application.\n- **TensorFlow**: For building and training the CNN model.\n- **Keras**: Simplifies the process of model creation and training.\n- **OpenCV**: For image processing tasks such as resizing and displaying images.\n- **Face Recognition**: Library used for face detection and recognition.\n- **Matplotlib**: Used for visualizing images and results.\n- **NumPy**: Assists with numerical operations and data handling.\n\n## Installation\n\nTo set up the project, follow these steps:\n\n1. Clone the repository:\n   ```bash\n   git clone https://github.com/yourusername/face_recognition_project.git\n   cd face_recognition_project\n   ```\n\n2. Install the required dependencies:\n   ```bash\n   pip install -r requirements.txt\n   ```\n\n3. Ensure you have the trained model (`face_recognition_model.h5`) in the project directory.\n\n## Usage\n\n1. Place your test images in the appropriate directory.\n2. Run the main script:\n   ```bash\n   python main.py\n   ```\n3. Follow the prompts to input the image path for recognition.\n\n## Example\n\n![Result](https://github.com/divyanshgawri/Image_recognition/blob/main/output.png) \n\n*Display of original image and predicted class image with confidence percentage.*\n\n## Contributing\n\nIf you'd like to contribute to this project, feel free to open an issue or submit a pull request.\n\n\n## Acknowledgments\n\n- [face_recognition](https://github.com/ageitgey/face_recognition) for face detection capabilities.\n- TensorFlow and Keras for deep learning model implementation.\n\n## Contact\n\nFor any inquiries or feedback, feel free to reach out to me at [gawridishu@gmail.com].\n",
+                            "insights": {
+                                "purpose": "Develop a robust application that can accurately identify individuals from photographs, making it applicable in various fields such as security, personal identification, and social media.",
+                                "key_features": [
+                                    "Face Detection",
+                                    "Face Recognition",
+                                    "Confidence Scoring",
+                                    "Sample Visualization"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "TensorFlow",
+                                    "Keras",
+                                    "OpenCV",
+                                    "Face Recognition",
+                                    "Matplotlib",
+                                    "NumPy"
+                                ],
+                                "project_challenges": [
+                                    "Handling cases where no faces are detected",
+                                    "Training a robust CNN model for accurate face recognition"
+                                ],
+                                "business_value": "This project provides value by enabling accurate and efficient face recognition, which can be applied in various fields such as security, personal identification, and social media.",
+                                "future_scope": [
+                                    "Improving the accuracy of face recognition",
+                                    "Enhancing the user interface for easier image input and result visualization"
+                                ],
+                                "design_considerations": [
+                                    "Using a Convolutional Neural Network (CNN) model for face recognition",
+                                    "Implementing confidence scoring for more accurate results"
+                                ]
+                            },
+                            "project_index": 0
+                        },
+                        {
+                            "title": "Skincare Recommendation System",
+                            "description": [
+                                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions."
+                            ],
+                            "insights": {},
+                            "project_index": 1
+                        },
+                        {
+                            "title": "E-commerce Product Description Classifier",
+                            "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
+                            "description": [
+                                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions."
+                            ],
+                            "readme_content": "# E-commerce-Product-Description-Analysis\nThis project is designed to predict the category and sub-category of e-commerce product descriptions provided by consumers. By analyzing the descriptions or comments, businesses can identify which product the customer is referring to, helping companies improve their product categorization, inventory management, and customer service.\n\n## Features\n**Features**\n**Category Prediction:** Predicts the primary category of the product based on the description provided by the user.<br>\n**Sub-category Prediction:** Identifies the specific sub-category within the main category for more detailed product classification.\n**Text Preprocessing:** Handles text cleaning, including URL removal, tokenization, stopword removal, and lemmatization for improved model accuracy.<br>    \n**Scalability:** The system is designed to scale and work with large datasets for e-commerce platforms.\n**Accuracy:** The model uses advanced machine learning techniques for accurate classification of product descriptions.\n\n## Exploratory Data Analysis (EDA)\n\nBefore building the model, we performed some **Exploratory Data Analysis (EDA)** to better understand the dataset and its structure. Below are a few visualizations that highlight important aspects of the data:\n\n### 1. Revenue Share in Sales by Category\n![Revenue Share by Category](https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis/blob/main/output1.png)\n\nThis chart shows the revenue distribution across different product categories. It helps identify the most profitable categories.\n\n### 2. Total Sales by Top 20 Sub-categories\n![Total Sales by Top 20 Sub-category](https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis/blob/main/output2.png)\n\nThis visualization shows the total sales for the top 20 sub-categories. It's useful for understanding which sub-categories contribute the most to the overall sales.\n\n### 3. Top 20 Brands According to Sales in a Particular Category\n![Top 20 Brands by Sales](https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis/blob/main/output3.png)\n\nThis graph visualizes the top 20 brands within a specific category, showing their sales performance. It provides insights into the most successful brands in the selected category.\n\n### 4. Most Number of Products Sold by Categories]\n![Products Sold by Categories](https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis/blob/main/output4.png)\n\nThis plot represents the number of products sold across various categories. It provides a comparison of the sales volume for different categories and helps identify the most popular categories.\nHere's an example of how you can describe your **NLP model** in the **README.md** to highlight its functionality and contributions to the project.\n\n## NLP Model for Product Categorization\n\nIn this project, we developed a **Natural Language Processing (NLP) model** aimed at predicting the **category** and **sub-category** of a product description provided by a consumer. The goal was to automate product categorization and enable businesses to analyze customer feedback or product reviews more effectively. The model helps companies identify which product a user is referring to based on their description, improving customer service, inventory management, and overall business intelligence.\n\n### **Model Overview**\nThe model uses **text data** (descriptions of products) as input and classifies them into predefined **categories** and **sub-categories** based on their content. This approach is particularly beneficial for businesses looking to analyze large volumes of product-related content, such as reviews or descriptions, and gain insights into which products are being talked about.\n\n### **Steps Taken:**\n1. **Data Preprocessing**: \n   - Cleaned the text data by removing unnecessary elements such as URLs, special characters, and stop words.\n   - Applied **tokenization**, **lemmatization**, and **lowercasing** to standardize the text.\n   - Used **TF-IDF** (Term Frequency-Inverse Document Frequency) to convert the cleaned text into numerical vectors that the model can process.\n\n2. **Model Selection**:\n   - We experimented with multiple **classification models** like **Logistic Regression**, **Random Forest**, and **Support Vector Machines (SVM)** to identify the best model.\n   - Then we Selected **Logistic Regression** as our model for training.\n   - The model takes the cleaned text and predicts the most probable category and sub-category using the trained classifier.\n\n3. **Evaluation**:\n   - The model's performance was evaluated using **accuracy** and **precision** metrics.\n   - Cross-validation was performed to ensure the model's robustness and generalizability across unseen data.\n\n4. **Result**: \n   - The final model is capable of classifying product descriptions with high accuracy. Businesses can now use this model to categorize products automatically based on customer-generated content such as descriptions, reviews, and feedback.\n\n### **Features:**\n- **Text Preprocessing**: Includes tokenization, removal of stop words, special characters, and URLs, and lemmatization.\n- **TF-IDF Vectorization**: Converts textual data into a format suitable for machine learning models.\n- **Model Flexibility**: Multiple machine learning models can be tested and evaluated for best performance.\n- **Easy Integration**: The model can be integrated into existing product feedback systems or customer service platforms.\n\n### **Future Improvements**:\n- **Deep Learning**: The current model is based on classical machine learning techniques. Future work can involve training deep learning models like **LSTM** or **BERT** for better accuracy and handling more complex language patterns.\n- **Domain-Specific Models**: Creating models tailored for specific industries, such as health or beauty, can improve the model\u2019s ability to handle niche products.\n- **Multilingual Support**: The model can be enhanced to work in multiple languages, making it scalable across regions and countries.\n\n---\n\nThis section of your README will provide clear context for your NLP model, detailing its purpose, methodology, and usage for potential collaborators or employers reviewing your project.\n\nLet me know if you'd like to adjust any details or add more explanations!\n## Installation\n\n### Prerequisites\n\nTo run this project, you need to have Python and pip installed on your system.\n\n### Setup\n\n1. Clone the repository:\n   \n   git clone https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis.git\n   \n\n2. Navigate to the project folder:\n   \n   cd E-commerce-Product-Description-Analysis\n   \n\n3. Install the required dependencies:\n   \n   pip install -r requirements.txt\n   \n\n4. Download necessary NLTK resources:\n   python\n   import nltk\n   nltk.download('stopwords')\n   nltk.download('punkt')\n   nltk.download('wordnet')\n   \n\n## Usage\n\n1. Place your dataset (`your_dataset.csv`) containing product descriptions in the project directory.\n2. Run the following Python script to preprocess and analyze the product descriptions:\n    data_analysis.ipynb\n   \n\n3. The script will clean the descriptions, perform sentiment analysis, and generate a new CSV file with the cleaned descriptions.\n\n## Example\n\nHere\u2019s a sample of the cleaned description:\n\n**Original**:  \n_This Product contains Garlic Oil that is known to help proper digestion, maintain proper cholesterol levels, support cardiovascular and also build immunity. For Beauty tips, tricks & more visit https://bigbasket.blog/._\n\n**Cleaned**:  \n_product contain garlic oil help proper digestion maintain proper cholesterol level support cardiovascular build immunity beauty tip trick_\n\n## Technologies Used\n- Python\n- NLTK (Natural Language Toolkit)\n- Pandas\n- Regular Expressions\n- Scikit-leran\n\n## Contributing\nFeel free to fork this repository, create branches, and submit pull requests for improvements. Contributions are always welcome!\n\n",
+                            "insights": {
+                                "purpose": "Predict the category and sub-category of e-commerce product descriptions provided by consumers to improve product categorization, inventory management, and customer service.",
+                                "key_features": [
+                                    "Category Prediction",
+                                    "Sub-category Prediction",
+                                    "Text Preprocessing",
+                                    "Scalability",
+                                    "Accuracy"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "NLTK (Natural Language Toolkit)",
+                                    "Pandas",
+                                    "Regular Expressions",
+                                    "Scikit-learn"
+                                ],
+                                "target_users": "Businesses, e-commerce platforms, and companies looking to analyze customer feedback or product reviews.",
+                                "project_challenges": [
+                                    "Handling large datasets",
+                                    "Improving model accuracy",
+                                    "Selecting the best classification model"
+                                ],
+                                "business_value": "This project provides value to businesses by enabling them to automate product categorization, improve customer service, and gain insights into customer feedback.",
+                                "future_scope": [
+                                    "Deep Learning",
+                                    "Domain-Specific Models",
+                                    "Multilingual Support"
+                                ],
+                                "design_considerations": [
+                                    "Text Preprocessing",
+                                    "TF-IDF Vectorization",
+                                    "Model Flexibility",
+                                    "Easy Integration"
+                                ]
+                            },
+                            "project_index": 2
+                        }
+                    ],
+                    "certificates": [
+                        "Certified Python Developer Associate (CPDA) \u2013 SkillEnable",
+                        "CRM Essentials \u2013 HP Life",
+                        "Machine Learning Specialization \u2013 Stanford University",
+                        "Data Analysis with Python \u2013 freeCodeCamp",
+                        "Databases and SQL for Data Analysis \u2013 IBM (Coursera)"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "The candidate lacked sufficient experience in data warehousing using Snowflake and data visualization using Power BI or Tableau, which is crucial for the role of Data Science Intern at Houlihan Lokey. Additionally, the candidate's portfolio projects did not demonstrate a strong focus on data analysis, SQL, and Python programming, which are essential skills for the position.\n\nTo improve, the candidate should focus on gaining hands-on experience with data warehousing tools like Snowflake and data visualization tools like Power BI or Tableau. They should also work on building projects that demonstrate their skills in data analysis, SQL, and Python programming. Specifically, they could:\n\n* Take online courses or attend workshops to learn Snowflake and data visualization tools\n* Participate in data science competitions or hackathons to build and showcase their data analysis and Python programming skills\n* Volunteer to work on data analysis projects for non-profit organizations or startups to gain practical experience\n* Read books and articles on data science and machine learning to stay up-to-date with industry trends and best practices\n\nBy focusing on these areas, the candidate can improve their chances of being selected for a Data Science Intern position at Houlihan Lokey or similar companies in the future.",
+                "match_score": 28,
+                "submission_date": "2025-07-07 23:30:51",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "f19b34f1-ef8d-4f93-9204-480770939f2f": {
+                "candidate_user_id": "dummy_user",
+                "resume_filename": "ok.pdf",
+                "extracted_info": {
+                    "name": "Aarav Mehta",
+                    "email": "aarav.mehta.ds@gmail.com",
+                    "phone": "+91-91234-56789",
+                    "education": [
+                        {
+                            "degree": "Bachelor of Technology in Data Science",
+                            "university": "SVKM's NMIMS University, Mumbai",
+                            "start_year": "2020",
+                            "end_year": "2024",
+                            "cumulative_gpa": "8.6/10",
+                            "relevant_coursework": [
+                                "Statistics for Data Science",
+                                "Financial Analytics",
+                                "Database Systems",
+                                "Machine Learning",
+                                "Data Engineering",
+                                "Investment Analysis"
+                            ]
+                        }
+                    ],
+                    "skills": [
+                        "Programming & Tools: Python, SQL, Dataiku, Excel (PivotTables, INDEX/MATCH, VLOOKUP), Power BI, Tableau",
+                        "Data Handling: Data Cleaning, ETL Pipelines, Web Scraping, API Integration, Snowflake",
+                        "Analytics: EDA, Financial Ratio Analysis, Linear Regression, Time Series Forecasting",
+                        "Soft Skills: Communication, Teamwork, Documentation, Presentation"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Data Science Intern",
+                            "duration": "Jan 2024 \u2013 May 2024",
+                            "location": "Remote",
+                            "description": [
+                                "Collected and transformed financial datasets using Python and Pandas from APIs (Yahoo Finance, Alpha Vantage)",
+                                "Built interactive dashboards in Tableau to visualize P/E ratios, volatility trends, and stock correlation matrices",
+                                "Applied pivot tables and complex formulas in Excel to clean and aggregate financial KPIs for quarterly reporting",
+                                "Conducted SQL queries on PostgreSQL database for slicing valuation data across sectors and geographies",
+                                "Created a documentation template to standardize reporting practices for financial models across the team"
+                            ]
+                        },
+                        {
+                            "title": "Data Analyst Intern",
+                            "duration": "May 2023 \u2013 Aug 2023",
+                            "location": "Mumbai",
+                            "description": [
+                                "Built an Excel-based ROI tracker for portfolio valuation across multiple asset classes",
+                                "Worked closely with senior analysts to automate valuation processes using Python scripts and Excel Macros",
+                                "Cleaned and joined multiple CSV files of market data for sentiment analysis using NLTK and Matplotlib",
+                                "Wrote concise reports and presentations to explain data-driven insights for weekly review meetings"
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Financial Market Dashboard using Power BI",
+                            "link": "https://github.com/aaravmehta",
+                            "description": [
+                                "Built an end-to-end dashboard using NSE stock data to visualize performance, volume, moving averages, and risk",
+                                "Enabled slicing by sector and time frame; shared with 30+ student analysts for investment club decision-making"
+                            ],
+                            "readme_content": "Could not fetch README.md",
+                            "insights": {},
+                            "project_index": 0
+                        },
+                        {
+                            "title": "Credit Risk Classifier (Python, Scikit-learn)",
+                            "description": [
+                                "Trained a classification model to predict loan default risk using customer demographics and past credit behavior",
+                                "Achieved 87% accuracy using logistic regression with balanced class weights"
+                            ],
+                            "insights": {},
+                            "project_index": 1
+                        }
+                    ],
+                    "certificates": [
+                        "Python for Data Science \u2013 IBM via Coursera",
+                        "SQL for Data Analysis \u2013 Mode Analytics",
+                        "Data Visualization with Tableau \u2013 Udemy",
+                        "Excel for Financial Modeling \u2013 Corporate Finance Institute (CFI)"
+                    ]
+                },
+                "eligibility_status": "Eligible",
+                "eligibility_reason": "Match score: 85% (Threshold: 75%)",
+                "match_score": 85,
+                "submission_date": "2025-07-07 23:34:59",
+                "exam_questions": [
+                    {
+                        "id": "Q1",
+                        "question": "What is the primary function of the PivotTable in Excel, and how does it differ from a regular Excel table?"
+                    },
+                    {
+                        "id": "Q2",
+                        "question": "Assume you are given a dataset with multiple tables and you need to extract specific data using Python. Which tool would you use to perform this task, and what would be the general syntax to achieve this?"
+                    },
+                    {
+                        "id": "Q3",
+                        "question": "Suppose you have a dataset with multiple columns and you want to create a dashboard to visualize the data using Power BI. What would be the most effective way to achieve this, and what are some key considerations to keep in mind when designing the dashboard?"
+                    }
+                ],
+                "exam_taken": true,
+                "exam_score": 27,
+                "exam_feedback": [
+                    {
+                        "question_id": "Q1",
+                        "question": "What is the primary function of the PivotTable in Excel, and how does it differ from a regular Excel table?",
+                        "answer": "The primary function of a PivotTable in Excel is to summarize, analyze, and organize large datasets dynamically. Unlike a regular Excel table, PivotTables allow for interactive grouping, filtering, and aggregation without altering the raw data. They enable users to quickly generate insights through drag-and-drop operations.\n",
+                        "score": 9,
+                        "feedback": "Excellent understanding of PivotTable's primary function and its advantages over regular Excel tables. The answer is clear, concise, and accurately highlights the benefits of using PivotTables in data analysis."
+                    },
+                    {
+                        "question_id": "Q2",
+                        "question": "Assume you are given a dataset with multiple tables and you need to extract specific data using Python. Which tool would you use to perform this task, and what would be the general syntax to achieve this?",
+                        "answer": "To extract specific data from multiple tables using Python, you can use **pandas**. It allows you to read and manipulate tabular data efficiently.\n\n**General syntax:**\n\n```python\nimport pandas as pd\n\n# Load the tables (assuming CSV format)\ntable1 = pd.read_csv('table1.csv')\ntable2 = pd.read_csv('table2.csv')\n\n# Merge or filter data\nmerged_data = pd.merge(table1, table2, on='common_column')\nfiltered_data = merged_data[merged_data['column_name'] == 'desired_value']\n```\n",
+                        "score": 9,
+                        "feedback": "Excellent understanding of Python and pandas for data extraction. The syntax provided is clear and concise, demonstrating a good grasp of the concepts."
+                    },
+                    {
+                        "question_id": "Q3",
+                        "question": "Suppose you have a dataset with multiple columns and you want to create a dashboard to visualize the data using Power BI. What would be the most effective way to achieve this, and what are some key considerations to keep in mind when designing the dashboard?",
+                        "answer": "To create a dashboard in Power BI:\n\n**Effective Steps:**\n\n1. **Import the dataset** into Power BI from Excel, CSV, or a database.\n2. **Clean and transform** the data using Power Query (e.g., handling nulls, renaming columns).\n3. **Create visualizations** (bar charts, line graphs, tables, etc.) by dragging fields onto the canvas.\n4. **Add slicers and filters** for interactivity (e.g., by date, category).\n5. **Organize visuals logically** on the dashboard for clarity.\n\n**Key Considerations:**\n\n* Ensure the data model is well-structured with clear relationships.\n* Use consistent color schemes and labels for readability.\n* Focus on KPIs and insights that are most relevant to the audience.\n* Optimize performance by minimizing visuals and avoiding large, unfiltered datasets.\n* Always validate the accuracy of visualized data.\n",
+                        "score": 9,
+                        "feedback": "Excellent understanding of the Power BI dashboard creation process. You have provided a clear and concise step-by-step guide, including key considerations for effective dashboard design. Your answer demonstrates a good grasp of data visualization concepts and best practices."
+                    }
+                ],
+                "submitted_answers": [
+                    {
+                        "question_id": "Q1",
+                        "answer": "The primary function of a PivotTable in Excel is to summarize, analyze, and organize large datasets dynamically. Unlike a regular Excel table, PivotTables allow for interactive grouping, filtering, and aggregation without altering the raw data. They enable users to quickly generate insights through drag-and-drop operations.\n"
+                    },
+                    {
+                        "question_id": "Q2",
+                        "answer": "To extract specific data from multiple tables using Python, you can use **pandas**. It allows you to read and manipulate tabular data efficiently.\n\n**General syntax:**\n\n```python\nimport pandas as pd\n\n# Load the tables (assuming CSV format)\ntable1 = pd.read_csv('table1.csv')\ntable2 = pd.read_csv('table2.csv')\n\n# Merge or filter data\nmerged_data = pd.merge(table1, table2, on='common_column')\nfiltered_data = merged_data[merged_data['column_name'] == 'desired_value']\n```\n"
+                    },
+                    {
+                        "question_id": "Q3",
+                        "answer": "To create a dashboard in Power BI:\n\n**Effective Steps:**\n\n1. **Import the dataset** into Power BI from Excel, CSV, or a database.\n2. **Clean and transform** the data using Power Query (e.g., handling nulls, renaming columns).\n3. **Create visualizations** (bar charts, line graphs, tables, etc.) by dragging fields onto the canvas.\n4. **Add slicers and filters** for interactivity (e.g., by date, category).\n5. **Organize visuals logically** on the dashboard for clarity.\n\n**Key Considerations:**\n\n* Ensure the data model is well-structured with clear relationships.\n* Use consistent color schemes and labels for readability.\n* Focus on KPIs and insights that are most relevant to the audience.\n* Optimize performance by minimizing visuals and avoiding large, unfiltered datasets.\n* Always validate the accuracy of visualized data.\n"
+                    }
+                ]
+            },
+            "09e73802-2cb1-450c-ac31-804c8e9211ab": {
+                "candidate_user_id": "dummy_user",
+                "resume_filename": "Curriculum Vitae.pdf",
+                "extracted_info": {
+                    "name": "Jashanpal Singh",
+                    "email": "jashanpal1104@gmail.com",
+                    "phone": "+91 8872827271",
+                    "education": [
+                        {
+                            "degree": "10th",
+                            "university": "ICSE",
+                            "start_year": "2019",
+                            "end_year": "2019",
+                            "concentration": "Science",
+                            "cumulative_gpa": "89%",
+                            "relevant_coursework": []
+                        },
+                        {
+                            "degree": "12th",
+                            "university": "ICSE",
+                            "start_year": "2021",
+                            "end_year": "2021",
+                            "concentration": "Non Medical",
+                            "cumulative_gpa": "87%",
+                            "relevant_coursework": []
+                        },
+                        {
+                            "degree": "Bsc",
+                            "university": "Guru Nanak Dev University",
+                            "start_year": "2024",
+                            "end_year": "2024",
+                            "concentration": "Computational Statistics and Data Analytics",
+                            "cumulative_gpa": "8.1",
+                            "relevant_coursework": []
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "Java",
+                        "Machine Learning",
+                        "Artificial Intelligence",
+                        "DBMS",
+                        "MySQL",
+                        "SPSS",
+                        "R Language",
+                        "Tableau",
+                        "PowerBI",
+                        "Data Visualisation using R",
+                        "Microsoft Excel",
+                        "Forecasting",
+                        "Risk Analysis",
+                        "Analytical and Problem-Solving Abilities"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Internship at IIT Kharagpur",
+                            "description": [
+                                "Contributed to research and analysis projects in data science, applying principles of computational statistics, data analytics, and machine learning.",
+                                "Languages: English and Hindi",
+                                "Interpersonal Skills: Skilled in building strong relationships, collaborating effectively in teams, leading with respect and commitment, solving problems proactively, and driven by a passion for continuous growth."
+                            ]
+                        }
+                    ],
+                    "projects": [],
+                    "certificates": [],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "Although Jashanpal Singh has a strong academic background in Computational Statistics and Data Analytics, he lacks relevant experience in data science, particularly in financial services. His internship experience at IIT Kharagpur was more focused on research and analysis projects, whereas the role at Houlihan Lokey requires hands-on experience with data collection, extraction, and transformation using Python and tools like Dataiku. Additionally, Jashanpal's skills in data visualization are limited to R Language, whereas the job description emphasizes the use of Power BI or Tableau.\n\nTo improve, Jashanpal should focus on gaining more experience in data analysis and visualization using Python and tools like Dataiku, as well as acquiring knowledge of SQL and data warehousing in Snowflake. He should also work on building projects that showcase his skills in data science, particularly in financial services, to demonstrate his ability to apply data science principles to real-world problems.",
+                "match_score": 64,
+                "submission_date": "2025-07-13 16:23:37",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "7e0e22e4-26b7-487e-a1bc-586f84e7937b": {
+                "candidate_user_id": "dummy_user",
+                "resume_filename": "cc _1.pdf",
+                "extracted_info": {
+                    "name": "Chandr Chuti Chauhan",
+                    "email": "chandr.chut.chauhan@gmail.com",
+                    "phone": "+91-9876543210",
+                    "education": [
+                        {
+                            "degree": "Bachelor of Technology in Computer Science",
+                            "university": "National Institute of Technology (NIT), Trichy",
+                            "start_year": "2017",
+                            "end_year": "2021",
+                            "cumulative_gpa": "8.7/10",
+                            "relevant_coursework": []
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "SQL",
+                        "LangChain",
+                        "LangGraph",
+                        "AutoGen",
+                        "LlamaIndex",
+                        "LangServe",
+                        "Hugging Face",
+                        "FAISS",
+                        "Pinecone",
+                        "ChromaDB",
+                        "Weaviate",
+                        "PyTorch",
+                        "TensorFlow",
+                        "Scikit-learn",
+                        "FastAPI",
+                        "Docker",
+                        "AWS (EC2, Lambda, S3)",
+                        "GCP",
+                        "MLflow",
+                        "Weights & Biases",
+                        "GCP Vertex AI",
+                        "Git",
+                        "Jupyter",
+                        "LangSmith",
+                        "Postman"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Senior AI Engineer \u2013 LLM & Conversational AI",
+                            "duration": "Jan 2023 \u2013 Present",
+                            "location": "Bengaluru",
+                            "description": [
+                                "Developed and deployed multi-agent systems using LangChain, LangGraph, and AutoGen, powering virtual assistants for enterprise clients.",
+                                "Integrated LlamaIndex for structured and unstructured document retrieval, improving context relevance.",
+                                "Fine-tuned GPT-4, LLaMA-2, and Mistral-7B for customer service, HR automation, and legal summarization.",
+                                "Designed and optimized RAG pipelines using ChromaDB, FAISS, and Pinecone, reducing latency and boosting retrieval accuracy by 91%.",
+                                "Implemented prompt engineering and fine-tuning strategies for domain-specific model enhancement.",
+                                "Built RESTful APIs using FastAPI and deployed containerized LLM inference services on AWS using EC2, Lambda, and S3.",
+                                "Contributed to internal LLMOps pipelines using MLflow and LangServe for versioning, monitoring, and A/B testing."
+                            ]
+                        },
+                        {
+                            "title": "Machine Learning Engineer \u2013 NLP & ML Systems",
+                            "duration": "Aug 2021 \u2013 Dec 2022",
+                            "location": "Remote",
+                            "description": [
+                                "Trained text classification and NLU models using Hugging Face Transformers, PyTorch, and spaCy.",
+                                "Created scalable document retrieval and matching systems using FAISS and sentence-transformers.",
+                                "Developed initial versions of customer support chatbots using fine-tuned transformer models and REST APIs.",
+                                "Led integration of NLP microservices with web dashboards and mobile apps.",
+                                "Contributed to continuous deployment of NLP models using MLflow and Docker."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "RAG-based Legal Assistant (LangChain + ChromaDB)",
+                            "description": [
+                                "Built a conversational agent to assist lawyers with real-time statute and case retrieval using custom embeddings."
+                            ],
+                            "insights": {},
+                            "project_index": 0
+                        },
+                        {
+                            "title": "Resume Screening and Matching Bot",
+                            "description": [
+                                "Developed a LangChain-powered system to parse, match, and rank resumes against job descriptions."
+                            ],
+                            "insights": {},
+                            "project_index": 1
+                        },
+                        {
+                            "title": "Multi-Agent Workflow Bot (LangGraph + AutoGen)",
+                            "description": [
+                                "Created a multi-agent task management assistant with tool-use capability and fallback mechanisms."
+                            ],
+                            "insights": {},
+                            "project_index": 2
+                        },
+                        {
+                            "title": "Domain-Specific LLM Evaluation Framework (LangChain + LangGraph)",
+                            "description": [
+                                "Built an auto-evaluation pipeline for LLM outputs using rubric-based grading, hallucination detection, and feedback generation."
+                            ],
+                            "insights": {},
+                            "project_index": 3
+                        }
+                    ],
+                    "certificates": [
+                        "AWS Certified Machine Learning \u2013 Specialty",
+                        "LangChain Developer Bootcamp \u2013 Built production-ready LangChain agents with integrations",
+                        "Hugging Face NLP Practitioner Certificate",
+                        "MLOps with GCP Vertex AI \u2013 Google Cloud",
+                        "Hands-on FAISS and Vector DBs \u2013 DeepLearning.ai / Coursera"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "The candidate's experience and skills in AI and NLP are impressive, but they lack direct exposure to the specific tools and technologies mentioned in the job description, such as Excel, Dataiku, Snowflake, Power BI, and Tableau. Additionally, their project portfolio focuses on LLM development and conversational AI, which does not directly align with the data science and financial analysis required for this internship.\n\nTo improve, the candidate could focus on acquiring skills in data collection, processing, and analysis using Python and tools like Dataiku. They could also work on building projects that demonstrate their ability to extract, transform, and visualize financial data using the mentioned tools. Furthermore, they should highlight their quantitative and analytical skills, as well as their experience with data visualization and documentation.",
+                "match_score": 74,
+                "submission_date": "2025-07-13 16:27:15",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "cbea48cb-e3e0-4d25-a60c-3457c658960a": {
+                "candidate_user_id": "Roopkamal",
+                "resume_filename": "uploads/225-Article Text-289-1-10-20190216.pdf",
+                "extracted_info": {
+                    "name": "R.Ganesh",
+                    "email": "rachaganesh@gmail.com",
+                    "education": [],
+                    "skills": [],
+                    "experience": [],
+                    "projects": [],
+                    "certificates": [],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "R.Ganesh's resume lacks significant experience, skills, and projects relevant to the Data Science Internship at Houlihan Lokey. Specifically, there is no mention of prior internship experience in data analysis or data science, which is a crucial requirement for the role. Additionally, there is no evidence of proficiency in data processing using Python, data warehousing in Snowflake, or data visualization using Power BI or Tableau. To improve, R.Ganesh should focus on acquiring hands-on experience with these technologies and languages, as well as building projects that demonstrate their data analysis and visualization skills.",
+                "match_score": 0,
+                "submission_date": "2025-07-13 22:08:04",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            }
+        }
+    },
+    "65844ed2-4078-49c8-81e7-ae3317fa91c3": {
+        "company_name": "Lenskart",
+        "job_title": "Data Analyst Intern",
+        "job_description": "We are seeking a highly motivated and detail-oriented Data Analyst to join our team. The ideal candidate will turn data into information, information into insight, and insight into business decisions. You will work closely with cross-functional teams to support data-driven strategies through reporting, dashboards, and advanced analytics.\r\n\r\n\r\nKey Responsibilities:\r\n\r\nCollect, clean, and analyze large datasets from multiple sources to derive actionable insights.\r\nDevelop and maintain dashboards and reports using tools like Power BI, Tableau, or Excel.\r\nPerform exploratory data analysis (EDA) to identify trends, anomalies, and areas of opportunity.\r\nCollaborate with business stakeholders to understand requirements and deliver data solutions.\r\nUse statistical techniques and data modeling to support business initiatives.\r\nCommunicate complex findings in a clear and concise manner to both technical and non-technical audiences.\r\nEnsure data integrity and accuracy across all analytics outputs.\r\n\r\n\r\nQualifications:\r\n\r\nBachelor\u2019s degree in Mathematics, Statistics, Computer Science, Economics, or a related field or a PG degree in Data science \r\n2\u20135 years of experience in a data analyst or similar role.\r\nProficiency in SQL and experience working with relational databases.\r\nExperience with data visualization tools (e.g., Tableau, Power BI, Looker).\r\nStrong analytical and problem-solving skills.\r\nFamiliarity with Python. \r\nKnowledge of statistical techniques such as regression, clustering, forecasting is a bonus.\r\nExcellent communication and interpersonal skills.\r\n\r\n",
+        "candidates": {
+            "4e8ada6c-c722-4676-9172-2c0fd129c5c9": {
+                "candidate_user_id": "dummy_user",
+                "resume_filename": "uploads/Resume_Divyansh.pdf",
+                "extracted_info": {
+                    "name": "Divyansh Gawri",
+                    "email": "dishugawri@gmail.com",
+                    "phone": "+91 7988947904",
+                    "education": [
+                        {
+                            "degree": "B.Sc.",
+                            "university": "Guru Nanak Dev University",
+                            "start_year": "2023",
+                            "end_year": "Present",
+                            "concentration": "Computational Statistics and Data Analytics"
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "C++",
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "Scikit-Learn",
+                        "TensorFlow",
+                        "OpenCV",
+                        "Pandas",
+                        "NumPy",
+                        "Matplotlib",
+                        "Seaborn",
+                        "Tableau",
+                        "Spacy",
+                        "NLTK",
+                        "Database SQL",
+                        "Jupyter Notebook",
+                        "Git",
+                        "GitKraken",
+                        "GitHub Pages",
+                        "Text Preprocessing",
+                        "Keyword Extraction",
+                        "Rule-based Logic",
+                        "Sentiment Analysis",
+                        "Named Entity Recognition (NER)"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Freelance Machine Learning Engineer",
+                            "duration": "Jan 2025 \u2013 Apr 2025",
+                            "location": "Remote",
+                            "description": [
+                                "Collaborated with a skincare startup to build a personalized recommendation engine based on facial condition data.",
+                                "Designed and trained machine learning models to identify condition-specific needs and suggest optimal product compositions.",
+                                "Delivered a deployable ML pipeline and actionable insights for integration into the client\u2019s product strategy."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Face Recognition System",
+                            "link": "https://github.com/divyanshgawri/Image_recognition",
+                            "description": [
+                                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring."
+                            ],
+                            "readme_content": "Could not fetch README.md",
+                            "insights": {},
+                            "project_index": 0
+                        },
+                        {
+                            "title": "Skincare Recommendation System",
+                            "description": [
+                                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions."
+                            ],
+                            "insights": {},
+                            "project_index": 1
+                        },
+                        {
+                            "title": "E-commerce Product Description Classifier",
+                            "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
+                            "description": [
+                                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions."
+                            ],
+                            "readme_content": "Could not fetch README.md",
+                            "insights": {},
+                            "project_index": 2
+                        }
+                    ],
+                    "certificates": [
+                        "Certified Python Developer Associate (CPDA) \u2013 SkillEnable",
+                        "CRM Essentials \u2013 HP Life",
+                        "Machine Learning Specialization \u2013 Stanford University",
+                        "Data Analysis with Python \u2013 freeCodeCamp",
+                        "Databases and SQL for Data Analysis \u2013 IBM (Coursera)"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Eligible",
+                "eligibility_reason": "The candidate, Divyansh Gawri, was selected for the Data Analyst role due to his strong background in computational statistics and data analytics, extensive experience with data-driven projects, and relevant skills in data analysis and visualization. His educational foundation in Computational Statistics and Data Analytics at Guru Nanak Dev University has provided him with a solid understanding of statistical techniques and data modeling. Additionally, his experience as a Freelance Machine Learning Engineer has equipped him with skills in data analysis, machine learning, and data visualization, as evident from his projects, such as the Skincare Recommendation System and E-commerce Product Description Classifier. Furthermore, his proficiency in Python, SQL, and data visualization tools like Tableau, as well as his experience with Jupyter Notebook and Git, make him a strong fit for the role.",
+                "match_score": 85,
+                "submission_date": "2025-07-13 17:03:59",
+                "exam_questions": [
+                    {
+                        "id": "q1",
+                        "question": "What is the primary objective of data analysis in a business setting?",
+                        "ideal_answer": "Turning data into information, information into insight, and insight into business decisions."
+                    },
+                    {
+                        "id": "q2",
+                        "question": "What is exploratory data analysis (EDA) used for in data analysis?",
+                        "ideal_answer": "To identify trends, anomalies, and areas of opportunity."
+                    },
+                    {
+                        "id": "q3",
+                        "question": "What is the importance of ensuring data integrity and accuracy in analytics outputs?",
+                        "ideal_answer": "To maintain the trust and reliability of data-driven business decisions and ensure that insights are actionable and effective."
+                    }
+                ],
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "4267f04b-0fa9-4d5b-93a7-e8c696c2ef29": {
+                "candidate_user_id": "Roopkamal",
+                "resume_filename": "uploads/gndu.ac.in_hostel_Duplicate_onlineRFSlip4returning.asp.pdf",
+                "extracted_info": {
+                    "name": "ROOP KAMAL SINGH",
+                    "education": [
+                        {
+                            "degree": "B.TECH.",
+                            "university": "GURU NANAK DEV UNIVERSITY",
+                            "start_year": "2025-26",
+                            "concentration": "ELECTRONICS & COMPUTER ENGINEERING",
+                            "relevant_coursework": []
+                        }
+                    ],
+                    "skills": [],
+                    "experience": [],
+                    "projects": [],
+                    "certificates": [],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "The candidate's lack of relevant education, skills, and experience in the field of data analysis led to their non-selection. Specifically, their recent graduation and lack of relevant coursework or certifications in data science or a related field make it difficult for them to meet the qualifications of the Data Analyst role. Additionally, their skills list is empty, indicating no proficiency in tools like Power BI, Tableau, or Excel, which are crucial for the job. To improve, the candidate should focus on acquiring skills in data visualization tools, such as Tableau or Power BI, and building projects that demonstrate their analytical and problem-solving abilities. They should also consider pursuing certifications or taking online courses to gain a foundation in data science and related technologies like SQL and Python.",
+                "match_score": 44,
+                "submission_date": "2025-07-13 22:08:27",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "b43b8bd7-45db-42f5-b0f8-401eb23d71e5": {
+                "candidate_user_id": "Paras",
+                "resume_filename": "uploads/16579_2023_1_24_43947_Judgement_24-Apr-2023.pdf",
+                "extracted_info": {
+                    "education": [],
+                    "skills": [],
+                    "experience": [],
+                    "projects": [],
+                    "certificates": [],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "The candidate's resume lacks a significant amount of relevant experience and skills required for the Data Analyst role. Specifically, they have no listed experience working with relational databases, data visualization tools, or statistical techniques, which are crucial for this position. Additionally, their education and certifications do not align with the required qualifications. To improve, the candidate should focus on gaining hands-on experience with SQL and data visualization tools like Tableau, Power BI, or Looker. They should also build projects that demonstrate their analytical and problem-solving skills, as well as their ability to communicate complex findings to both technical and non-technical audiences.",
+                "match_score": 44,
+                "submission_date": "2025-07-13 22:12:10",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "3309de31-3e2e-4b9d-9a8b-74b5b1852c13": {
+                "candidate_user_id": "hr",
+                "resume_filename": "uploads/cc.pdf",
+                "extracted_info": {
+                    "name": "Chandr Chut Chauhan",
+                    "email": "chandr.chut.chauhan@gmail.com",
+                    "phone": "+91-9876543210",
+                    "education": [
+                        {
+                            "degree": "Bachelor of Technology in Computer Science",
+                            "university": "National Institute of Technology (NIT), Trichy",
+                            "start_year": "2017",
+                            "end_year": "2021",
+                            "cumulative_gpa": "8.7/10",
+                            "relevant_coursework": [
+                                "LLM-Powered Legal Chatbot using LangChain and FAISS"
+                            ]
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "SQL",
+                        "LLM Ecosystem",
+                        "Transformers",
+                        "Vector DBs",
+                        "ML/DL Frameworks",
+                        "DevOps/Deployment",
+                        "Core Concepts",
+                        "Other Tools"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Senior AI Engineer \u2013 LLM & Conversational AI",
+                            "duration": "Jan 2023 \u2013 Present",
+                            "location": "Bengaluru",
+                            "description": [
+                                "Developed and deployed multi-agent systems using LangChain, LangGraph, and AutoGen, powering virtual assistants for enterprise clients.",
+                                "Integrated LlamaIndex for structured and unstructured document retrieval, improving context relevance.",
+                                "Fine-tuned GPT-4, LLaMA-2, and Mistral-7B for customer service, HR automation, and legal summarization.",
+                                "Built RAG pipelines with ChromaDB and FAISS, enhancing semantic search accuracy by 91%.",
+                                "Developed vector-based search and embedding workflows using OpenAI, Sentence-Transformers, and Hugging Face APIs.",
+                                "Deployed scalable LLM services on AWS (EC2, S3, Lambda) and containerized workflows using Docker and GitHub Actions for continuous delivery.",
+                                "Contributed to internal LLMOps pipelines using MLflow, supporting model versioning and monitoring in production."
+                            ]
+                        },
+                        {
+                            "title": "Machine Learning Engineer \u2013 NLP & ML Systems",
+                            "duration": "Aug 2021 \u2013 Dec 2022",
+                            "location": "Remote",
+                            "description": [
+                                "Trained text classification and NLU models using Hugging Face Transformers, PyTorch, and spaCy.",
+                                "Created scalable document retrieval and matching systems using FAISS and sentence-transformers.",
+                                "Led integration of NLP microservices with web dashboards and mobile apps.",
+                                "Contributed to internal LLMOps pipelines for versioned deployment and rollback."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "RAG-based Legal Assistant (LangChain + ChromaDB)",
+                            "link": "https://github.com/Divyanshrana01/GenAi-Projects",
+                            "description": [
+                                "Built a conversational agent to assist lawyers with real-time statute and case retrieval using custom embeddings."
+                            ],
+                            "insights": {
+                                "purpose": "This repository contains a series of hands-on Generative AI projects that demonstrate the application of large language models (LLMs) in real-world use cases.",
+                                "key_features": [
+                                    "Chatbot with RAG and document retrieval",
+                                    "AI assistant with memory and tool use",
+                                    "Custom knowledge base QA system"
+                                ],
+                                "technologies_used": [
+                                    "LangChain",
+                                    "LLaMA (via Groq API)",
+                                    "Streamlit",
+                                    "Python",
+                                    "RAG (Retrieval-Augmented Generation)"
+                                ],
+                                "project_challenges": [],
+                                "future_scope": [
+                                    "More to come..."
+                                ],
+                                "design_considerations": []
+                            }
+                        },
+                        {
+                            "title": "Resume Screening and Matching Bot",
+                            "link": "https://github.com/VedanshAvlani2/ATS-Resume-Screening-Bot-with-Python-NLP/tree/main",
+                            "description": [
+                                "Developed a LangChain-powered system to parse, match, and rank resumes against job descriptions."
+                            ],
+                            "insights": {
+                                "purpose": "Simulate how an Applicant Tracking System (ATS) screens resumes against a job description using a scoring-based approach.",
+                                "key_features": [
+                                    "TF-IDF vector similarity",
+                                    "Keyword match rate",
+                                    "Final ATS score with weighted combination",
+                                    "Transparent scoring breakdown",
+                                    "Highlighting missing skills"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "PyPDF2",
+                                    "scikit-learn",
+                                    "NumPy",
+                                    "pandas",
+                                    "Regex"
+                                ],
+                                "target_users": "HR teams, recruiters, and hiring managers",
+                                "project_challenges": [
+                                    "Handling PDF parsing and text extraction",
+                                    "Balancing TF-IDF similarity and keyword match rate",
+                                    "Setting a suitable threshold for shortlisting"
+                                ],
+                                "business_value": "Provides a transparent and data-driven approach to resume screening, reducing bias and improving hiring outcomes.",
+                                "future_scope": [
+                                    "Add support for scoring cover letters",
+                                    "Integrate Named Entity Recognition (NER) for structured info extraction",
+                                    "Export PDF report with scores and improvement tips"
+                                ],
+                                "design_considerations": [
+                                    "Combining TF-IDF with keyword overlap for more transparent screening logic",
+                                    "Using a weighted combination for the final ATS score",
+                                    "Highlighting missing skills to guide targeted resume improvement"
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Multi-Agent Workflow Bot (LangGraph + AutoGen)",
+                            "link": "https://github.com/sujithadr/Agentic-AI-langgraph-feedback-bot",
+                            "description": [
+                                "Created a multi-agent task management assistant with tool-use capability and fallback mechanisms."
+                            ],
+                            "insights": null
+                        }
+                    ],
+                    "certificates": [
+                        "Hugging Face NLP Practitioner Certificate",
+                        "AWS Certified Machine Learning \u2013 Specialty",
+                        "Research Paper: \u2018Fine-tuning LLMs for RAG Workflows\u2019 \u2013 Presented at IndiaML 2024"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "Chandr Chut Chauhan's resume demonstrates a strong background in AI and ML, with experience in developing and deploying LLM-powered systems. However, the candidate's skills and experience do not align well with the requirements of the Data Analyst position. Specifically, the candidate's lack of experience in data analysis, data visualization, and statistical techniques, as well as their limited exposure to data modeling and relational databases, make them less competitive for this role.\n\nTo improve, Chandr could focus on gaining experience in data analysis, including working with large datasets, developing dashboards and reports, and performing exploratory data analysis. They should also consider acquiring skills in data visualization tools such as Tableau, Power BI, or Looker. Additionally, they could benefit from learning statistical techniques such as regression, clustering, and forecasting to support business initiatives. By acquiring these skills, Chandr would be better positioned to compete for data analyst roles in the future.",
+                "match_score": 1,
+                "submission_date": "2025-07-14 14:54:54",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "e512270c-9397-4786-87f9-c4b9234f0e91": {
+                "candidate_user_id": "hr",
+                "resume_filename": "uploads/Divyansh_gawri_analyst.pdf",
+                "extracted_info": {
+                    "name": "Divyansh Gawri",
+                    "email": "dishugawri@gmail.com",
+                    "phone": "+91 7988947904",
+                    "education": [
+                        {
+                            "degree": "B.Sc. in Computational Statistics and Data Analytics",
+                            "university": "Guru Nanak Dev University, Amritsar",
+                            "start_year": "2023",
+                            "end_year": "null",
+                            "concentration": "null",
+                            "cumulative_gpa": "null",
+                            "relevant_coursework": []
+                        }
+                    ],
+                    "skills": [
+                        "Programming & Development: Python | C++ | HTML | CSS | JavaScript",
+                        "Machine Learning & AI Frameworks: Scikit-Learn | TensorFlow | OpenCV | NLP",
+                        "Data Analysis & Visualisation: Pandas | NumPy | Matplotlib | Seaborn | Tableau | Spacy | NLTK",
+                        "Database Management: SQL",
+                        "Development Tools: Jupyter Notebook | Git | GitKraken | GitHub Pages"
+                    ],
+                    "experience": [],
+                    "projects": [
+                        {
+                            "title": "Face Recognition System",
+                            "link": "https://github.com/divyanshgawri/Image_recognition",
+                            "description": [
+                                "Developed a facial recognition system using OpenCV and TensorFlow to identify individuals with a confidence score for each match. The system focuses on applications in security and identity verification. Optimised the model to improve accuracy and reliability for real-world use cases."
+                            ],
+                            "insights": {
+                                "purpose": "Develop a robust application that can accurately identify individuals from photographs, making it applicable in various fields such as security, personal identification, and social media.",
+                                "key_features": [
+                                    "Face Detection",
+                                    "Face Recognition",
+                                    "Confidence Scoring",
+                                    "Sample Visualization"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "TensorFlow",
+                                    "Keras",
+                                    "OpenCV",
+                                    "Face Recognition",
+                                    "Matplotlib",
+                                    "NumPy"
+                                ],
+                                "project_challenges": [
+                                    "Handling cases where no faces are detected",
+                                    "Training a Self-Made CNN model",
+                                    "Computing confidence scores"
+                                ],
+                                "business_value": "Provides a robust application for accurate individual identification, applicable in various fields.",
+                                "future_scope": [
+                                    "Improving face detection accuracy",
+                                    "Enhancing confidence scoring",
+                                    "Adding support for multiple image formats"
+                                ],
+                                "design_considerations": [
+                                    "Utilizing a Convolutional Neural Network (CNN) model",
+                                    "Employing the `face_recognition` library for face detection",
+                                    "Using OpenCV for image processing tasks"
+                                ]
+                            }
+                        },
+                        {
+                            "title": "E-commerce-Product-Description-Analysis",
+                            "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
+                            "description": [
+                                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions. Utilized text preprocessing techniques and applied machine learning models (Logistic Regression, Random Forest, SVM) for classification. The project included performing Exploratory Data Analysis (EDA) to provide insights into sales trends and product distribution, helping businesses streamline product categorization and enhance user experience."
+                            ],
+                            "insights": {
+                                "purpose": "Predict the category and sub-category of e-commerce product descriptions provided by consumers to improve product categorization, inventory management, and customer service.",
+                                "key_features": [
+                                    "Category Prediction",
+                                    "Sub-category Prediction",
+                                    "Text Preprocessing",
+                                    "Scalability",
+                                    "Accuracy"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "NLTK (Natural Language Toolkit)",
+                                    "Pandas",
+                                    "Regular Expressions",
+                                    "Scikit-learn"
+                                ],
+                                "target_users": "Businesses, e-commerce platforms, and customer service teams",
+                                "project_challenges": [
+                                    "Handling large datasets",
+                                    "Improving model accuracy",
+                                    "Scalability and performance"
+                                ],
+                                "business_value": "The project provides value to businesses by automating product categorization, improving customer service, and enabling data-driven decision making.",
+                                "future_scope": [
+                                    "Deep Learning models",
+                                    "Domain-specific models",
+                                    "Multilingual support"
+                                ],
+                                "design_considerations": [
+                                    "Text preprocessing",
+                                    "TF-IDF vectorization",
+                                    "Model flexibility",
+                                    "Easy integration"
+                                ]
+                            }
+                        },
+                        {
+                            "title": "NewsFeed Analysis Dashboard",
+                            "link": "https://public.tableau.com/shared/5K6FC4RG4?:display_count=n&:origin=viz_share_link",
+                            "description": [
+                                "Built an interactive dashboard using Tableau Public to analyse user engagement and content trends effectively. Visualised complex datasets to provide actionable insights for content optimisation. The dashboard aids stakeholders in interpreting newsfeed performance and making data-driven decisions."
+                            ],
+                            "insights": null
+                        }
+                    ],
+                    "certificates": [
+                        "Data Analysis with Python \u2013 freeCodeCamp",
+                        "Machine Learning Specialization \u2013 Stanford University Online",
+                        "Databases and SQL for Data Analysis with Python \u2013 IBM"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "Divyansh Gawri's resume highlights his strong foundational skills in programming languages, machine learning frameworks, and data analysis tools. However, he lacks significant experience in collecting, cleaning, and analyzing large datasets, which is a crucial aspect of the Data Analyst role. Additionally, his projects and skills do not demonstrate a strong focus on data visualization tools, statistical techniques, or experience working with relational databases. \n\nTo improve, Divyansh should focus on gaining hands-on experience with data visualization tools like Power BI, Tableau, or Looker, and develop his skills in statistical techniques such as regression, clustering, and forecasting. He should also aim to work on projects that involve collecting, cleaning, and analyzing large datasets from multiple sources, demonstrating his ability to derive actionable insights and communicate complex findings to both technical and non-technical audiences.",
+                "match_score": 1,
+                "submission_date": "2025-07-14 15:20:17",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "cd82fd8c-6d10-4130-9c6d-4d3ae8807d6f": {
+                "candidate_user_id": "ljhf",
+                "resume_filename": "uploads/Resume_Divyansh.pdf",
+                "extracted_info": {
+                    "name": "Divyansh Gawri",
+                    "email": "dishugawri@gmail.com",
+                    "phone": "+91 7988947904",
+                    "education": [
+                        {
+                            "degree": "B.Sc.",
+                            "university": "Guru Nanak Dev University",
+                            "start_year": "2023",
+                            "end_year": "Present",
+                            "concentration": "Computational Statistics and Data Analytics"
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "C++",
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "Scikit-Learn",
+                        "TensorFlow",
+                        "OpenCV",
+                        "Pandas",
+                        "NumPy",
+                        "Matplotlib",
+                        "Seaborn",
+                        "Tableau",
+                        "Spacy",
+                        "NLTK",
+                        "Database SQL",
+                        "Jupyter Notebook",
+                        "Git",
+                        "GitKraken",
+                        "GitHub Pages",
+                        "Text Preprocessing",
+                        "Keyword Extraction",
+                        "Rule-based Logic",
+                        "Sentiment Analysis",
+                        "Named Entity Recognition (NER)"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Freelance Machine Learning Engineer",
+                            "duration": "Jan 2025 \u2013 Apr 2025",
+                            "location": "Remote",
+                            "description": [
+                                "Collaborated with a skincare startup to build a personalized recommendation engine based on facial condition data.",
+                                "Designed and trained machine learning models to identify condition-specific needs and suggest optimal product compositions.",
+                                "Delivered a deployable ML pipeline and actionable insights for integration into the client\u2019s product strategy."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Face Recognition System",
+                            "link": "https://github.com/divyanshgawri/Image_recognition",
+                            "description": [
+                                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring."
+                            ],
+                            "insights": {
+                                "purpose": "Develop a robust face recognition system that can accurately identify individuals from photographs, making it applicable in various fields such as security, personal identification, and social media.",
+                                "key_features": [
+                                    "Face Detection using the `face_recognition` library",
+                                    "Face Recognition using a Self-Made CNN model",
+                                    "Confidence Scoring for predicted identities",
+                                    "Sample Visualization for input and predicted images"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "TensorFlow",
+                                    "Keras",
+                                    "OpenCV",
+                                    "Face Recognition",
+                                    "Matplotlib",
+                                    "NumPy"
+                                ],
+                                "project_challenges": [
+                                    "Handling cases where no faces are detected",
+                                    "Training a robust CNN model for accurate face recognition",
+                                    "Computing confidence scores for predicted identities"
+                                ],
+                                "business_value": "This project provides a robust face recognition system that can be applied in various fields, enhancing security, personal identification, and social media applications.",
+                                "future_scope": [
+                                    "Improving the accuracy of face recognition",
+                                    "Enhancing the confidence scoring system",
+                                    "Integrating with other AI-powered applications"
+                                ],
+                                "design_considerations": [
+                                    "Using a Self-Made CNN model for face recognition",
+                                    "Implementing confidence scoring for predicted identities",
+                                    "Visualizing input and predicted images for better understanding"
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Skincare Recommendation System",
+                            "description": [
+                                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions."
+                            ],
+                            "insights": null
+                        },
+                        {
+                            "title": "E-commerce Product Description Classifier",
+                            "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
+                            "description": [
+                                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions."
+                            ],
+                            "insights": {
+                                "purpose": "Predict the category and sub-category of e-commerce product descriptions provided by consumers.",
+                                "key_features": [
+                                    "Category Prediction",
+                                    "Sub-category Prediction",
+                                    "Text Preprocessing",
+                                    "Scalability",
+                                    "Accuracy"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "NLTK (Natural Language Toolkit)",
+                                    "Pandas",
+                                    "Regular Expressions",
+                                    "Scikit-learn"
+                                ],
+                                "target_users": "Businesses, e-commerce platforms, and companies looking to improve product categorization, inventory management, and customer service.",
+                                "project_challenges": [
+                                    "Handling large datasets",
+                                    "Improving model accuracy",
+                                    "Scalability and performance"
+                                ],
+                                "business_value": "The project provides value to businesses by enabling them to automate product categorization, improve customer service, and gain insights into customer feedback and product reviews.",
+                                "future_scope": [
+                                    "Deep Learning",
+                                    "Domain-Specific Models",
+                                    "Multilingual Support"
+                                ],
+                                "design_considerations": [
+                                    "Text Preprocessing",
+                                    "TF-IDF Vectorization",
+                                    "Model Flexibility",
+                                    "Easy Integration"
+                                ]
+                            }
+                        }
+                    ],
+                    "certificates": [
+                        "Certified Python Developer Associate (CPDA) \u2013 SkillEnable",
+                        "CRM Essentials \u2013 HP Life",
+                        "Machine Learning Specialization \u2013 Stanford University",
+                        "Data Analysis with Python \u2013 freeCodeCamp",
+                        "Databases and SQL for Data Analysis \u2013 IBM (Coursera)"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "The candidate, Divyansh Gawri, demonstrated some promising skills and experience in machine learning and data analysis. However, their background and expertise did not closely align with the requirements of the Data Analyst role. Specifically, they lacked sufficient experience in working with large datasets, data visualization tools, and statistical techniques beyond machine learning.\n\nTo improve, Divyansh could focus on acquiring hands-on experience with data visualization tools such as Tableau, Power BI, or Looker, and develop skills in statistical techniques like regression, clustering, and forecasting. They should also work on building projects that involve data analysis and reporting to demonstrate their ability to turn data into information and insight. Additionally, Divyansh could consider pursuing further education or certifications in data science to strengthen their qualifications for similar roles in the future.",
+                "match_score": 35,
+                "submission_date": "2025-07-14 15:32:51",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "7c760a18-4327-4e0a-9003-88edc5970f1c": {
+                "candidate_user_id": "asfbiash",
+                "resume_filename": "uploads/cc _1.pdf",
+                "extracted_info": {
+                    "name": "Chandr Chuti Chauhan",
+                    "email": "chandr.chut.chauhan@gmail.com",
+                    "phone": "+91-9876543210",
+                    "education": [
+                        {
+                            "degree": "Bachelor of Technology in Computer Science",
+                            "university": "National Institute of Technology (NIT), Trichy",
+                            "start_year": "2017",
+                            "end_year": "2021",
+                            "cumulative_gpa": "8.7/10",
+                            "relevant_coursework": []
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "SQL",
+                        "LangChain",
+                        "LangGraph",
+                        "AutoGen",
+                        "LlamaIndex",
+                        "LangServe",
+                        "Hugging Face",
+                        "FAISS",
+                        "Pinecone",
+                        "ChromaDB",
+                        "Weaviate",
+                        "PyTorch",
+                        "TensorFlow",
+                        "Scikit-learn",
+                        "FastAPI",
+                        "Docker",
+                        "AWS (EC2, Lambda, S3)",
+                        "GCP",
+                        "MLflow",
+                        "Weights & Biases",
+                        "GCP Vertex AI",
+                        "Git",
+                        "Jupyter",
+                        "LangSmith",
+                        "Postman"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Senior AI Engineer \u2013 LLM & Conversational AI",
+                            "duration": "Jan 2023 \u2013 Present",
+                            "location": "Bengaluru",
+                            "description": [
+                                "Developed and deployed multi-agent systems using LangChain, LangGraph, and AutoGen, powering virtual assistants for enterprise clients.",
+                                "Integrated LlamaIndex for structured and unstructured document retrieval, improving context relevance.",
+                                "Fine-tuned GPT-4, LLaMA-2, and Mistral-7B for customer service, HR automation, and legal summarization.",
+                                "Designed and optimized RAG pipelines using ChromaDB, FAISS, and Pinecone, reducing latency and boosting retrieval accuracy by 91%.",
+                                "Implemented prompt engineering and fine-tuning strategies for domain-specific model enhancement.",
+                                "Built RESTful APIs using FastAPI and deployed containerized LLM inference services on AWS using EC2, Lambda, and S3.",
+                                "Contributed to internal LLMOps pipelines using MLflow and LangServe for versioning, monitoring, and A/B testing."
+                            ]
+                        },
+                        {
+                            "title": "Machine Learning Engineer \u2013 NLP & ML Systems",
+                            "duration": "Aug 2021 \u2013 Dec 2022",
+                            "location": "Remote",
+                            "description": [
+                                "Trained text classification and NLU models using Hugging Face Transformers, PyTorch, and spaCy.",
+                                "Created scalable document retrieval and matching systems using FAISS and sentence-transformers.",
+                                "Developed initial versions of customer support chatbots using fine-tuned transformer models and REST APIs.",
+                                "Led integration of NLP microservices with web dashboards and mobile apps.",
+                                "Contributed to continuous deployment of NLP models using MLflow and Docker."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "RAG-based Legal Assistant (LangChain + ChromaDB)",
+                            "description": [
+                                "Built a conversational agent to assist lawyers with real-time statute and case retrieval using custom embeddings."
+                            ],
+                            "insights": null
+                        },
+                        {
+                            "title": "Resume Screening and Matching Bot",
+                            "description": [
+                                "Developed a LangChain-powered system to parse, match, and rank resumes against job descriptions."
+                            ],
+                            "insights": null
+                        },
+                        {
+                            "title": "Multi-Agent Workflow Bot (LangGraph + AutoGen)",
+                            "description": [
+                                "Created a multi-agent task management assistant with tool-use capability and fallback mechanisms."
+                            ],
+                            "insights": null
+                        },
+                        {
+                            "title": "Domain-Specific LLM Evaluation Framework (LangChain + LangGraph)",
+                            "description": [
+                                "Built an auto-evaluation pipeline for LLM outputs using rubric-based grading, hallucination detection, and feedback generation."
+                            ],
+                            "insights": null
+                        }
+                    ],
+                    "certificates": [
+                        "AWS Certified Machine Learning \u2013 Specialty",
+                        "LangChain Developer Bootcamp \u2013 Built production-ready LangChain agents with integrations",
+                        "Hugging Face NLP Practitioner Certificate",
+                        "MLOps with GCP Vertex AI \u2013 Google Cloud",
+                        "Hands-on FAISS and Vector DBs \u2013 DeepLearning.ai / Coursera"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "Chandr, while you have an impressive background in AI engineering and NLP, your experience and skills don't seem to directly align with the requirements of a Data Analyst role. Specifically, you lack hands-on experience with data visualization tools, statistical techniques, and data modeling, which are crucial for this position. Additionally, your skills in Python are not specifically applied to data analysis, but rather to NLP and AI tasks.\n\nTo improve, I would suggest focusing on building projects that involve data analysis, visualization, and modeling. You could explore working with datasets from Kaggle, UCI Machine Learning Repository, or other sources to develop your skills in data manipulation, statistical analysis, and data visualization using tools like Tableau, Power BI, or Excel. This would help you to demonstrate your ability to work with data and extract insights, which is essential for a Data Analyst role.\n\nFurthermore, consider taking online courses or certifications that cover data analysis, statistics, and data modeling to fill the gaps in your skills. This would enable you to communicate more effectively with business stakeholders and deliver data-driven solutions. By focusing on these areas, you can strengthen your candidacy for similar roles in the future.",
+                "match_score": 68,
+                "submission_date": "2025-07-14 15:39:10",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "11b638cd-1cd7-456a-a595-cd9e0fa017f4": {
+                "candidate_user_id": "asfbiash",
+                "resume_filename": "uploads/ok.pdf",
+                "extracted_info": {
+                    "name": "Aarav Mehta",
+                    "email": "aarav.mehta.ds@gmail.com",
+                    "phone": "+91-91234-56789",
+                    "education": [
+                        {
+                            "degree": "Bachelor of Technology in Data Science",
+                            "university": "SVKM's NMIMS University, Mumbai",
+                            "start_year": "2020",
+                            "end_year": "2024",
+                            "cumulative_gpa": "8.6/10",
+                            "relevant_coursework": [
+                                "Statistics for Data Science",
+                                "Financial Analytics",
+                                "Database Systems",
+                                "Machine Learning",
+                                "Data Engineering",
+                                "Investment Analysis"
+                            ]
+                        }
+                    ],
+                    "skills": [
+                        "Programming & Tools: Python, SQL, Dataiku, Excel (PivotTables, INDEX/MATCH, VLOOKUP), Power BI, Tableau",
+                        "Data Handling: Data Cleaning, ETL Pipelines, Web Scraping, API Integration, Snowflake",
+                        "Analytics: EDA, Financial Ratio Analysis, Linear Regression, Time Series Forecasting",
+                        "Soft Skills: Communication, Teamwork, Documentation, Presentation"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Data Science Intern",
+                            "duration": "Jan 2024 \u2013 May 2024",
+                            "location": "Remote",
+                            "description": [
+                                "Collected and transformed financial datasets using Python and Pandas from APIs (Yahoo Finance, Alpha Vantage)",
+                                "Built interactive dashboards in Tableau to visualize P/E ratios, volatility trends, and stock correlation matrices",
+                                "Applied pivot tables and complex formulas in Excel to clean and aggregate financial KPIs for quarterly reporting",
+                                "Conducted SQL queries on PostgreSQL database for slicing valuation data across sectors and geographies",
+                                "Created a documentation template to standardize reporting practices for financial models across the team"
+                            ]
+                        },
+                        {
+                            "title": "Data Analyst Intern",
+                            "duration": "May 2023 \u2013 Aug 2023",
+                            "location": "Mumbai",
+                            "description": [
+                                "Built an Excel-based ROI tracker for portfolio valuation across multiple asset classes",
+                                "Worked closely with senior analysts to automate valuation processes using Python scripts and Excel Macros",
+                                "Cleaned and joined multiple CSV files of market data for sentiment analysis using NLTK and Matplotlib",
+                                "Wrote concise reports and presentations to explain data-driven insights for weekly review meetings"
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Financial Market Dashboard using Power BI",
+                            "link": "https://github.com/aaravmehta",
+                            "description": [
+                                "Built an end-to-end dashboard using NSE stock data to visualize performance, volume, moving averages, and risk",
+                                "Enabled slicing by sector and time frame; shared with 30+ student analysts for investment club decision-making"
+                            ],
+                            "readme_content": "Could not fetch README.md",
+                            "insights": null
+                        },
+                        {
+                            "title": "Credit Risk Classifier (Python, Scikit-learn)",
+                            "description": [
+                                "Trained a classification model to predict loan default risk using customer demographics and past credit behavior",
+                                "Achieved 87% accuracy using logistic regression with balanced class weights"
+                            ],
+                            "insights": null
+                        }
+                    ],
+                    "certificates": [
+                        "Python for Data Science \u2013 IBM via Coursera",
+                        "SQL for Data Analysis \u2013 Mode Analytics",
+                        "Data Visualization with Tableau \u2013 Udemy",
+                        "Excel for Financial Modeling \u2013 Corporate Finance Institute (CFI)"
+                    ]
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "Aarav Mehta's application was not selected due to a lack of relevant industry experience and exposure to specific tools and technologies mentioned in the job description. Specifically, he lacks experience working with relational databases, such as Snowflake, which is not evident in his resume. Additionally, while he has experience with data visualization tools like Tableau, his resume does not demonstrate hands-on experience with Power BI, which is a key requirement for the role.\n\nTo improve and better fit similar roles in the future, Aarav should focus on gaining more experience with relational databases, such as Snowflake, and building projects that showcase his skills in data modeling and statistical techniques. He should also consider acquiring skills in data visualization tools like Power BI and Looker to expand his toolkit.",
+                "match_score": 74,
+                "submission_date": "2025-07-14 15:40:26",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "e7bdc619-2744-41be-bc9d-d038a5f77bf9": {
+                "candidate_user_id": "asfbiash",
+                "resume_filename": "uploads/ok.pdf",
+                "extracted_info": {
+                    "name": "Aarav Mehta",
+                    "email": "aarav.mehta.ds@gmail.com",
+                    "phone": "+91-91234-56789",
+                    "education": [
+                        {
+                            "degree": "Bachelor of Technology in Data Science",
+                            "university": "SVKM's NMIMS University, Mumbai",
+                            "start_year": "2020",
+                            "end_year": "2024",
+                            "cumulative_gpa": "8.6/10",
+                            "relevant_coursework": [
+                                "Statistics for Data Science",
+                                "Financial Analytics",
+                                "Database Systems",
+                                "Machine Learning",
+                                "Data Engineering",
+                                "Investment Analysis"
+                            ]
+                        }
+                    ],
+                    "skills": [
+                        "Programming & Tools: Python, SQL, Dataiku, Excel (PivotTables, INDEX/MATCH, VLOOKUP), Power BI, Tableau",
+                        "Data Handling: Data Cleaning, ETL Pipelines, Web Scraping, API Integration, Snowflake",
+                        "Analytics: EDA, Financial Ratio Analysis, Linear Regression, Time Series Forecasting",
+                        "Soft Skills: Communication, Teamwork, Documentation, Presentation"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Data Science Intern",
+                            "duration": "Jan 2024 \u2013 May 2024",
+                            "location": "Remote",
+                            "description": [
+                                "Collected and transformed financial datasets using Python and Pandas from APIs (Yahoo Finance, Alpha Vantage)",
+                                "Built interactive dashboards in Tableau to visualize P/E ratios, volatility trends, and stock correlation matrices",
+                                "Applied pivot tables and complex formulas in Excel to clean and aggregate financial KPIs for quarterly reporting",
+                                "Conducted SQL queries on PostgreSQL database for slicing valuation data across sectors and geographies",
+                                "Created a documentation template to standardize reporting practices for financial models across the team"
+                            ]
+                        },
+                        {
+                            "title": "Data Analyst Intern",
+                            "duration": "May 2023 \u2013 Aug 2023",
+                            "location": "Mumbai",
+                            "description": [
+                                "Built an Excel-based ROI tracker for portfolio valuation across multiple asset classes",
+                                "Worked closely with senior analysts to automate valuation processes using Python scripts and Excel Macros",
+                                "Cleaned and joined multiple CSV files of market data for sentiment analysis using NLTK and Matplotlib",
+                                "Wrote concise reports and presentations to explain data-driven insights for weekly review meetings"
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Financial Market Dashboard using Power BI",
+                            "link": "https://github.com/aaravmehta",
+                            "description": [
+                                "Built an end-to-end dashboard using NSE stock data to visualize performance, volume, moving averages, and risk",
+                                "Enabled slicing by sector and time frame; shared with 30+ student analysts for investment club decision-making"
+                            ],
+                            "readme_content": "Could not fetch README.md",
+                            "insights": null
+                        },
+                        {
+                            "title": "Credit Risk Classifier (Python, Scikit-learn)",
+                            "description": [
+                                "Trained a classification model to predict loan default risk using customer demographics and past credit behavior",
+                                "Achieved 87% accuracy using logistic regression with balanced class weights"
+                            ],
+                            "insights": null
+                        }
+                    ],
+                    "certificates": [
+                        "Python for Data Science \u2013 IBM via Coursera",
+                        "SQL for Data Analysis \u2013 Mode Analytics",
+                        "Data Visualization with Tableau \u2013 Udemy",
+                        "Excel for Financial Modeling \u2013 Corporate Finance Institute (CFI)"
+                    ]
+                },
+                "eligibility_status": "Eligible",
+                "eligibility_reason": "The candidate, Aarav Mehta, was selected for this role due to his strong educational background in Data Science, extensive experience with data handling and analysis, and relevant projects showcasing his skills in data visualization, machine learning, and financial analytics. His experience as a Data Science Intern and Data Analyst Intern has given him a solid foundation in collecting, cleaning, and analyzing large datasets, as well as developing and maintaining dashboards and reports using tools like Tableau and Excel. Additionally, his projects, such as the Financial Market Dashboard using Power BI and the Credit Risk Classifier, demonstrate his ability to turn data into information and insight, and communicate complex findings in a clear and concise manner.",
+                "match_score": 76,
+                "submission_date": "2025-07-14 15:44:09",
+                "exam_questions": [
+                    {
+                        "id": "q1",
+                        "question": "What is the primary responsibility of a Data Analyst, according to the job description?",
+                        "ideal_answer": "Turning data into information, information into insight, and insight into business decisions."
+                    },
+                    {
+                        "id": "q2",
+                        "question": "What tools are mentioned in the job description for developing and maintaining dashboards and reports?",
+                        "ideal_answer": "Power BI, Tableau, or Excel."
+                    },
+                    {
+                        "id": "q3",
+                        "question": "What is one of the statistical techniques mentioned in the job description as a bonus qualification?",
+                        "ideal_answer": "Regression"
+                    }
+                ],
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            }
+        }
+    },
+    "4e2faa5c-6c99-453e-a6ca-8acc2b2b92aa": {
+        "company_name": "RK PVT. LTD",
+        "job_title": "MACHINE LEARNING ENGINEER",
+        "job_description": "We are a leading technology firm with a subsidiary based in Pune, India, focusing on integrating cutting-edge artificial intelligence and machine learning technologies into customers applications. Our goal is to revolutionize how businesses operate by harnessing the power of AI to deliver innovative solutions. We are currently seeking a skilled AI/ML Developer to join our dynamic team and contribute to our mission of transforming the digital landscape.\r\nJob Description\r\nAs an AI/ML Developer, you will be at the forefront of developing advanced applications integrating statistical models and AI-based models, including large language models like GPT, Llama and other proprietary and open-source/open-weight models as well as other types of ML models. You will work closely with our product and engineering teams to design, develop, and deploy AI-powered solutions that meet our clients' complex needs.\r\nKey Responsibilities\r\nDesign and implement AI models using Python, focusing on leveraging various large language and statistical models using tools such as LangChain, ChatGPT, WatsonX etc.\r\nWork with AI technologies to develop innovative solutions for real world problems.\r\nUtilize tools like WatsonX, Watson Studio, Amazon sagemaker, Azure Machine Learning etc to enhance development workflows and model performance.\r\nCollaborate with cross-functional teams to integrate AI/ML models into applications, ensuring they are scalable, efficient, and effective.\r\nStay abreast of the latest AI trends and technologies to ensure our solutions remain cutting-edge.\r\n\r\n\r\nMandatory Skills & Qualifications\r\nStrong proficiency in Python and machine learning frameworks (Pytorch/Tensorflow).\r\nHands-on experience with LLMs (Large Language Models) and other neural networks.\r\nExperience working with OpenAI GPT API or other open-source foundation models.\r\nFamiliarity with some of the following tools: WatsonX, langchain Watson Studio, Azure Machine Learning, AWS Sagemaker, Amazon Bedrock, Git, Docker\r\nProven track record of developing applications integrating both statistical and AI-based models.\r\n\r\n\r\nWe look forward to discovering how you can contribute to our team and mission!\r\nJob Type: Full-time\r\nLocation Type:\r\nHybrid\r\nSchedule:\r\nMonday to Friday\r\nEducation:\r\nBachelor's (Preferred)\r\nExperience:\r\nTotal work: 4 years (Preferred)\r\nSoftware development: 3 year (Preferred)\r\nPython: 3 year (Preferred)\r\nMachine Learning: 3 years (Preferred)\r\nLarge Language Models: 2+ years (Preferred)\r\nAbility to Commute:\r\nPune, Maharashtra (Required)\r\nWork Location: Hybrid",
+        "candidates": {
+            "b015ed94-ae37-4999-bc68-f03eb538c6b8": {
+                "candidate_user_id": "hr",
+                "resume_filename": "uploads/Resume_Divyansh.pdf",
+                "extracted_info": {
+                    "name": "Divyansh Gawri",
+                    "email": "dishugawri@gmail.com",
+                    "phone": "+91 7988947904",
+                    "education": [
+                        {
+                            "degree": "B.Sc.",
+                            "university": "Guru Nanak Dev University",
+                            "start_year": "2023",
+                            "end_year": "Present",
+                            "concentration": "Computational Statistics and Data Analytics"
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "C++",
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "Scikit-Learn",
+                        "TensorFlow",
+                        "OpenCV",
+                        "Pandas",
+                        "NumPy",
+                        "Matplotlib",
+                        "Seaborn",
+                        "Tableau",
+                        "Spacy",
+                        "NLTK",
+                        "Database SQL",
+                        "Jupyter Notebook",
+                        "Git",
+                        "GitKraken",
+                        "GitHub Pages",
+                        "Text Preprocessing",
+                        "Keyword Extraction",
+                        "Rule-based Logic",
+                        "Sentiment Analysis",
+                        "Named Entity Recognition (NER)"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Freelance Machine Learning Engineer",
+                            "duration": "Jan 2025 \u2013 Apr 2025",
+                            "location": "Remote",
+                            "description": [
+                                "Collaborated with a skincare startup to build a personalized recommendation engine based on facial condition data.",
+                                "Designed and trained machine learning models to identify condition-specific needs and suggest optimal product compositions.",
+                                "Delivered a deployable ML pipeline and actionable insights for integration into the client\u2019s product strategy."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Face Recognition System",
+                            "link": "https://github.com/divyanshgawri/Image_recognition",
+                            "description": [
+                                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring."
+                            ],
+                            "insights": {
+                                "purpose": "Develop a robust face recognition system that can accurately identify individuals from photographs, making it applicable in various fields such as security, personal identification, and social media.",
+                                "key_features": [
+                                    "Face Detection",
+                                    "Face Recognition",
+                                    "Confidence Scoring",
+                                    "Sample Visualization"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "TensorFlow",
+                                    "Keras",
+                                    "OpenCV",
+                                    "Face Recognition",
+                                    "Matplotlib",
+                                    "NumPy"
+                                ],
+                                "project_challenges": [
+                                    "Handling cases where no faces are detected",
+                                    "Training a robust CNN model",
+                                    "Computing confidence scores"
+                                ],
+                                "business_value": "This project provides value to businesses by enabling accurate and efficient face recognition, which can be applied in various fields such as security, personal identification, and social media.",
+                                "future_scope": [
+                                    "Improving the accuracy of face recognition",
+                                    "Enhancing the user interface for better usability",
+                                    "Expanding the dataset for more diverse face recognition"
+                                ],
+                                "design_considerations": [
+                                    "Using a Self-Made CNN model for face recognition",
+                                    "Implementing confidence scoring for better prediction reliability",
+                                    "Utilizing the `face_recognition` library for face detection"
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Skincare Recommendation System",
+                            "description": [
+                                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions."
+                            ],
+                            "insights": null
+                        },
+                        {
+                            "title": "E-commerce Product Description Classifier",
+                            "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
+                            "description": [
+                                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions."
+                            ],
+                            "insights": {
+                                "purpose": "Predict the category and sub-category of e-commerce product descriptions provided by consumers to improve product categorization, inventory management, and customer service.",
+                                "key_features": [
+                                    "Category Prediction",
+                                    "Sub-category Prediction",
+                                    "Text Preprocessing",
+                                    "Scalability",
+                                    "Accuracy"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "NLTK (Natural Language Toolkit)",
+                                    "Pandas",
+                                    "Regular Expressions",
+                                    "Scikit-learn"
+                                ],
+                                "target_users": "Businesses, e-commerce platforms, and companies looking to analyze customer feedback or product reviews.",
+                                "project_challenges": [
+                                    "Handling large datasets for e-commerce platforms",
+                                    "Improving model accuracy for product categorization"
+                                ],
+                                "business_value": "The project provides value to businesses by enabling them to automate product categorization, improve customer service, and gain insights into customer feedback.",
+                                "future_scope": [
+                                    "Deep Learning",
+                                    "Domain-Specific Models",
+                                    "Multilingual Support"
+                                ],
+                                "design_considerations": [
+                                    "Text Preprocessing",
+                                    "TF-IDF Vectorization",
+                                    "Model Flexibility",
+                                    "Easy Integration"
+                                ]
+                            }
+                        }
+                    ],
+                    "certificates": [
+                        "Certified Python Developer Associate (CPDA) \u2013 SkillEnable",
+                        "CRM Essentials \u2013 HP Life",
+                        "Machine Learning Specialization \u2013 Stanford University",
+                        "Data Analysis with Python \u2013 freeCodeCamp",
+                        "Databases and SQL for Data Analysis \u2013 IBM (Coursera)"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "Based on the candidate's resume and the job description, the candidate's score of 28 indicates that they lack sufficient experience and skills for the AI/ML Developer position. Although they have experience with machine learning frameworks and have worked with large language models, their skills and experience do not fully align with the job requirements.\n\nThe candidate should focus on gaining more experience with LLMs (Large Language Models) and other neural networks. They should also work on developing applications that integrate both statistical and AI-based models. Additionally, they should improve their familiarity with the following tools: WatsonX, langchain, Watson Studio, Azure Machine Learning, AWS Sagemaker, Amazon Bedrock, Git, and Docker.\n\nTo better fit similar roles in the future, the candidate should consider acquiring skills in the following areas:\n\n1.  Cloud-based AI/ML platforms (e.g., AWS SageMaker, Azure Machine Learning)\n2.  Large language models (LLMs) and other neural networks\n3.  Experience working with open-source foundation models (e.g., OpenAI GPT API)\n4.  Familiarity with tools such as WatsonX, langchain, Watson Studio, Azure Machine Learning, AWS Sagemaker, Amazon Bedrock, Git, and Docker\n\nBy focusing on these areas, the candidate will be better prepared for AI/ML Developer roles that require expertise in cloud-based AI/ML platforms, large language models, and other neural networks.",
+                "match_score": 28,
+                "submission_date": "2025-07-14 21:21:59",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "dde6633b-731a-4be8-982d-117da5147d38": {
+                "candidate_user_id": "hr",
+                "resume_filename": "uploads/Resume_Divyansh.pdf",
+                "extracted_info": {
+                    "name": "Divyansh Gawri",
+                    "email": "dishugawri@gmail.com",
+                    "phone": "+91 7988947904",
+                    "education": [
+                        {
+                            "degree": "B.Sc.",
+                            "university": "Guru Nanak Dev University",
+                            "start_year": "2023",
+                            "end_year": "Present",
+                            "concentration": "Computational Statistics and Data Analytics"
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "C++",
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "Scikit-Learn",
+                        "TensorFlow",
+                        "OpenCV",
+                        "Pandas",
+                        "NumPy",
+                        "Matplotlib",
+                        "Seaborn",
+                        "Tableau",
+                        "Spacy",
+                        "NLTK",
+                        "Database SQL",
+                        "Jupyter Notebook",
+                        "Git",
+                        "GitKraken",
+                        "GitHub Pages",
+                        "Text Preprocessing",
+                        "Keyword Extraction",
+                        "Rule-based Logic",
+                        "Sentiment Analysis",
+                        "Named Entity Recognition (NER)"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Freelance Machine Learning Engineer",
+                            "duration": "Jan 2025 \u2013 Apr 2025",
+                            "location": "Remote",
+                            "description": [
+                                "Collaborated with a skincare startup to build a personalized recommendation engine based on facial condition data.",
+                                "Designed and trained machine learning models to identify condition-specific needs and suggest optimal product compositions.",
+                                "Delivered a deployable ML pipeline and actionable insights for integration into the client\u2019s product strategy."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Face Recognition System",
+                            "link": "https://github.com/divyanshgawri/Image_recognition",
+                            "description": [
+                                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring."
+                            ],
+                            "insights": {
+                                "purpose": "This project is a Face Recognition Project that employs deep learning techniques to detect and recognize faces in images.",
+                                "key_features": [
+                                    "Face Detection using the `face_recognition` library",
+                                    "Face Recognition using a Self-Made CNN model",
+                                    "Confidence Scoring for predicted identities",
+                                    "Sample Visualization for recognition results"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "TensorFlow",
+                                    "Keras",
+                                    "OpenCV",
+                                    "Face Recognition",
+                                    "Matplotlib",
+                                    "NumPy"
+                                ],
+                                "project_challenges": [
+                                    "Handling cases where no faces are detected",
+                                    "Training a robust CNN model for accurate face recognition"
+                                ],
+                                "business_value": "This project provides value to businesses and users by enabling accurate and efficient face recognition, applicable in various fields such as security, personal identification, and social media.",
+                                "future_scope": [
+                                    "Improving the accuracy of the CNN model",
+                                    "Enhancing the user interface for easier image input and result visualization"
+                                ],
+                                "design_considerations": [
+                                    "Using a Self-Made CNN model for face recognition",
+                                    "Implementing confidence scoring for predicted identities"
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Skincare Recommendation System",
+                            "description": [
+                                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions."
+                            ],
+                            "insights": null
+                        },
+                        {
+                            "title": "E-commerce Product Description Classifier",
+                            "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
+                            "description": [
+                                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions."
+                            ],
+                            "insights": {
+                                "purpose": "Predict the category and sub-category of e-commerce product descriptions provided by consumers to improve product categorization, inventory management, and customer service.",
+                                "key_features": [
+                                    "Category Prediction",
+                                    "Sub-category Prediction",
+                                    "Text Preprocessing",
+                                    "Scalability",
+                                    "Accuracy"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "NLTK (Natural Language Toolkit)",
+                                    "Pandas",
+                                    "Regular Expressions",
+                                    "Scikit-learn"
+                                ],
+                                "target_users": "Businesses, e-commerce platforms, and customers",
+                                "project_challenges": [
+                                    "Handling large datasets",
+                                    "Improving model accuracy",
+                                    "Handling complex language patterns"
+                                ],
+                                "business_value": "The project provides value to businesses by enabling them to automate product categorization, improve customer service, and gain insights into customer feedback.",
+                                "future_scope": [
+                                    "Deep Learning",
+                                    "Domain-Specific Models",
+                                    "Multilingual Support"
+                                ],
+                                "design_considerations": [
+                                    "Text Preprocessing",
+                                    "TF-IDF Vectorization",
+                                    "Model Flexibility",
+                                    "Easy Integration"
+                                ]
+                            }
+                        }
+                    ],
+                    "certificates": [
+                        "Certified Python Developer Associate (CPDA) \u2013 SkillEnable",
+                        "CRM Essentials \u2013 HP Life",
+                        "Machine Learning Specialization \u2013 Stanford University",
+                        "Data Analysis with Python \u2013 freeCodeCamp",
+                        "Databases and SQL for Data Analysis \u2013 IBM (Coursera)"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Eligible",
+                "eligibility_reason": "The candidate was selected due to their strong background in computational statistics and data analytics, extensive experience with machine learning frameworks such as TensorFlow and Scikit-Learn, and a relevant project showcasing their expertise in facial recognition and sentiment analysis. Notably, their project \"Face Recognition System\" demonstrates their ability to design and train machine learning models for identifying faces with confidence scoring, which aligns well with the job requirements. Additionally, their experience as a freelance machine learning engineer and their work on the \"Skincare Recommendation System\" and \"E-commerce Product Description Classifier\" projects showcase their ability to collaborate with clients and develop practical solutions, making them a strong fit for this role.",
+                "match_score": 85,
+                "submission_date": "2025-07-14 21:28:27",
+                "exam_questions": [
+                    {
+                        "id": "q1",
+                        "question": "What is the primary programming language used for designing and implementing AI models in this role?",
+                        "ideal_answer": "Python"
+                    },
+                    {
+                        "id": "q2",
+                        "question": "Which of the following machine learning frameworks is NOT mentioned as a mandatory skill?",
+                        "ideal_answer": "Scikit-learn"
+                    },
+                    {
+                        "id": "q3",
+                        "question": "What is the name of the open-source foundation model that is mentioned as experience required in the job description?",
+                        "ideal_answer": "GPT"
+                    }
+                ],
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "43867085-2734-4fb9-a216-1499f17aa423": {
+                "candidate_user_id": "asfbiash",
+                "resume_filename": "uploads/Resume_Divyansh.pdf",
+                "extracted_info": {
+                    "name": "Divyansh Gawri",
+                    "email": "dishugawri@gmail.com",
+                    "phone": "+91 7988947904",
+                    "education": [
+                        {
+                            "degree": "B.Sc.",
+                            "university": "Guru Nanak Dev University",
+                            "start_year": "2023",
+                            "end_year": "Present",
+                            "concentration": "Computational Statistics and Data Analytics"
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "C++",
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "Scikit-Learn",
+                        "TensorFlow",
+                        "OpenCV",
+                        "Pandas",
+                        "NumPy",
+                        "Matplotlib",
+                        "Seaborn",
+                        "Tableau",
+                        "Spacy",
+                        "NLTK",
+                        "Database SQL",
+                        "Jupyter Notebook",
+                        "Git",
+                        "GitKraken",
+                        "GitHub Pages",
+                        "Text Preprocessing",
+                        "Keyword Extraction",
+                        "Rule-based Logic",
+                        "Sentiment Analysis",
+                        "Named Entity Recognition (NER)"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Freelance Machine Learning Engineer",
+                            "duration": "Jan 2025 \u2013 Apr 2025",
+                            "location": "Remote",
+                            "description": [
+                                "Collaborated with a skincare startup to build a personalized recommendation engine based on facial condition data.",
+                                "Designed and trained machine learning models to identify condition-specific needs and suggest optimal product compositions.",
+                                "Delivered a deployable ML pipeline and actionable insights for integration into the client\u2019s product strategy."
+                            ]
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Face Recognition System",
+                            "link": "https://github.com/divyanshgawri/Image_recognition",
+                            "description": [
+                                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring."
+                            ],
+                            "insights": {
+                                "purpose": "This project is a Face Recognition Project that employs deep learning techniques to detect and recognize faces in images.",
+                                "key_features": [
+                                    "Face Detection using the `face_recognition` library",
+                                    "Face Recognition using a Self-Made CNN model",
+                                    "Confidence Scoring for predicted identities",
+                                    "Sample Visualization of recognition results"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "TensorFlow",
+                                    "Keras",
+                                    "OpenCV",
+                                    "Face Recognition",
+                                    "Matplotlib",
+                                    "NumPy"
+                                ],
+                                "target_users": "security, personal identification, and social media",
+                                "project_challenges": [
+                                    "Handling cases where no faces are detected",
+                                    "Training a robust CNN model for accurate face recognition"
+                                ],
+                                "business_value": "Provides a robust application for accurate individual identification, applicable in various fields",
+                                "future_scope": [
+                                    "Improving the accuracy of face recognition",
+                                    "Enhancing the user interface for better user experience"
+                                ],
+                                "design_considerations": [
+                                    "Utilizing a Self-Made CNN model for face recognition",
+                                    "Handling cases where no faces are detected and returning the original image"
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Skincare Recommendation System",
+                            "description": [
+                                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions."
+                            ],
+                            "insights": null
+                        },
+                        {
+                            "title": "E-commerce Product Description Classifier",
+                            "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
+                            "description": [
+                                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions."
+                            ],
+                            "insights": {
+                                "purpose": "Predict the category and sub-category of e-commerce product descriptions provided by consumers to improve product categorization, inventory management, and customer service.",
+                                "key_features": [
+                                    "Category Prediction",
+                                    "Sub-category Prediction",
+                                    "Text Preprocessing",
+                                    "Scalability",
+                                    "Accuracy"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "NLTK (Natural Language Toolkit)",
+                                    "Pandas",
+                                    "Regular Expressions",
+                                    "Scikit-learn"
+                                ],
+                                "project_challenges": [
+                                    "Handling large datasets",
+                                    "Improving model accuracy"
+                                ],
+                                "business_value": "This project provides value to businesses by enabling them to automate product categorization, improve customer service, and gain insights into customer feedback.",
+                                "future_scope": [
+                                    "Deep Learning",
+                                    "Domain-Specific Models",
+                                    "Multilingual Support"
+                                ],
+                                "design_considerations": [
+                                    "Text Preprocessing",
+                                    "TF-IDF Vectorization",
+                                    "Model Flexibility",
+                                    "Easy Integration"
+                                ]
+                            }
+                        }
+                    ],
+                    "certificates": [
+                        "Certified Python Developer Associate (CPDA) \u2013 SkillEnable",
+                        "CRM Essentials \u2013 HP Life",
+                        "Machine Learning Specialization \u2013 Stanford University",
+                        "Data Analysis with Python \u2013 freeCodeCamp",
+                        "Databases and SQL for Data Analysis \u2013 IBM (Coursera)"
+                    ],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Not Eligible",
+                "eligibility_reason": "The candidate, Divyansh Gawri, demonstrated a strong foundation in machine learning and Python programming, with experience in developing projects that integrate statistical models and AI-based models. However, the candidate lacked hands-on experience with Large Language Models (LLMs) and other neural networks, which are critical components of the job description. Additionally, the candidate's experience working with specific tools such as WatsonX, langchain Watson Studio, Azure Machine Learning, AWS Sagemaker, and Amazon Bedrock was limited.\n\nTo improve, Divyansh should focus on gaining more experience with LLMs and other neural networks, as well as working with the specific tools mentioned in the job description. He could also work on developing projects that integrate both statistical and AI-based models to demonstrate his ability to design and implement AI models using Python. Furthermore, he should highlight his experience with text preprocessing, keyword extraction, and rule-based logic, as these skills are relevant to the job description. By acquiring these skills and highlighting his experience, Divyansh can better fit similar roles in the future.",
+                "match_score": 28,
+                "submission_date": "2025-07-15 10:25:46",
+                "exam_questions": null,
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            },
+            "bea0a600-e172-48eb-b77c-ee1f7ebe218d": {
+                "candidate_user_id": "asfbiash",
+                "resume_filename": "uploads/Divyansh_resume.pdf",
+                "extracted_info": {
+                    "name": "Divyansh Gawri",
+                    "email": "dishugawri@gmail.com",
+                    "phone": "+91 7988947904",
+                    "education": [
+                        {
+                            "degree": "Bsc",
+                            "university": "Guru Nanak Dev University",
+                            "start_year": "2023",
+                            "end_year": "2026",
+                            "concentration": "Computational Statistics and Data Analytics",
+                            "cumulative_gpa": "8.86",
+                            "relevant_coursework": []
+                        }
+                    ],
+                    "skills": [
+                        "Python",
+                        "C",
+                        "Scikit-Learn",
+                        "Pandas",
+                        "NumPy",
+                        "Matplotlib",
+                        "Seaborn",
+                        "SQL",
+                        "Jupyter Notebook",
+                        "Git kraken",
+                        "Git",
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "GitHub Pages"
+                    ],
+                    "experience": [
+                        {
+                            "title": "Research Role",
+                            "duration": "October 2024-Present",
+                            "location": "Google Company",
+                            "description": [
+                                "Began a 6-month research role in October, working on projects related to advanced computing and data analysis.",
+                                "Collaborated with a research team to find solutions for real-world problems, with an emphasis on practical applications.",
+                                "Used various programming tools to build and test models, ensuring reliable performance.",
+                                "Analysed large datasets to gain insights and drive project results forward."
+                            ]
+                        },
+                        {
+                            "duration": "OCTOBER 2025 - 2026",
+                            "location": "META COMPANY",
+                            "description": []
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "title": "Face Recognition Project",
+                            "link": "https://github.com/divyanshgawri/Image_recognition",
+                            "description": [
+                                "The goal was to create a system that accurately identifies people in images by recognizing their faces.",
+                                "Overall, the project focused on improving the accuracy of facial recognition in real-world applications like security and personal identification."
+                            ],
+                            "insights": {
+                                "purpose": "Develop a robust face recognition system that can accurately identify individuals from photographs, making it applicable in various fields such as security, personal identification, and social media.",
+                                "key_features": [
+                                    "Face Detection",
+                                    "Face Recognition",
+                                    "Confidence Scoring",
+                                    "Sample Visualization"
+                                ],
+                                "technologies_used": [
+                                    "Python",
+                                    "TensorFlow",
+                                    "Keras",
+                                    "OpenCV",
+                                    "Face Recognition",
+                                    "Matplotlib",
+                                    "NumPy"
+                                ],
+                                "project_challenges": [
+                                    "Handling cases where no faces are detected",
+                                    "Training a robust CNN model for accurate face recognition"
+                                ],
+                                "business_value": "This project provides a robust face recognition system that can be applied in various fields, enhancing security, personal identification, and social media applications.",
+                                "future_scope": [
+                                    "Improving the accuracy of face recognition",
+                                    "Enhancing the user interface for better user experience"
+                                ],
+                                "design_considerations": [
+                                    "Utilizing a Self-Made CNN model for face recognition",
+                                    "Implementing confidence scoring for better prediction accuracy"
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Customer Segmentation PROJECT",
+                            "link": "https://github.com/divyanshgawri/Customer_segmentation",
+                            "description": [
+                                "Developed a comprehensive customer segmentation model using machine learning techniques and advanced data visualisation tools.",
+                                "The goal was to understand consumer behaviour and make marketing strategies accordingly."
+                            ],
+                            "insights": null
+                        }
+                    ],
+                    "certificates": [],
+                    "memberships": [],
+                    "campus_involvement": []
+                },
+                "eligibility_status": "Eligible",
+                "eligibility_reason": "The candidate was selected due to their strong educational background in Computational Statistics and Data Analytics, extensive experience with machine learning frameworks, and a relevant project showcasing expertise in face recognition using deep learning models.",
+                "match_score": 85,
+                "submission_date": "2025-07-15 10:28:55",
+                "exam_questions": [
+                    {
+                        "id": "q1",
+                        "question": "What is the primary goal of integrating large language models like GPT and Llama into AI/ML applications?",
+                        "ideal_answer": "The primary goal is to leverage the capabilities of these models to develop advanced applications that can analyze and generate human-like text, enable natural language processing, and improve the overall performance of AI-powered solutions."
+                    },
+                    {
+                        "id": "q2",
+                        "question": "What is an advantage of using tools like WatsonX and Azure Machine Learning in AI/ML development workflows?",
+                        "ideal_answer": "These tools enhance development workflows and model performance by providing scalable, efficient, and effective solutions for building, training, and deploying AI models."
+                    },
+                    {
+                        "id": "q3",
+                        "question": "What is a key requirement for developing applications that integrate both statistical and AI-based models?",
+                        "ideal_answer": "A key requirement is to have hands-on experience with LLMs (Large Language Models) and other neural networks, as well as proficiency in Python and machine learning frameworks (Pytorch/Tensorflow)."
+                    }
+                ],
+                "exam_taken": false,
+                "exam_score": null,
+                "exam_feedback": null,
+                "submitted_answers": []
+            }
+        }
+    }
+}

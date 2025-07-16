@@ -1,0 +1,72 @@
+{
+    "name": "Divyansh Gawri",
+    "email": "dishugawri@gmail.com",
+    "phone": "+91 7988947904",
+    "education": [
+        {
+            "degree": "Bsc",
+            "university": "Guru Nanak Dev University",
+            "start_year": "2023",
+            "end_year": "2026",
+            "concentration": "Computational Statistics and Data Analytics",
+            "cumulative_gpa": "8.86",
+            "relevant_coursework": []
+        }
+    ],
+    "skills": [
+        "Python",
+        "C",
+        "Scikit-Learn",
+        "Pandas",
+        "NumPy",
+        "Matplotlib",
+        "Seaborn",
+        "SQL",
+        "Jupyter Notebook",
+        "Git kraken",
+        "Git",
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "GitHub Pages"
+    ],
+    "experience": [
+        {
+            "title": "Research Role",
+            "duration": "October 2024-Present",
+            "location": "Google Company",
+            "description": [
+                "Began a 6-month research role in October, working on projects related to advanced computing and data analysis.",
+                "Collaborated with a research team to find solutions for real-world problems, with an emphasis on practical applications.",
+                "Used various programming tools to build and test models, ensuring reliable performance.",
+                "Analysed large datasets to gain insights and drive project results forward."
+            ]
+        },
+        {
+            "duration": "OCTOBER 2025 - 2026",
+            "location": "META COMPANY",
+            "description": []
+        }
+    ],
+    "projects": [
+        {
+            "title": "Face Recognition Project",
+            "link": "https://github.com/divyanshgawri/Image_recognition",
+            "description": [
+                "The goal was to create a system that accurately identifies people in images by recognizing their faces.",
+                "Overall, the project focused on improving the accuracy of facial recognition in real-world applications like security and personal identification."
+            ]
+        },
+        {
+            "title": "Customer Segmentation PROJECT",
+            "link": "https://github.com/divyanshgawri/Customer_segmentation",
+            "description": [
+                "Developed a comprehensive customer segmentation model using machine learning techniques and advanced data visualisation tools.",
+                "The goal was to understand consumer behaviour and make marketing strategies accordingly."
+            ]
+        }
+    ],
+    "certificates": [],
+    "memberships": [],
+    "campus_involvement": []
+}

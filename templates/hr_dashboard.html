@@ -1,0 +1,207 @@
+
+<!-- above working 13 july -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Dashboard - RecruitMate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/hr_dashboard.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>HR Dashboard</h1>
+            <div class="action-buttons">
+                <a href="{{ url_for('hr_job_upload') }}" class="btn-primary">Upload New Job</a>
+                <a href="{{ url_for('logout') }}" class="btn-danger">Logout</a>
+            </div>
+        </div>
+
+        {% if jobs %}
+            {% for job_data in jobs %} {# Corrected: Iterate directly over the list #}
+                {# Add a dynamic class based on loop index to apply different styles #}
+                <div class="job-card job-card-style-{{ loop.index0 % 4 }}">
+                    <h2>{{ job_data.job_title }}</h2>
+                    <h3>{{ job_data.company_name }}</h3>
+                    <p><strong>Job ID:</strong> {{ job_data.id }}</p>
+                    <p><strong>Description:</strong> {{ job_data.job_description }}</p>
+
+                    <div class="candidate-list">
+                        <h3 class="candidates-heading">Candidates for this Job ({{ job_data.candidates_list|length }}):</h3>
+                        {% if job_data.candidates_list %}
+                            {% for candidate_app in job_data.candidates_list %}
+                                <div class="candidate-card">
+                                    <!-- <strong>Name:<h4>{{ candidate_app.extracted_info.name or 'N/A' }}</h4></strong>  -->
+                                     <strong>Name: {{ candidate_app.extracted_info.name or 'N/A' }}</strong>
+
+                                    <p><strong>Application ID:</strong> {{ candidate_app.application_id }}</p>
+                                    <p><strong>Email:</strong> {{ candidate_app.extracted_info.email or 'N/A' }}</p>
+                                    <p><strong>Phone:</strong> {{ candidate_app.extracted_info.phone or 'N/A' }}</p>
+                                    <p><strong>Submission Date:</strong> {{ candidate_app.submission_date }}</p>
+                                    <p>
+                                        <strong>Status:</strong> 
+                                        <span class="eligibility-status 
+                                            {% if candidate_app.eligibility_status == 'Eligible' %}eligible
+                                            {% elif candidate_app.eligibility_status == 'Not Eligible' %}not-eligible
+                                            {% else %}pending{% endif %}">
+                                            {{ candidate_app.eligibility_status or 'Pending Evaluation' }}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <strong>Match Score:</strong> 
+                                        <span class="score {% if candidate_app.match_score < 75 %}low{% endif %}">
+                                            {{ candidate_app.match_score or 'N/A' }}%
+                                        </span>
+                                    </p>
+                                    
+                                    {# Collapsible section for Evaluation Reason #}
+                                    <div class="collapsible-header" data-target="evaluation-reason-{{ candidate_app.application_id }}">
+                                        <span>Evaluation Reason</span>
+                                    </div>
+                                    <div id="evaluation-reason-{{ candidate_app.application_id }}" class="collapsible-content hidden">
+                                        <div class="collapsible-feedback-box {% if candidate_app.eligibility_status == 'Eligible' %}bg-green-50{% elif candidate_app.eligibility_status == 'Not Eligible' %}bg-red-50{% endif %}">
+                                            <p>{{ candidate_app.eligibility_reason or 'N/A' }}</p>
+                                        </div>
+                                    </div>
+
+                                    {% if candidate_app.exam_taken %}
+                                        <p class="mt-4"><strong>Exam Taken:</strong> Yes</p>
+                                        <p><strong>Exam Score:</strong> {{ candidate_app.exam_score or 'N/A' }}</p>
+                                        {% if candidate_app.exam_feedback %}
+                                            {# Collapsible section for Exam Feedback #}
+                                            <div class="collapsible-header" data-target="exam-feedback-{{ candidate_app.application_id }}">
+                                                <span>Exam Feedback</span>
+                                            </div>
+                                            <div id="exam-feedback-{{ candidate_app.application_id }}" class="collapsible-content hidden">
+                                                <ul class="exam-feedback-list">
+                                                    {% for feedback_item in candidate_app.exam_feedback %}
+                                                        <li>
+                                                            <strong>Q:</strong> {{ feedback_item.question }} <br>
+                                                            <strong>Score:</strong> {{ feedback_item.score }}/10 <br>
+                                                            <strong>Feedback:</strong> {{ feedback_item.feedback }}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <p class="mt-4"><strong>Exam Taken:</strong> No</p>
+                                    {% endif %}
+
+                                    {% if candidate_app.extracted_info.skills %}
+                                        {# Collapsible section for Skills #}
+                                        <div class="collapsible-header" data-target="skills-{{ candidate_app.application_id }}">
+                                            <span>Skills</span>
+                                        </div>
+                                        <div id="skills-{{ candidate_app.application_id }}" class="collapsible-content hidden">
+                                            <div class="info-section">
+                                                <h5>Skills</h5>
+                                                <ul>
+                                                    {% for skill in candidate_app.extracted_info.skills %}
+                                                        <li>{{ skill }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if candidate_app.extracted_info.education %}
+                                        {# Collapsible section for Education #}
+                                        <div class="collapsible-header" data-target="education-{{ candidate_app.application_id }}">
+                                            <span>Education</span>
+                                        </div>
+                                        <div id="education-{{ candidate_app.application_id }}" class="collapsible-content hidden">
+                                            <div class="info-section">
+                                                <h5>Education</h5>
+                                                <ul>
+                                                    {% for edu in candidate_app.extracted_info.education %}
+                                                        <li>
+                                                            {{ edu.degree or 'N/A' }}
+                                                            {% if edu.concentration %}, {{ edu.concentration }}{% endif %}
+                                                            at {{ edu.university or 'N/A' }} ({{ edu.start_year or 'N/A' }} - {{ edu.end_year or 'N/A' }})
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if candidate_app.extracted_info.experience %}
+                                        {# Collapsible section for Experience #}
+                                        <div class="collapsible-header" data-target="experience-{{ candidate_app.application_id }}">
+                                            <span>Experience</span>
+                                        </div>
+                                        <div id="experience-{{ candidate_app.application_id }}" class="collapsible-content hidden">
+                                            <div class="info-section">
+                                                <h5>Experience</h5>
+                                                <ul>
+                                                    {% for exp in candidate_app.extracted_info.experience %}
+                                                        <li>{{ exp.title or 'N/A' }} at {{ exp.location or 'N/A' }} ({{ exp.duration or 'N/A' }})</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if candidate_app.extracted_info.projects %}
+                                        {# Collapsible section for Projects #}
+                                        <div class="collapsible-header" data-target="projects-{{ candidate_app.application_id }}">
+                                            <span>Projects</span>
+                                        </div>
+                                        <div id="projects-{{ candidate_app.application_id }}" class="collapsible-content hidden">
+                                            <div class="info-section">
+                                                <h5>Projects</h5>
+                                                <ul>
+                                                    {% for project in candidate_app.extracted_info.projects %}
+                                                        <li>
+                                                            {{ project.title or 'N/A' }} 
+                                                            {% if project.link %}(<a href="{{ project.link }}" target="_blank" class="project-link">{{ project.link }}</a>){% endif %}
+                                                            {% if project.insights %}
+                                                                <a href="{{ url_for('project_insights', job_id=job_data.id, candidate_id=candidate_app.application_id, project_index=loop.index0) }}" class="text-link">View Insights</a>
+                                                            {% else %}
+                                                                <span class="text-red-500 text-xs ml-2">(No insights available)</span>
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="no-candidates empty-state">No candidates have applied for this job yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-jobs empty-state">No jobs have been uploaded yet. Please upload a job to get started!</p>
+        {% endif %}
+
+        <a href="{{ url_for('index') }}" class="back-link">&larr; Back to Home</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+
+            collapsibleHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const targetId = this.dataset.target;
+                    const content = document.getElementById(targetId);
+
+                    if (content) {
+                        this.classList.toggle('active');
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

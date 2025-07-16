@@ -1,0 +1,1710 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amihok Recruitment - Client Portal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        /* Custom transitions for cards and buttons */
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+        }
+        .btn-primary {
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+        /* Styles for collapsible sections */
+        .collapsible-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f3f4f6; /* bg-gray-100 */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-weight: 600; /* font-semibold */
+            color: #374151; /* text-gray-700 */
+            transition-property: background-color;
+            transition-duration: 200ms;
+        }
+        .collapsible-header:hover {
+            background-color: #e5e7eb; /* bg-gray-200 */
+        }
+        .collapsible-header.active {
+            background-color: #e5e7eb; /* bg-gray-200 */
+        }
+        .collapsible-content {
+            padding: 1rem; /* p-4 */
+            background-color: #fff; /* bg-white */
+            border-bottom-left-radius: 0.375rem; /* rounded-b-md */
+            border-bottom-right-radius: 0.375rem;
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            border-top: 0;
+            display: none; /* Hidden by default */
+        }
+        .collapsible-header::after {
+            content: '+';
+            font-weight: bold;
+            transition: transform 0.2s ease-in-out;
+        }
+        .collapsible-header.active::after {
+            content: '-';
+            transform: rotate(180deg);
+        }
+        /* Info section styling */
+        .info-section {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: #fff;
+            border-radius: 0.375rem;
+            border: 1px solid #f3f4f6;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+        }
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
+        .info-section h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        .info-section p, .info-section ul {
+            color: #4b5563;
+        }
+        .info-section ul.list-circle li {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        /* Modal specific styles (converted from previous custom CSS) */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(75, 85, 99, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 50;
+        }
+        .modal-content {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            padding: 2rem;
+            max-width: 42rem;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: #6b7280;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-button:hover {
+            color: #1f2937;
+        }
+        .message-success {
+            padding: 0.75rem;
+            background-color: #d1fae5;
+            color: #065f46;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+        }
+        .message-error {
+            padding: 0.75rem;
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl w-full bg-white shadow-xl rounded-lg p-8 space-y-8">
+        <div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-4">
+            <h1 class="text-3xl font-extrabold text-gray-900">Your Applications</h1>
+            <a href="{{ url_for('index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Back to Home
+            </a>
+        </div>
+
+        {% if applications %}
+            <div class="space-y-6">
+                {% for app in applications %}
+                    <div class="card bg-white p-6 rounded-lg shadow-md border border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-3">
+                            Applied for: {{ app.job_title }} at {{ app.company_name }}
+                        </h2>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2 sm:mb-0">
+                                Your Status:
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium
+                                    {% if app.eligibility_status == 'Eligible' %}bg-green-100 text-green-800
+                                    {% else %}bg-red-100 text-red-800{% endif %}">
+                                    {{ app.eligibility_status }}
+                                </span>
+                            </h4>
+                            <span class="text-sm text-gray-500">Submitted: {{ app.submission_date }}</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-gray-700 text-lg">Match Score: 
+                                <span class="font-bold">{{ app.match_score if app.match_score is not none else 'N/A' }}%</span>
+                            </p>
+
+                            {% if app.eligibility_status == 'Not Eligible' %}
+                                <div class="mt-3 p-4 bg-red-50 border border-red-200 rounded-md shadow-sm">
+                                    <h4 class="font-semibold text-red-700 mb-2">Reason for Non-Selection & Areas for Improvement:</h4>
+                                    <p class="text-red-800 leading-relaxed">{{ app.eligibility_reason }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if app.eligibility_status == 'Eligible' %}
+                            {% if app.exam_questions %}
+                                {% if not app.exam_taken %}
+                                    {# Removed onclick attribute, added a class for event listener #}
+                                    <button class="btn-take-exam btn-primary inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                            data-job-id="{{ app.job_id }}" data-candidate-id="{{ app.application_id }}">
+                                        Take Exam
+                                    </button>
+                                {% else %}
+                                    <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                                        <h3 class="text-lg font-semibold text-blue-700 mb-2">Exam Results:</h3>
+                                        <p class="text-blue-800">Total Score: <span class="font-bold">{{ app.exam_score }} / 30</span></p>
+                                        <div class="collapsible-header mt-3" onclick="toggleCollapsible(this)">
+                                            <span>View Detailed Feedback</span>
+                                        </div>
+                                        <div class="collapsible-content">
+                                            {% if app.exam_feedback %}
+                                                <ul class="list-disc list-inside text-blue-800 space-y-3 mt-2">
+                                                    {% for feedback_item in app.exam_feedback %}
+                                                        <li class="p-2 border-b border-blue-100 last:border-b-0">
+                                                            <strong>Q:</strong> {{ feedback_item.question }}<br>
+                                                            <strong>Your Answer:</strong> {{ feedback_item.answer }}<br>
+                                                            <strong>Score:</strong> {{ feedback_item.score }}/10<br>
+                                                            <strong>Feedback:</strong> {{ feedback_item.feedback }}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p class="text-gray-500 mt-2">No detailed feedback available.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <p class="text-yellow-600 mt-4">Exam questions not yet generated or failed to generate. Please check back later.</p>
+                            {% endif %}
+                        {% endif %}
+
+                        <div class="collapsible-header mt-6" onclick="toggleCollapsible(this)">
+                            <span>View Your Resume Details</span>
+                        </div>
+                        <div class="collapsible-content">
+                            {% set info = app.extracted_info %}
+                            
+                            {% if info.email or info.phone %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Contact Information</h5>
+                                {% if info.email %}<p><strong>Email:</strong> {{ info.email }}</p>{% endif %}
+                                {% if info.phone %}<p><strong>Phone:</strong> {{ info.phone }}</p>{% endif %}
+                            </div>
+                            {% endif %}
+
+                            {% if info.education %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Education</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for edu in info.education %}
+                                        <li>
+                                            <strong>{{ edu.degree if edu.degree else 'N/A' }}</strong> from {{ edu.university if edu.university else 'N/A' }}
+                                            {% if edu.start_year or edu.end_year %}
+                                                ({{ edu.start_year if edu.start_year else '' }} - {{ edu.end_year if edu.end_year else 'Present' }})
+                                            {% endif %}
+                                            {% if edu.concentration %}<p class="text-sm text-gray-500 ml-4">Concentration: {{ edu.concentration }}</p>{% endif %}
+                                            {% if edu.cumulative_gpa %}<p class="text-sm text-gray-500 ml-4">GPA: {{ edu.cumulative_gpa }}</p>{% endif %}
+                                            {% if edu.relevant_coursework %}
+                                                <p class="text-sm text-gray-500 ml-4">Relevant Coursework: {{ edu.relevant_coursework | join(', ') }}</p>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.experience %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Experience</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    {% for exp in info.experience %}
+                                        <li>
+                                            <strong>{{ exp.title if exp.title else 'N/A' }}</strong> at {{ exp.company if exp.company else 'N/A' }}
+                                            {% if exp.duration %}({{ exp.duration }}){% endif %}
+                                            {% if exp.location %}, {{ exp.location }}{% endif %}
+                                            {% if exp.description %}
+                                                <ul class="list-disc list-inside ml-4 text-sm text-gray-500 space-y-0.5">
+                                                    {% for desc_item in exp.description %}
+                                                        <li>{{ desc_item }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.skills %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Skills</h5>
+                                <p class="text-gray-600">{{ info.skills | join(', ') }}</p>
+                            </div>
+                            {% endif %}
+
+                            {% if info.projects %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Projects</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    {% for proj in info.projects %}
+                                        <li>
+                                            <strong>{{ proj.title if proj.title else 'N/A' }}</strong>
+                                            {% if proj.link %}<a href="{{ proj.link }}" target="_blank" class="text-blue-600 hover:underline text-sm ml-2">[Link]</a>{% endif %}
+                                            {% if proj.description %}
+                                                <ul class="list-disc list-inside ml-4 text-sm text-gray-500 space-y-0.5">
+                                                    {% for desc_item in proj.description %}
+                                                        <li>{{ desc_item }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.certificates %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Certificates</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for cert in info.certificates %}
+                                        <li>{{ cert }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.achievments %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Achievements</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for achievement in info.achievments %}
+                                        <li>{{ achievement }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.memberships %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Memberships</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for member in info.memberships %}
+                                        <li>
+                                            <strong>{{ member.name if member.name else 'N/A' }}</strong>
+                                            {% if member.duration %}({{ member.duration }}){% endif %}
+                                            {% if member.location %}, {{ member.location }}{% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.campus_involvement %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Campus Involvement</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for involvement in info.campus_involvement %}
+                                        <li>
+                                            <strong>{{ involvement.name if involvement.name else 'N/A' }}</strong>
+                                            {% if involvement.duration %}({{ involvement.duration }}){% endif %}
+                                            {% if involvement.location %}, {{ involvement.location }}{% endif %}
+                                            {% if involvement.description %}
+                                                <ul class="list-disc list-inside ml-4 text-sm text-gray-500 space-y-0.5">
+                                                    {% for desc_item in involvement.description %}
+                                                        <li>{{ desc_item }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="p-8 bg-white rounded-lg shadow-md text-center">
+                <p class="text-gray-600 text-lg mb-4">You have not submitted any applications yet.</p>
+                <a href="{{ url_for('candidate_apply') }}" class="btn-primary inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Apply for a Job
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    
+    <div id="examModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeExamModal()">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Technical Exam</h2>
+            <form id="examForm" class="space-y-6">
+                <input type="hidden" id="modalJobId">
+                <input type="hidden" id="modalCandidateId">
+                <div id="questionsContainer">
+                    
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" onclick="closeExamModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Cancel
+                    </button>
+                    <button type="submit" id="submitExamBtn" class="btn-primary inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+
+                        Submit Exam
+                    </button>
+                </div>
+            </form>
+            <div id="examMessageBox" class="hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentExamQuestions = [];
+
+        function toggleCollapsible(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+        }
+
+        // Moved these declarations inside DOMContentLoaded
+        let examModal;
+        let examQuestionsDiv;
+        let submitExamBtn;
+        let examMessageBox;
+
+        let currentJobId = null;
+        let currentCandidateId = null;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize elements here, after DOM is fully loaded
+            examModal = document.getElementById('examModal');
+            examQuestionsDiv = document.getElementById('questionsContainer'); 
+            submitExamBtn = document.getElementById('submitExamBtn');
+            examMessageBox = document.getElementById('examMessageBox');
+
+            // Event listener for all "Take Exam" buttons
+            document.querySelectorAll('.btn-take-exam').forEach(button => {
+                button.addEventListener('click', async function() {
+                    console.log("Take Exam button clicked!"); // Debug log
+                    currentJobId = this.dataset.jobId;
+                    currentCandidateId = this.dataset.candidateId;
+                    console.log(`Job ID: ${currentJobId}, Candidate ID: ${currentCandidateId}`); // Debug log
+
+                    examMessageBox.classList.add('hidden'); // Hide message box
+                    examMessageBox.classList.remove('message-success', 'message-error');
+                    examQuestionsDiv.innerHTML = '<p class="text-gray-600 text-center">Loading exam questions...</p>';
+                    submitExamBtn.disabled = true; // This line should now work
+
+                    try {
+                        console.log(`Fetching exam from: /get_exam/${currentJobId}/${currentCandidateId}`); // Debug log
+                        const response = await fetch(`/get_exam/${currentJobId}/${currentCandidateId}`);
+                        console.log("Response received:", response); // Debug log
+                        const result = await response.json();
+                        console.log("Parsed JSON result:", result); // Debug log
+
+                        if (response.ok) {
+                            currentExamQuestions = result.exam_questions;
+                            console.log("Exam questions received:", currentExamQuestions); // Debug log
+                            displayExamQuestions(currentExamQuestions);
+                            submitExamBtn.disabled = false;
+                            examModal.classList.remove('hidden'); // Show modal
+                            examModal.style.display = 'flex'; // Explicitly set display to flex
+                            console.log("Exam modal should now be visible."); // Debug log
+                        } else {
+                            console.error("Failed to load exam questions from backend:", result.error); // Debug log
+                            showMessage(result.error || 'Failed to load exam questions.', 'error', examMessageBox);
+                            examQuestionsDiv.innerHTML = '<p class="text-red-600 text-center">' + (result.error || 'Failed to load exam questions.') + '</p>';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching exam:', error); // Debug log
+                        showMessage('An unexpected error occurred while fetching the exam.', 'error', examMessageBox);
+                        examQuestionsDiv.innerHTML = '<p class="text-red-600 text-center">Error loading exam.</p>';
+                    }
+                });
+            });
+
+            // Event listener for form submission (also needs to be inside DOMContentLoaded)
+            document.getElementById('examForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                console.log("Exam form submitted."); // Debug log
+
+                const jobId = document.getElementById('modalJobId').value;
+                const candidateId = document.getElementById('modalCandidateId').value;
+                const answers = [];
+
+                document.querySelectorAll('#questionsContainer textarea').forEach(textarea => { 
+                    answers.push({
+                        question_id: textarea.dataset.questionId,
+                        answer: textarea.value
+                    });
+                });
+                console.log("Submitted answers:", answers); // Debug log
+
+                examMessageBox.classList.add('hidden'); // Hide message box
+                examMessageBox.classList.remove('message-success', 'message-error');
+                submitExamBtn.disabled = true; // This line should now work
+
+                try {
+                    const response = await fetch(`/submit_exam/${jobId}/${candidateId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ answers: answers })
+                    });
+
+                    const result = await response.json();
+                    console.log("Submit exam response:", result); // Debug log
+
+                    if (response.ok) {
+                        showMessage(result.message + ` Your total score: ${result.score}/30`, 'success', examMessageBox);
+                        setTimeout(() => {
+                            closeExamModal();
+                            window.location.reload(); // Reload the page to show updated status/results
+                        }, 1500);
+                    } else {
+                        console.error("Failed to submit exam:", result.error); // Debug log
+                        showMessage(result.error || 'Failed to submit exam.', 'error', examMessageBox);
+                    }
+                } catch (error) {
+                    console.error('Error submitting exam:', error); // Debug log
+                    showMessage('An unexpected error occurred while submitting the exam.', 'error', examMessageBox);
+                } finally {
+                    submitExamBtn.disabled = false; // This line should now work
+                }
+            });
+        });
+
+        // The closeExamModal and displayExamQuestions functions can remain outside DOMContentLoaded
+        // as they are called by event listeners which are set up after DOMContentLoaded.
+        // However, they also need to use the globally (but now correctly initialized) variables.
+        // It's safer to pass them as arguments or ensure they are correctly scoped.
+        // For simplicity and to avoid passing many arguments, keeping them global but ensuring they are
+        // initialized by DOMContentLoaded is the best approach.
+        // The closeExamModal also needs to use the correctly initialized examModal and examQuestionsDiv.
+        // It already does, so that's fine.
+        function closeExamModal() {
+            console.log("Closing exam modal."); // Debug log
+            examModal.classList.add('hidden'); // Hide modal
+            examModal.style.display = 'none'; // Explicitly hide modal
+            document.getElementById('examForm').reset(); // Reset form fields
+            examQuestionsDiv.innerHTML = ''; // Clear questions
+            currentExamQuestions = []; // Clear stored questions
+            examMessageBox.classList.add('hidden'); // Hide message box on close
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target == examModal) {
+                closeExamModal();
+            }
+        });
+
+        function displayExamQuestions(questions) {
+            console.log("Displaying exam questions..."); // Debug log
+            examQuestionsDiv.innerHTML = '';
+            if (!questions || questions.length === 0) {
+                examQuestionsDiv.innerHTML = '<p class="text-gray-600 text-center">No questions available for this exam.</p>';
+                return;
+            }
+            questions.forEach((q, index) => {
+                const questionHtml = `
+                    <div class="mb-4 p-4 bg-gray-100 rounded-md border border-gray-200">
+                        <p class="font-semibold text-gray-800 mb-2">Q${index + 1}: ${q.question}</p>
+                        <textarea class="w-full p-3 border rounded-md focus:ring-2 focus:ring-indigo-500" rows="4" data-question-id="${q.id}" placeholder="Type your answer here..."></textarea>
+                    </div>
+                `;
+                examQuestionsDiv.insertAdjacentHTML('beforeend', questionHtml);
+            });
+            console.log("Questions displayed."); // Debug log
+        }
+
+        document.getElementById('examForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            console.log("Exam form submitted."); // Debug log
+
+            const jobId = document.getElementById('modalJobId').value;
+            const candidateId = document.getElementById('modalCandidateId').value;
+            const answers = [];
+
+            document.querySelectorAll('#questionsContainer textarea').forEach(textarea => { 
+                answers.push({
+                    question_id: textarea.dataset.questionId,
+                    answer: textarea.value
+                });
+            });
+            console.log("Submitted answers:", answers); // Debug log
+
+            examMessageBox.classList.add('hidden'); // Hide message box
+            examMessageBox.classList.remove('message-success', 'message-error');
+            submitExamBtn.disabled = true; // This line should now work
+
+            try {
+                const response = await fetch(`/submit_exam/${jobId}/${candidateId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ answers: answers })
+                });
+
+                const result = await response.json();
+                console.log("Submit exam response:", result); // Debug log
+
+                if (response.ok) {
+                    showMessage(result.message + ` Your total score: ${result.score}/30`, 'success', examMessageBox);
+                    setTimeout(() => {
+                        closeExamModal();
+                        window.location.reload(); // Reload the page to show updated status/results
+                    }, 1500);
+                } else {
+                    console.error("Failed to submit exam:", result.error); // Debug log
+                    showMessage(result.error || 'Failed to submit exam.', 'error', examMessageBox);
+                }
+            } catch (error) {
+                console.error('Error submitting exam:', error); // Debug log
+                showMessage('An unexpected error occurred while submitting the exam.', 'error', examMessageBox);
+            } finally {
+                submitExamBtn.disabled = false; // This line should now work
+            }
+        });
+
+        function showMessage(message, type, targetElement) {
+            targetElement.textContent = message;
+            targetElement.classList.remove('hidden'); // Show message box
+            targetElement.classList.add(`message-${type}`);
+            console.log(`Message displayed: ${message} (Type: ${type})`); // Debug log
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+<!-- ############################################################################# -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Amihok Recruitment - Client Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6;
+    }
+    .card {
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+      transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+    }
+    .collapsible-header {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f3f4f6;
+      padding: 1rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      color: #374151;
+      transition: background-color 0.2s;
+    }
+    .collapsible-header:hover,
+    .collapsible-header.active {
+      background-color: #e5e7eb;
+    }
+    .collapsible-header::after {
+      content: '+';
+      font-weight: bold;
+      transition: transform 0.2s ease-in-out;
+    }
+    .collapsible-header.active::after {
+      content: '-';
+      transform: rotate(180deg);
+    }
+    .collapsible-content {
+      display: none;
+      padding: 1rem;
+      background-color: #fff;
+      border-bottom-left-radius: 0.375rem;
+      border-bottom-right-radius: 0.375rem;
+      border: 1px solid #e5e7eb;
+      border-top: 0;
+    }
+    .info-section {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background-color: #fff;
+      border-radius: 0.375rem;
+      border: 1px solid #f3f4f6;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .modal {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(75, 85, 99, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 50;
+    }
+    .modal-content {
+      background-color: #fff;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      padding: 2rem;
+      max-width: 42rem;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .close-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      color: #6b7280;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close-button:hover {
+      color: #1f2937;
+    }
+    .message-success {
+      padding: 0.75rem;
+      background-color: #d1fae5;
+      color: #065f46;
+      border-radius: 0.375rem;
+      margin-top: 1rem;
+    }
+    .message-error {
+      padding: 0.75rem;
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border-radius: 0.375rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+
+
+<body>
+    <div class="max-w-4xl w-full bg-white shadow-xl rounded-lg p-8 space-y-8 mx-auto">
+        <div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-4">
+            <h1 class="text-3xl font-extrabold text-gray-900">Your Applications</h1>
+            <a href="{{ url_for('index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Back to Home
+            </a>
+        </div>
+
+        {% if applications %}
+            <div class="space-y-6">
+                {% for app in applications %}
+                    <div class="card bg-white p-6 rounded-lg shadow-md border border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-3">
+                            Applied for: {{ app.job_title }} at {{ app.company_name }}
+                        </h2>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2 sm:mb-0">
+                                Your Status:
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium
+                                    {% if app.eligibility_status == 'Eligible' %}bg-green-100 text-green-800
+                                    {% else %}bg-red-100 text-red-800{% endif %}">
+                                    {{ app.eligibility_status }}
+                                </span>
+                            </h4>
+                            <span class="text-sm text-gray-500">Submitted: {{ app.submission_date }}</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-gray-700 text-lg">Match Score: 
+                                <span class="font-bold">{{ app.match_score if app.match_score is not none else 'N/A' }}%</span>
+                            </p>
+
+                            {% if app.eligibility_status == 'Not Eligible' %}
+                                <div class="mt-3 p-4 bg-red-50 border border-red-200 rounded-md shadow-sm">
+                                    <h4 class="font-semibold text-red-700 mb-2">Reason for Non-Selection & Areas for Improvement:</h4>
+                                    <p class="text-red-800 leading-relaxed">{{ app.eligibility_reason }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if app.eligibility_status == 'Eligible' %}
+                            {% if app.exam_questions %}
+                                {% if not app.exam_taken %}
+                                    <button class="btn-take-exam btn-primary inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                            data-job-id="{{ app.job_id }}" data-candidate-id="{{ app.application_id }}">
+                                        Take Exam
+                                    </button>
+                                {% else %}
+                                    <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                                        <h3 class="text-lg font-semibold text-blue-700 mb-2">Exam Results:</h3>
+                                        <p class="text-blue-800">Total Score: <span class="font-bold">{{ app.exam_score }} / 30</span></p>
+                                        <div class="collapsible-header mt-3" onclick="toggleCollapsible(this)">
+                                            
+                                        </div>
+                                        <div class="collapsible-content">
+                                            {% if app.exam_feedback %}
+                                                <ul class="list-disc list-inside text-blue-800 space-y-3 mt-2">
+                                                    {% for feedback_item in app.exam_feedback %}
+                                                        <li class="p-2 border-b border-blue-100 last:border-b-0">
+                                                            <strong>Q:</strong> {{ feedback_item.question }}<br>
+                                                            <strong>Your Answer:</strong> {{ feedback_item.answer }}<br>
+                                                            <strong>Score:</strong> {{ feedback_item.score }}/10<br>
+                                                            
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p class="text-gray-500 mt-2">No detailed feedback available.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <p class="text-yellow-600 mt-4">Exam questions not yet generated or failed to generate. Please check back later.</p>
+                            {% endif %}
+                        {% endif %}
+
+                        <div class="collapsible-header mt-6" onclick="toggleCollapsible(this)">
+                            <span>View Your Resume Details</span>
+                        </div>
+                        <div class="collapsible-content">
+                            {% set info = app.extracted_info %}
+                            
+                            {% if info.email or info.phone %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Contact Information</h5>
+                                {% if info.email %}<p><strong>Email:</strong> {{ info.email }}</p>{% endif %}
+                                {% if info.phone %}<p><strong>Phone:</strong> {{ info.phone }}</p>{% endif %}
+                            </div>
+                            {% endif %}
+
+                            {% if info.education %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Education</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for edu in info.education %}
+                                        <li>
+                                            <strong>{{ edu.degree if edu.degree else 'N/A' }}</strong> from {{ edu.university if edu.university else 'N/A' }}
+                                            {% if edu.start_year or edu.end_year %}
+                                                ({{ edu.start_year if edu.start_year else '' }} - {{ edu.end_year if edu.end_year else 'Present' }})
+                                            {% endif %}
+                                            {% if edu.concentration %}<p class="text-sm text-gray-500 ml-4">Concentration: {{ edu.concentration }}</p>{% endif %}
+                                            {% if edu.cumulative_gpa %}<p class="text-sm text-gray-500 ml-4">GPA: {{ edu.cumulative_gpa }}</p>{% endif %}
+                                            {% if edu.relevant_coursework %}
+                                                <p class="text-sm text-gray-500 ml-4">Relevant Coursework: {{ edu.relevant_coursework | join(', ') }}</p>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.experience %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Experience</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    {% for exp in info.experience %}
+                                        <li>
+                                            <strong>{{ exp.title if exp.title else 'N/A' }}</strong> at {{ exp.company if exp.company else 'N/A' }}
+                                            {% if exp.duration %}({{ exp.duration }}){% endif %}
+                                            {% if exp.location %}, {{ exp.location }}{% endif %}
+                                            {% if exp.description %}
+                                                <ul class="list-disc list-inside ml-4 text-sm text-gray-500 space-y-0.5">
+                                                    {% for desc_item in exp.description %}
+                                                        <li>{{ desc_item }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.skills %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Skills</h5>
+                                <p class="text-gray-600">{{ info.skills | join(', ') }}</p>
+                            </div>
+                            {% endif %}
+
+                            {% if info.projects %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Projects</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    {% for proj in info.projects %}
+                                        <li>
+                                            <strong>{{ proj.title if proj.title else 'N/A' }}</strong>
+                                            {% if proj.link %}<a href="{{ proj.link }}" target="_blank" class="text-blue-600 hover:underline text-sm ml-2">[Link]</a>{% endif %}
+                                            {% if proj.description %}
+                                                <ul class="list-disc list-inside ml-4 text-sm text-gray-500 space-y-0.5">
+                                                    {% for desc_item in proj.description %}
+                                                        <li>{{ desc_item }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.certificates %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Certificates</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for cert in info.certificates %}
+                                        <li>{{ cert }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.achievments %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Achievements</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for achievement in info.achievments %}
+                                        <li>{{ achievement }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.memberships %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Memberships</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for member in info.memberships %}
+                                        <li>
+                                            <strong>{{ member.name if member.name else 'N/A' }}</strong>
+                                            {% if member.duration %}({{ member.duration }}){% endif %}
+                                            {% if member.location %}, {{ member.location }}{% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            {% if info.campus_involvement %}
+                            <div class="info-section">
+                                <h5 class="text-base font-semibold text-gray-700">Campus Involvement</h5>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    {% for involvement in info.campus_involvement %}
+                                        <li>
+                                            <strong>{{ involvement.name if involvement.name else 'N/A' }}</strong>
+                                            {% if involvement.duration %}({{ involvement.duration }}){% endif %}
+                                            {% if involvement.location %}, {{ involvement.location }}{% endif %}
+                                            {% if involvement.description %}
+                                                <ul class="list-disc list-inside ml-4 text-sm text-gray-500 space-y-0.5">
+                                                    {% for desc_item in involvement.description %}
+                                                        <li>{{ desc_item }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="p-8 bg-white rounded-lg shadow-md text-center">
+                <p class="text-gray-600 text-lg mb-4">You have not submitted any applications yet.</p>
+                <a href="{{ url_for('candidate_apply') }}" class="btn-primary inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Apply for a Job
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    
+    <div id="examModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalBtn">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Technical Exam</h2>
+            <form id="examForm" class="space-y-6">
+                <input type="hidden" id="modalJobId">
+                <input type="hidden" id="modalCandidateId">
+                <div id="questionsContainer">
+                    
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" id="cancelExamBtn" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Cancel
+                    </button>
+                    <button type="submit" id="submitExamBtn" class="btn-primary inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Submit Exam
+                    </button>
+                </div>
+            </form>
+            <div id="examMessageBox" class="hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentExamQuestions = [];
+
+        function toggleCollapsible(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+        }
+
+        let examModal;
+        let examQuestionsDiv;
+        let submitExamBtn;
+        let examMessageBox;
+        let closeModalBtn;
+        let cancelExamBtn;
+
+        let currentJobId = null;
+        let currentCandidateId = null;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            examModal = document.getElementById('examModal');
+            examQuestionsDiv = document.getElementById('questionsContainer'); 
+            submitExamBtn = document.getElementById('submitExamBtn');
+            examMessageBox = document.getElementById('examMessageBox');
+            closeModalBtn = document.getElementById('closeModalBtn');
+            cancelExamBtn = document.getElementById('cancelExamBtn');
+
+            closeModalBtn.addEventListener('click', closeExamModal);
+            cancelExamBtn.addEventListener('click', closeExamModal);
+
+            document.querySelectorAll('.btn-take-exam').forEach(button => {
+                button.addEventListener('click', async function() {
+                    console.log("Take Exam button clicked!");
+                    currentJobId = this.dataset.jobId;
+                    currentCandidateId = this.dataset.candidateId;
+                    console.log(`Job ID: ${currentJobId}, Candidate ID: ${currentCandidateId}`);
+
+                    // Set the hidden input values here
+                    document.getElementById('modalJobId').value = currentJobId;
+                    document.getElementById('modalCandidateId').value = currentCandidateId;
+
+                    examMessageBox.classList.add('hidden');
+                    examMessageBox.classList.remove('message-success', 'message-error');
+                    examQuestionsDiv.innerHTML = '<p class="text-gray-600 text-center">Loading exam questions...</p>';
+                    submitExamBtn.disabled = true; 
+
+                    try {
+                        console.log(`Fetching exam from: /get_exam/${currentJobId}/${currentCandidateId}`);
+                        const response = await fetch(`/get_exam/${currentJobId}/${currentCandidateId}`);
+                        console.log("Response received:", response);
+                        const result = await response.json();
+                        console.log("Parsed JSON result:", result);
+
+                        if (response.ok) {
+                            currentExamQuestions = result.exam_questions;
+                            console.log("Exam questions received:", currentExamQuestions);
+                            displayExamQuestions(currentExamQuestions);
+                            submitExamBtn.disabled = false;
+                            examModal.classList.remove('hidden');
+                            examModal.style.display = 'flex';
+                            console.log("Exam modal should now be visible.");
+                        } else {
+                            console.error("Failed to load exam questions from backend:", result.error);
+                            showMessage(result.error || 'Failed to load exam questions.', 'error', examMessageBox);
+                            examQuestionsDiv.innerHTML = '<p class="text-red-600 text-center">' + (result.error || 'Failed to load exam questions.') + '</p>';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching exam:', error);
+                        showMessage('An unexpected error occurred while fetching the exam.', 'error', examMessageBox);
+                        examQuestionsDiv.innerHTML = '<p class="text-red-600 text-center">Error loading exam.</p>';
+                    }
+                });
+            });
+
+            document.getElementById('examForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                console.log("Exam form submitted.");
+
+                const jobId = document.getElementById('modalJobId').value;
+                const candidateId = document.getElementById('modalCandidateId').value;
+                const answers = [];
+
+                document.querySelectorAll('#questionsContainer textarea').forEach(textarea => { 
+                    answers.push({
+                        question_id: textarea.dataset.questionId,
+                        answer: textarea.value
+                    });
+                });
+                console.log("Submitted answers:", answers);
+
+                examMessageBox.classList.add('hidden');
+                examMessageBox.classList.remove('message-success', 'message-error');
+                submitExamBtn.disabled = true; 
+
+                try {
+                    const response = await fetch(`/submit_exam/${jobId}/${candidateId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ answers: answers })
+                    });
+
+                    const result = await response.json();
+                    console.log("Submit exam response:", result);
+
+                    if (response.ok) {
+                        showMessage(result.message + ` Your total score: ${result.score}/30`, 'success', examMessageBox);
+                        setTimeout(() => {
+                            closeExamModal();
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        console.error("Failed to submit exam:", result.error);
+                        showMessage(result.error || 'Failed to submit exam.', 'error', examMessageBox);
+                    }
+                } catch (error) {
+                    console.error('Error submitting exam:', error);
+                    showMessage('An unexpected error occurred while submitting the exam.', 'error', examMessageBox);
+                } finally {
+                    submitExamBtn.disabled = false; 
+                }
+            });
+        });
+
+        function closeExamModal() {
+            console.log("Closing exam modal.");
+            examModal.classList.add('hidden');
+            examModal.style.display = 'none';
+            document.getElementById('examForm').reset();
+            examQuestionsDiv.innerHTML = '';
+            currentExamQuestions = [];
+            examMessageBox.classList.add('hidden');
+        }
+
+        window.addEventListener('click', (event) => {
+            if (event.target == examModal) {
+                closeExamModal();
+            }
+        });
+
+        function displayExamQuestions(questions) {
+            console.log("Displaying exam questions...");
+            examQuestionsDiv.innerHTML = '';
+            if (!questions || questions.length === 0) {
+                examQuestionsDiv.innerHTML = '<p class="text-gray-600 text-center">No questions available for this exam.</p>';
+                return;
+            }
+            questions.forEach((q, index) => {
+                const questionHtml = `
+                    <div class="mb-4 p-4 bg-gray-100 rounded-md border border-gray-200">
+                        <p class="font-semibold text-gray-800 mb-2">Q${index + 1}: ${q.question}</p>
+                        <textarea class="w-full p-3 border rounded-md focus:ring-2 focus:ring-indigo-500" rows="4" data-question-id="${q.id}" placeholder="Type your answer here..."></textarea>
+                    </div>
+                `;
+                examQuestionsDiv.insertAdjacentHTML('beforeend', questionHtml);
+            });
+            console.log("Questions displayed.");
+        }
+
+        function showMessage(message, type, targetElement) {
+            targetElement.textContent = message;
+            targetElement.classList.remove('hidden');
+            targetElement.classList.add(`message-${type}`);
+            console.log(`Message displayed: ${message} (Type: ${type})`);
+        }
+    </script>
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RecruitMate - Your Applications</title>
+    <!-- Tailwind CSS CDN - Used for foundational reset and default browser styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Favicon link to prevent 404 for favicon.ico -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" />
+    <link rel="stylesheet" href="{{url_for('static', filename='css/client_portal.css')}}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="client-portal-header">
+            <h1>Your Applications</h1>
+            <a href="{{ url_for('index') }}" class="btn-back-home">
+                Back to Home
+            </a>
+        </header>
+
+        <main>
+            {% if applications %}
+                <div class="card-carousel-container">
+                    <button id="prevCardBtn" class="carousel-nav-btn prev-btn hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                        </svg>
+                        Previous
+                    </button>
+                    <div class="application-cards-list">
+                        {% for app in applications %}
+                            <div class="application-card {% if loop.index == 1 %}active{% endif %}">
+                                <h2>
+                                    Applied for: {{ app.job_title }} at {{ app.company_name }}
+                                </h2>
+                                <div class="card-status-section">
+                                    <h4>
+                                        Your Status:
+                                        <span class="eligibility-status-badge
+                                            {% if app.eligibility_status == 'Eligible' %}eligible
+                                            {% else %}not-eligible{% endif %}">
+                                            {{ app.eligibility_status }}
+                                        </span>
+                                    </h4>
+                                    <span class="submission-date">Submitted: {{ app.submission_date }}</span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <p class="match-score-text">Match Score: 
+                                        <span class="score-value">{{ app.match_score if app.match_score is not none else 'N/A' }}%</span>
+                                    </p>
+
+                                    {% if app.eligibility_status == 'Not Eligible' %}
+                                        <div class="reason-feedback-box error">
+                                            <h4>Reason for Non-Selection & Areas for Improvement:</h4>
+                                            <p class="leading-relaxed">{{ app.eligibility_reason }}</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {% if app.eligibility_status == 'Eligible' %}
+                                    {% if app.exam_questions %}
+                                        {% if not app.exam_taken %}
+                                            <button class="btn-take-exam"
+                                                    data-job-id="{{ app.job_id }}" data-candidate-id="{{ app.application_id }}">
+                                                Take Exam
+                                            </button>
+                                        {% else %}
+                                            <div class="exam-results-card">
+                                                <h3>Exam Results:</h3>
+                                                <p>Total Score: <span class="font-bold">{{ app.exam_score }} / 30</span></p>
+                                                <!-- The detailed exam feedback section is commented out as per original HTML,
+                                                     but the structure is maintained for future use if needed. -->
+                                                <!-- <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                                    <span>View Detailed Exam Feedback</span>
+                                                </div>
+                                                <div class="collapsible-content hidden"> {# Add hidden class initially #}
+                                                    {% if app.exam_feedback %}
+                                                        <ul class="exam-feedback-list">
+                                                            {% for feedback_item in app.exam_feedback %}
+                                                                <li>
+                                                            
+                                                                    <strong>Score:</strong> {{ feedback_item.score }}/10<br>
+                                                                   
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% else %}
+                                                        <p class="text-muted">No detailed feedback available.</p>
+                                                    {% endif %}
+                                                </div> -->
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <p class="text-yellow-600 mt-4">Exam questions not yet generated or failed to generate. Please check back later.</p>
+                                    {% endif %}
+                                {% endif %}
+
+                                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                    <span>View Your Resume Details</span>
+                                </div>
+                                <div class="collapsible-content hidden"> {# Add hidden class initially #}
+                                    {% set info = app.extracted_info %}
+                                    
+                                    {% if info.email or info.phone %}
+                                    <div class="info-section">
+                                        <h5>Contact Information</h5>
+                                        {% if info.email %}<p><strong>Email:</strong> {{ info.email }}</p>{% endif %}
+                                        {% if info.phone %}<p><strong>Phone:</strong> {{ info.phone }}</p>{% endif %}
+                                    </div>
+                                    {% endif %}
+
+                                    {% if info.education %}
+                                    <div class="info-section">
+                                        <h5>Education</h5>
+                                        <ul>
+                                            {% for edu in info.education %}
+                                                <li>
+                                                    <strong>{{ edu.degree if edu.degree else 'N/A' }}</strong> from {{ edu.university if edu.university else 'N/A' }}
+                                                    {% if edu.start_year or edu.end_year %}
+                                                        ({{ edu.start_year if edu.start_year else '' }} - {{ edu.end_year if edu.end_year else 'Present' }})
+                                                    {% endif %}
+                                                    {% if edu.concentration %}<p>Concentration: {{ edu.concentration }}</p>{% endif %}
+                                                    {% if edu.cumulative_gpa %}<p>GPA: {{ edu.cumulative_gpa }}</p>{% endif %}
+                                                    {% if edu.relevant_coursework %}
+                                                        <p>Relevant Coursework: {{ edu.relevant_coursework | join(', ') }}</p>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if info.experience %}
+                                    <div class="info-section">
+                                        <h5>Experience</h5>
+                                        <ul>
+                                            {% for exp in info.experience %}
+                                                <li>
+                                                    <strong>{{ exp.title if exp.title else 'N/A' }}</strong> at {{ exp.company if exp.company else 'N/A' }}
+                                                    {% if exp.duration %}({{ exp.duration }}){% endif %}
+                                                    {% if exp.location %}, {{ exp.location }}{% endif %}
+                                                    {% if exp.description %}
+                                                        <ul>
+                                                            {% for desc_item in exp.description %}
+                                                                <li>{{ desc_item }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if info.skills %}
+                                    <div class="info-section">
+                                        <h5>Skills</h5>
+                                        <p>{{ info.skills | join(', ') }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if info.projects %}
+                                    <div class="info-section">
+                                        <h5>Projects</h5>
+                                        <ul>
+                                            {% for proj in info.projects %}
+                                                <li>
+                                                    <strong>{{ proj.title if proj.title else 'N/A' }}</strong>
+                                                    {% if proj.link %}<a href="{{ proj.link }}" target="_blank" class="text-link">{{ proj.link }}</a>{% endif %}
+                                                    {% if proj.description %}
+                                                        <ul>
+                                                            {% for desc_item in proj.description %}
+                                                                <li>{{ desc_item }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if info.certificates %}
+                                    <div class="info-section">
+                                        <h5>Certificates</h5>
+                                        <ul>
+                                            {% for cert in info.certificates %}
+                                                <li>{{ cert }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if info.achievments %}
+                                    <div class="info-section">
+                                        <h5>Achievements</h5>
+                                        <ul>
+                                            {% for achievement in info.achievments %}
+                                                <li>{{ achievement }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if info.memberships %}
+                                    <div class="info-section">
+                                        <h5>Memberships</h5>
+                                        <ul>
+                                            {% for member in info.memberships %}
+                                                <li>
+                                                    <strong>{{ member.name if member.name else 'N/A' }}</strong>
+                                                    {% if member.duration %}({{ member.duration }}){% endif %}
+                                                    {% if member.location %}, {{ member.location }}{% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if info.campus_involvement %}
+                                    <div class="info-section">
+                                        <h5>Campus Involvement</h5>
+                                        <ul>
+                                            {% for involvement in info.campus_involvement %}
+                                                <li>
+                                                    <strong>{{ involvement.name if involvement.name else 'N/A' }}</strong>
+                                                    {% if involvement.duration %}({{ involvement.duration }}){% endif %}
+                                                    {% if involvement.location %}, {{ involvement.location }}{% endif %}
+                                                    {% if involvement.description %}
+                                                        <ul>
+                                                            {% for desc_item in involvement.description %}
+                                                                <li>{{ desc_item }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button id="nextCardBtn" class="carousel-nav-btn next-btn {% if applications|length <= 1 %}hidden{% endif %}">
+                        Next 
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </button>
+                </div>
+            {% else %}
+                <div class="empty-state fade-in">
+                    <p>You have not submitted any applications yet.</p>
+                    <a href="{{ url_for('candidate_apply') }}" class="btn-primary">
+                        Apply for a Job
+                    </a>
+                </div>
+            {% endif %}
+        </main>
+
+        <!-- Exam Modal (Hidden by default) -->
+        <div id="examModal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-button" id="closeModalBtn">&times;</span>
+                <h2>Technical Exam</h2>
+                <form id="examForm">
+                    <input type="hidden" id="modalJobId">
+                    <input type="hidden" id="modalCandidateId">
+                    <div id="questionsContainer">
+                        
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="button" id="cancelExamBtn" class="btn-cancel">
+                            Cancel
+                        </button>
+                        <button type="submit" id="submitExamBtn" class="btn-submit-modal">
+                            Submit Exam
+                        </button>
+                    </div>
+                </form>
+                <div id="examMessageBox" class="hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentExamQuestions = [];
+        let currentCardIndex = 0;
+        let applicationCards = [];
+
+        function toggleCollapsible(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                content.classList.add('visible');
+            } else {
+                content.classList.remove('visible');
+                content.classList.add('hidden');
+            }
+        }
+
+        function showCard(index) {
+            if (applicationCards.length === 0) return;
+
+            // Hide all cards
+            applicationCards.forEach(card => {
+                card.classList.remove('active');
+                card.classList.add('hidden');
+            });
+
+            // Show the selected card
+            applicationCards[index].classList.remove('hidden');
+            applicationCards[index].classList.add('active');
+
+            // Update button visibility
+            const prevBtn = document.getElementById('prevCardBtn');
+            const nextBtn = document.getElementById('nextCardBtn');
+
+            if (prevBtn) {
+                if (index === 0) {
+                    prevBtn.classList.add('hidden');
+                } else {
+                    prevBtn.classList.remove('hidden');
+                }
+            }
+
+            if (nextBtn) {
+                if (index === applicationCards.length - 1) {
+                    nextBtn.classList.add('hidden');
+                } else {
+                    nextBtn.classList.remove('hidden');
+                }
+            }
+        }
+
+        function nextCard() {
+            if (currentCardIndex < applicationCards.length - 1) {
+                currentCardIndex++;
+                showCard(currentCardIndex);
+            }
+        }
+
+        function prevCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                showCard(currentCardIndex);
+            }
+        }
+
+        let examModal;
+        let examQuestionsDiv;
+        let submitExamBtn;
+        let examMessageBox;
+        let closeModalBtn;
+        let cancelExamBtn;
+
+        let currentJobId = null;
+        let currentCandidateId = null;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            applicationCards = document.querySelectorAll('.application-card');
+            if (applicationCards.length > 0) {
+                showCard(currentCardIndex); // Show the first card initially
+            }
+
+            const prevBtn = document.getElementById('prevCardBtn');
+            const nextBtn = document.getElementById('nextCardBtn');
+
+            if (prevBtn) prevBtn.addEventListener('click', prevCard);
+            if (nextBtn) nextBtn.addEventListener('click', nextCard);
+
+
+            examModal = document.getElementById('examModal');
+            examQuestionsDiv = document.getElementById('questionsContainer'); 
+            submitExamBtn = document.getElementById('submitExamBtn');
+            examMessageBox = document.getElementById('examMessageBox');
+            closeModalBtn = document.getElementById('closeModalBtn');
+            cancelExamBtn = document.getElementById('cancelExamBtn');
+
+            closeModalBtn.addEventListener('click', closeExamModal);
+            cancelExamBtn.addEventListener('click', closeExamModal);
+
+            document.querySelectorAll('.btn-take-exam').forEach(button => {
+                button.addEventListener('click', async function() {
+                    console.log("Take Exam button clicked!");
+                    currentJobId = this.dataset.jobId;
+                    currentCandidateId = this.dataset.candidateId;
+                    console.log(`Job ID: ${currentJobId}, Candidate ID: ${currentCandidateId}`);
+
+                    // Set the hidden input values here
+                    document.getElementById('modalJobId').value = currentJobId;
+                    document.getElementById('modalCandidateId').value = currentCandidateId;
+
+                    examMessageBox.classList.add('hidden');
+                    examMessageBox.classList.remove('message-success', 'message-error');
+                    examQuestionsDiv.innerHTML = '<p class="text-gray-600 text-center">Loading exam questions...</p>';
+                    submitExamBtn.disabled = true; 
+
+                    try {
+                        console.log(`Fetching exam from: /get_exam/${currentJobId}/${currentCandidateId}`);
+                        const response = await fetch(`/get_exam/${currentJobId}/${currentCandidateId}`);
+                        console.log("Response received:", response);
+                        const result = await response.json();
+                        console.log("Parsed JSON result:", result);
+
+                        if (response.ok) {
+                            currentExamQuestions = result.exam_questions;
+                            console.log("Exam questions received:", currentExamQuestions);
+                            displayExamQuestions(currentExamQuestions);
+                            submitExamBtn.disabled = false;
+                            examModal.classList.remove('hidden');
+                            examModal.classList.add('visible'); // Use 'visible' class for modal
+                            console.log("Exam modal should now be visible.");
+                        } else {
+                            console.error("Failed to load exam questions from backend:", result.error);
+                            showMessage(result.error || 'Failed to load exam questions.', 'error', examMessageBox);
+                            examQuestionsDiv.innerHTML = '<p class="text-red-600 text-center">' + (result.error || 'Failed to load exam questions.') + '</p>';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching exam:', error);
+                        showMessage('An unexpected error occurred while fetching the exam.', 'error', examMessageBox);
+                        examQuestionsDiv.innerHTML = '<p class="text-red-600 text-center">Error loading exam.</p>';
+                    }
+                });
+            });
+
+            document.getElementById('examForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                console.log("Exam form submitted.");
+
+                const jobId = document.getElementById('modalJobId').value;
+                const candidateId = document.getElementById('modalCandidateId').value;
+                const answers = [];
+
+                document.querySelectorAll('#questionsContainer textarea').forEach(textarea => { 
+                    answers.push({
+                        question_id: textarea.dataset.questionId,
+                        answer: textarea.value
+                    });
+                });
+                console.log("Submitted answers:", answers);
+
+                examMessageBox.classList.add('hidden');
+                examMessageBox.classList.remove('message-success', 'message-error');
+                submitExamBtn.disabled = true; 
+
+                try {
+                    const response = await fetch(`/submit_exam/${jobId}/${candidateId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ answers: answers })
+                    });
+
+                    const result = await response.json();
+                    console.log("Submit exam response:", result);
+
+                    if (response.ok) {
+                        showMessage(result.message + ` Your total score: ${result.score}/30`, 'success', examMessageBox);
+                        setTimeout(() => {
+                            closeExamModal();
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        console.error("Failed to submit exam:", result.error);
+                        showMessage(result.error || 'Failed to submit exam.', 'error', examMessageBox);
+                    }
+                } catch (error) {
+                    console.error('Error submitting exam:', error);
+                    showMessage('An unexpected error occurred while submitting the exam.', 'error', examMessageBox);
+                } finally {
+                    submitExamBtn.disabled = false; 
+                }
+            });
+        });
+
+        function closeExamModal() {
+            console.log("Closing exam modal.");
+            examModal.classList.remove('visible'); // Use 'visible' class for modal
+            examModal.classList.add('hidden'); // Ensure it's fully hidden
+            document.getElementById('examForm').reset();
+            examQuestionsDiv.innerHTML = '';
+            currentExamQuestions = [];
+            examMessageBox.classList.add('hidden');
+        }
+
+        window.addEventListener('click', (event) => {
+            if (event.target == examModal) {
+                closeExamModal();
+            }
+        });
+
+        function displayExamQuestions(questions) {
+            console.log("Displaying exam questions...");
+            examQuestionsDiv.innerHTML = '';
+            if (!questions || questions.length === 0) {
+                examQuestionsDiv.innerHTML = '<p class="text-gray-600 text-center">No questions available for this exam.</p>';
+                return;
+            }
+            questions.forEach((q, index) => {
+                const questionHtml = `
+                    <div class="question-item">
+                        <p>Q${index + 1}: ${q.question}</p>
+                        <textarea rows="4" data-question-id="${q.id}" placeholder="Type your answer here..."></textarea>
+                    </div>
+                `;
+                examQuestionsDiv.insertAdjacentHTML('beforeend', questionHtml);
+            });
+            console.log("Questions displayed.");
+        }
+
+        function showMessage(message, type, targetElement) {
+            targetElement.textContent = message;
+            targetElement.classList.remove('hidden');
+            targetElement.classList.add(`message-${type}`);
+            console.log(`Message displayed: ${message} (Type: ${type})`);
+        }
+    </script>
+</body>
+</html>
