@@ -520,11 +520,15 @@ def extract_resume_info_llm(text: str, save_path: str = "extracted_resume.json")
 
 # Candidate Evaluation Chain
 MATCH_THRESHOLD = 75
-evaluation_llm = ChatGroq(model="llama3-8b-8192", temperature=0.3)
+evaluation_llm = ChatGroq(model="llama3-8b-8192", temperature=0)
 matching_prompt = ChatPromptTemplate.from_messages([
     ("system",
      "**Role:** You are an expert AI recruitment evaluator with deep insight into hiring decisions. Your task is to intelligently score how well a candidate fits a job, based on structured resume data (JSON) and a detailed job description.\n\n"
      "**Instructions:** Return only an integer score between 0 and 100. Do NOT include any words, labels, or formatting — only the numeric score.\n\n"
+     "**Important Validation Rule (Non-Match Handling):**\n"
+     "- If the candidate resume is **malformed**, or **does not contain relevant information for evaluation** (e.g.fake/unrelated content, or obviously non-resume text), return **0 immediately**.\n"
+     "- Also return **0 immediately** if the content is **irrelevant**, **nonsensical**, or clearly **not a resume**.\n"
+     "- Do **not** proceed with the score breakdown in such cases.\n\n"
      "**Evaluation Criteria:**\n\n"
      "🔹 **1. Skills Match (35 points):**\n"
      "- Compare candidate skills with required and preferred skills.\n"
@@ -533,11 +537,22 @@ matching_prompt = ChatPromptTemplate.from_messages([
      "- Missing key skills = deduction, but balance it if other strengths compensate.\n\n"
      "🔹 **2. Experience Match (25 points):**\n"
      "- Compare the candidate’s work history to job responsibilities and expectations.\n"
+     "- Compare the candidate’s total years of experience (precomputed and included in the resume JSON) with the required years stated in the job description.\n"
+    "- If the candidate falls short in required years, deduct points **seriously** — the closer to the gap, the heavier the penalty.\n"
+    "- Evaluate job titles, domain, and impact to ensure experience is relevant.\n"
+    "- Extra years beyond required may slightly boost the score only if they show clear value.\n"
+    "- Do not ignore year mismatch even if titles or domains align.\n"
      "- Evaluate job titles, domain, impact, and **whether the total experience meets the required years**.\n"
      "- Account for meaningful experience, even if not from identical roles.\n\n"
+     "- **Strictly compare total years of experience against the job's required experience. If the candidate falls short, deduct points significantly.**\n"
+     "- Do not overlook shortfalls in required experience, even if titles or domains are relevant.\n"
+     "- Extra years beyond required can be rewarded only if clearly beneficial.\n\n"
      "🔹 **3. Education Match (10 points):**\n"
-     "- Check if the candidate meets or exceeds the required academic qualifications.\n"
+     "-- Check if the candidate has clearly mentioned academic qualifications that meet or exceed the job’s required degree (e.g., B.Tech, M.Sc, etc.).\n"
      "- Do not penalize for overqualification unless stated.\n\n"
+     "- Check if the candidate meets or exceeds the required academic qualifications.\n"
+     "- Prefer complete records with both start and end years. Incomplete or ambiguous timelines should reduce the score.\n"
+     "- Give partial credit for closely related degrees or for diploma programs, if they match the job domain.\n"
      "🔹 **4. Project Relevance (20 points):**\n"
      "- Evaluate the candidate’s listed projects based on relevance, problem-solving, depth, and complexity.\n"
      "- Pay attention to insights and impact if available.\n"
@@ -550,7 +565,7 @@ matching_prompt = ChatPromptTemplate.from_messages([
      "- Evaluate holistically. Compensate minor gaps with standout strengths.\n"
      "- Do not reward fluff. Real alignment matters more than keywords.\n"
      "- Do not infer hidden strengths. Use only explicit information.\n"
-     "- A score of 60+ is passable. 75+ is a strong match. 85+ is exceptional. 90+ is rare and outstanding.\n"
+     "- A score of 50+ is passable. 65+ is a strong match. 75+ is exceptional. 85+ is rare and outstanding.\n"
      "- Do NOT return explanations. Return only a clean integer score between 0–100."),
     ("human", 
      "**Candidate Resume (structured JSON):**\n{resume}\n\n"

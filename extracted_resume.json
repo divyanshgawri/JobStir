@@ -1,72 +1,106 @@
 {
-    "name": "Divyansh Gawri",
-    "email": "dishugawri@gmail.com",
-    "phone": "+91 7988947904",
+    "name": "Chandr Chuti Chauhan",
+    "email": "chandr.chut.chauhan@gmail.com",
+    "phone": "+91-9876543210",
     "education": [
         {
-            "degree": "Bsc",
-            "university": "Guru Nanak Dev University",
-            "start_year": "2023",
-            "end_year": "2026",
-            "concentration": "Computational Statistics and Data Analytics",
-            "cumulative_gpa": "8.86",
+            "degree": "Bachelor of Technology in Computer Science",
+            "university": "National Institute of Technology (NIT), Trichy",
+            "start_year": "2017",
+            "end_year": "2021",
+            "cumulative_gpa": "8.7/10",
             "relevant_coursework": []
         }
     ],
     "skills": [
         "Python",
-        "C",
-        "Scikit-Learn",
-        "Pandas",
-        "NumPy",
-        "Matplotlib",
-        "Seaborn",
         "SQL",
-        "Jupyter Notebook",
-        "Git kraken",
+        "LangChain",
+        "LangGraph",
+        "AutoGen",
+        "LlamaIndex",
+        "LangServe",
+        "Hugging Face",
+        "FAISS",
+        "Pinecone",
+        "ChromaDB",
+        "Weaviate",
+        "PyTorch",
+        "TensorFlow",
+        "Scikit-learn",
+        "FastAPI",
+        "Docker",
+        "AWS (EC2, Lambda, S3)",
+        "GCP",
+        "MLflow",
+        "Weights & Biases",
+        "GCP Vertex AI",
         "Git",
-        "HTML",
-        "CSS",
-        "JavaScript",
-        "GitHub Pages"
+        "Jupyter",
+        "LangSmith",
+        "Postman"
     ],
     "experience": [
         {
-            "title": "Research Role",
-            "duration": "October 2024-Present",
-            "location": "Google Company",
+            "title": "Senior AI Engineer – LLM & Conversational AI",
+            "duration": "Jan 2023 – Present",
+            "location": "Bengaluru",
             "description": [
-                "Began a 6-month research role in October, working on projects related to advanced computing and data analysis.",
-                "Collaborated with a research team to find solutions for real-world problems, with an emphasis on practical applications.",
-                "Used various programming tools to build and test models, ensuring reliable performance.",
-                "Analysed large datasets to gain insights and drive project results forward."
+                "Developed and deployed multi-agent systems using LangChain, LangGraph, and AutoGen, powering virtual assistants for enterprise clients.",
+                "Integrated LlamaIndex for structured and unstructured document retrieval, improving context relevance.",
+                "Fine-tuned GPT-4, LLaMA-2, and Mistral-7B for customer service, HR automation, and legal summarization.",
+                "Designed and optimized RAG pipelines using ChromaDB, FAISS, and Pinecone, reducing latency and boosting retrieval accuracy by 91%.",
+                "Implemented prompt engineering and fine-tuning strategies for domain-specific model enhancement.",
+                "Built RESTful APIs using FastAPI and deployed containerized LLM inference services on AWS using EC2, Lambda, and S3.",
+                "Contributed to internal LLMOps pipelines using MLflow and LangServe for versioning, monitoring, and A/B testing."
             ]
         },
         {
-            "duration": "OCTOBER 2025 - 2026",
-            "location": "META COMPANY",
-            "description": []
+            "title": "Machine Learning Engineer – NLP & ML Systems",
+            "duration": "Aug 2021 – Dec 2022",
+            "location": "Remote",
+            "description": [
+                "Trained text classification and NLU models using Hugging Face Transformers, PyTorch, and spaCy.",
+                "Created scalable document retrieval and matching systems using FAISS and sentence-transformers.",
+                "Developed initial versions of customer support chatbots using fine-tuned transformer models and REST APIs.",
+                "Led integration of NLP microservices with web dashboards and mobile apps.",
+                "Contributed to continuous deployment of NLP models using MLflow and Docker."
+            ]
         }
     ],
     "projects": [
         {
-            "title": "Face Recognition Project",
-            "link": "https://github.com/divyanshgawri/Image_recognition",
+            "title": "RAG-based Legal Assistant (LangChain + ChromaDB)",
             "description": [
-                "The goal was to create a system that accurately identifies people in images by recognizing their faces.",
-                "Overall, the project focused on improving the accuracy of facial recognition in real-world applications like security and personal identification."
+                "Built a conversational agent to assist lawyers with real-time statute and case retrieval using custom embeddings."
             ]
         },
         {
-            "title": "Customer Segmentation PROJECT",
-            "link": "https://github.com/divyanshgawri/Customer_segmentation",
+            "title": "Resume Screening and Matching Bot",
             "description": [
-                "Developed a comprehensive customer segmentation model using machine learning techniques and advanced data visualisation tools.",
-                "The goal was to understand consumer behaviour and make marketing strategies accordingly."
+                "Developed a LangChain-powered system to parse, match, and rank resumes against job descriptions."
+            ]
+        },
+        {
+            "title": "Multi-Agent Workflow Bot (LangGraph + AutoGen)",
+            "description": [
+                "Created a multi-agent task management assistant with tool-use capability and fallback mechanisms."
+            ]
+        },
+        {
+            "title": "Domain-Specific LLM Evaluation Framework (LangChain + LangGraph)",
+            "description": [
+                "Built an auto-evaluation pipeline for LLM outputs using rubric-based grading, hallucination detection, and feedback generation."
             ]
         }
     ],
-    "certificates": [],
+    "certificates": [
+        "AWS Certified Machine Learning – Specialty",
+        "LangChain Developer Bootcamp – Built production-ready LangChain agents with integrations",
+        "Hugging Face NLP Practitioner Certificate",
+        "MLOps with GCP Vertex AI – Google Cloud",
+        "Hands-on FAISS and Vector DBs – DeepLearning.ai / Coursera"
+    ],
     "memberships": [],
     "campus_involvement": []
 }
