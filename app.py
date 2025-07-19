@@ -664,7 +664,7 @@ selection_reason_prompt = ChatPromptTemplate.from_messages([
      "Example: 'The candidate was selected due to their strong background in [area X], extensive experience with [technology Y], and a relevant project showcasing [skill Z].'"),
     ("human", "Candidate Resume:\n{resume}\n\nJob Description:\n{job_desc}\n\nCandidate Score: {score}\n\nReason for selection:")
 ])
-selection_reason_llm = ChatGroq(model="llama3-8b-8192", temperature=0.7)
+selection_reason_llm = ChatGroq(model="llama3-8b-8192", temperature=0.2)
 selection_reason_chain = selection_reason_prompt | selection_reason_llm | parser
 
 def generate_selection_reason(resume_json: dict, job_description: str, score: int) -> str:
