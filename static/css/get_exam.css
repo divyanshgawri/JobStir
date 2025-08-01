@@ -1,0 +1,278 @@
+/* --- Root Variables (consistent with other CSS files) --- */
+:root {
+    --primary-blue: #3B82F6;
+    --secondary-gray: #6B7280;
+    --dark-text: #1F2937;
+    --light-text: #4B5563;
+    --bg-light: #F9FAFB;
+    --bg-white: #FFFFFF;
+    --border-color: #E5E7EB;
+    --success-green: #10B981;
+    --error-red: #EF4444;
+    --warning-orange: #F59E0B;
+    --font-inter: 'Inter', sans-serif;
+}
+
+/* --- General Body and HTML structure (consistent with style.css/index.css) --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-inter);
+    color: var(--dark-text);
+    line-height: 1.6;
+    background-color: var(--bg-light);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Top Navigation Bar (Consistent with other pages) --- */
+.top-nav {
+    background-color: var(--bg-white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.top-nav .nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-nav .logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    letter-spacing: -0.5px;
+}
+
+.top-nav .main-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.top-nav .auth-links a {
+    color: var(--dark-text);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.top-nav .auth-links a:hover {
+    background-color: var(--bg-light);
+    color: var(--primary-blue);
+}
+
+/* --- Page Specific Styles --- */
+.main-content {
+    flex-grow: 1; /* Allows main content to expand */
+    padding: 40px 0;
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--dark-text);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: var(--light-text);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.exam-form-container {
+    margin-top: 30px;
+}
+
+.data-card {
+    background-color: var(--bg-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+.question-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: var(--bg-light);
+}
+
+.question-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-blue);
+    margin-bottom: 10px;
+}
+
+.question-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--dark-text);
+    margin-bottom: 15px;
+}
+
+.answer-textarea {
+    width: calc(100% - 22px); /* Full width minus padding and border */
+    padding: 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: var(--font-inter);
+    font-size: 16px;
+    color: var(--dark-text);
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 100px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.answer-textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.form-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* --- Buttons (Consistent with other pages) --- */
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: var(--bg-white);
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background-color: #2563EB;
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    background-color: #1D4ED8;
+    transform: translateY(0);
+}
+
+/* --- Flash Messages (Consistent with other pages) --- */
+.flash-messages-container {
+    margin-bottom: 25px;
+    padding: 0 20px;
+}
+
+.flashes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.flash-message {
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeOut 0.5s forwards 5s;
+}
+
+.flash-message.success {
+    background-color: #D1FAE5;
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+}
+
+.flash-message.error {
+    background-color: #FEE2E2;
+    color: var(--error-red);
+    border: 1px solid var(--error-red);
+}
+
+.flash-message.info {
+    background-color: #DBEAFE;
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; display: none; }
+}
+
+/* --- Footer Bar (Consistent with other pages) --- */
+.footer-bar {
+    background-color: var(--dark-text);
+    color: var(--bg-white);
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto;
+    font-size: 14px;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 30px;
+    }
+    .subtitle {
+        font-size: 16px;
+    }
+    .data-card {
+        padding: 20px;
+    }
+    .question-text {
+        font-size: 16px;
+    }
+    .answer-textarea {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+    .top-nav .nav-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .top-nav .main-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .page-title {
+        font-size: 24px;
+    }
+    .data-card {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+    }
+}

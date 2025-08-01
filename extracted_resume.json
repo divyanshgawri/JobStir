@@ -1,105 +1,83 @@
 {
-    "name": "Chandr Chuti Chauhan",
-    "email": "chandr.chut.chauhan@gmail.com",
-    "phone": "+91-9876543210",
+    "name": "Divyansh Gawri",
+    "email": "dishugawri@gmail.com",
+    "phone": "+91 7988947904",
     "education": [
         {
-            "degree": "Bachelor of Technology in Computer Science",
-            "university": "National Institute of Technology (NIT), Trichy",
-            "start_year": "2017",
-            "end_year": "2021",
-            "cumulative_gpa": "8.7/10",
-            "relevant_coursework": []
+            "degree": "B.Sc.",
+            "university": "Guru Nanak Dev University",
+            "start_year": "2023",
+            "end_year": "Present",
+            "concentration": "Computational Statistics and Data Analytics"
         }
     ],
     "skills": [
         "Python",
-        "SQL",
-        "LangChain",
-        "LangGraph",
-        "AutoGen",
-        "LlamaIndex",
-        "LangServe",
-        "Hugging Face",
-        "FAISS",
-        "Pinecone",
-        "ChromaDB",
-        "Weaviate",
-        "PyTorch",
+        "C++",
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Scikit-Learn",
         "TensorFlow",
-        "Scikit-learn",
-        "FastAPI",
-        "Docker",
-        "AWS (EC2, Lambda, S3)",
-        "GCP",
-        "MLflow",
-        "Weights & Biases",
-        "GCP Vertex AI",
+        "OpenCV",
+        "Pandas",
+        "NumPy",
+        "Matplotlib",
+        "Seaborn",
+        "Tableau",
+        "Spacy",
+        "NLTK",
+        "Database SQL",
+        "Jupyter Notebook",
         "Git",
-        "Jupyter",
-        "LangSmith",
-        "Postman"
+        "GitKraken",
+        "GitHub Pages",
+        "Text Preprocessing",
+        "Keyword Extraction",
+        "Rule-based Logic",
+        "Sentiment Analysis",
+        "Named Entity Recognition (NER)"
     ],
     "experience": [
         {
-            "title": "Senior AI Engineer – LLM & Conversational AI",
-            "duration": "Jan 2023 – Present",
-            "location": "Bengaluru",
-            "description": [
-                "Developed and deployed multi-agent systems using LangChain, LangGraph, and AutoGen, powering virtual assistants for enterprise clients.",
-                "Integrated LlamaIndex for structured and unstructured document retrieval, improving context relevance.",
-                "Fine-tuned GPT-4, LLaMA-2, and Mistral-7B for customer service, HR automation, and legal summarization.",
-                "Designed and optimized RAG pipelines using ChromaDB, FAISS, and Pinecone, reducing latency and boosting retrieval accuracy by 91%.",
-                "Implemented prompt engineering and fine-tuning strategies for domain-specific model enhancement.",
-                "Built RESTful APIs using FastAPI and deployed containerized LLM inference services on AWS using EC2, Lambda, and S3.",
-                "Contributed to internal LLMOps pipelines using MLflow and LangServe for versioning, monitoring, and A/B testing."
-            ]
-        },
-        {
-            "title": "Machine Learning Engineer – NLP & ML Systems",
-            "duration": "Aug 2021 – Dec 2022",
+            "title": "Freelance Machine Learning Engineer",
+            "duration": "Jan 2025 – Apr 2025",
             "location": "Remote",
             "description": [
-                "Trained text classification and NLU models using Hugging Face Transformers, PyTorch, and spaCy.",
-                "Created scalable document retrieval and matching systems using FAISS and sentence-transformers.",
-                "Developed initial versions of customer support chatbots using fine-tuned transformer models and REST APIs.",
-                "Led integration of NLP microservices with web dashboards and mobile apps.",
-                "Contributed to continuous deployment of NLP models using MLflow and Docker."
+                "Collaborated with a skincare startup to build a personalized recommendation engine based on facial condition data.",
+                "Designed and trained machine learning models to identify condition-specific needs and suggest optimal product compositions.",
+                "Delivered a deployable ML pipeline and actionable insights for integration into the client’s product strategy."
             ]
         }
     ],
     "projects": [
         {
-            "title": "RAG-based Legal Assistant (LangChain + ChromaDB)",
+            "title": "Face Recognition System",
+            "link": "https://github.com/divyanshgawri/Image_recognition",
             "description": [
-                "Built a conversational agent to assist lawyers with real-time statute and case retrieval using custom embeddings."
+                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring."
             ]
         },
         {
-            "title": "Resume Screening and Matching Bot",
+            "title": "Skincare Recommendation System",
             "description": [
-                "Developed a LangChain-powered system to parse, match, and rank resumes against job descriptions."
+                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions."
             ]
         },
         {
-            "title": "Multi-Agent Workflow Bot (LangGraph + AutoGen)",
+            "title": "E-commerce Product Description Classifier",
+            "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
             "description": [
-                "Created a multi-agent task management assistant with tool-use capability and fallback mechanisms."
-            ]
-        },
-        {
-            "title": "Domain-Specific LLM Evaluation Framework (LangChain + LangGraph)",
-            "description": [
-                "Built an auto-evaluation pipeline for LLM outputs using rubric-based grading, hallucination detection, and feedback generation."
+                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions."
             ]
         }
     ],
     "certificates": [
-        "AWS Certified Machine Learning – Specialty",
-        "LangChain Developer Bootcamp – Built production-ready LangChain agents with integrations",
-        "Hugging Face NLP Practitioner Certificate",
-        "MLOps with GCP Vertex AI – Google Cloud",
-        "Hands-on FAISS and Vector DBs – DeepLearning.ai / Coursera"
+        "Certified Python Developer Associate (CPDA) – SkillEnable",
+        "CRM Essentials – HP Life",
+        "Machine Learning Specialization – Stanford University",
+        "Data Analysis with Python – freeCodeCamp",
+        "Databases and SQL for Data Analysis – IBM (Coursera)"
     ],
     "memberships": [],
     "campus_involvement": []

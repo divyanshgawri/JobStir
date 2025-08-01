@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOBSTIR - AI Resume Evaluator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/evaluate_resume.css') }}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="{{ url_for('index') }}" class ='logo-link'>JOBSTIR</a></div>
+            <nav class="main-nav">
+                {# These links will appear only if the user is authenticated #}
+                {% if current_user.is_authenticated %}
+                    {# Check if the user is an HR #}
+                    {% if current_user.is_hr %}
+                        <a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a>
+                        <a href="{{ url_for('hr_job_upload') }}">Upload Job</a>
+                    {# Else, user is a regular candidate #}
+                    {% else %}
+                        <a href="{{ url_for('candidate_apply') }}">Apply for Job</a>
+                        <a href="{{ url_for('client_portal') }}">My Applications</a>
+                    {% endif %}
+                {% endif %}
+
+                {# Authentication links (Login/Signup/Logout) remain #}
+                <div class="auth-links">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}">Login</a>
+                        <a href="{{ url_for('signup') }}">Signup</a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="contaiJOBSTIRner">
+            <h1 class="hero-title">AI Resume Evaluator</h1>
+            <p class="hero-subtitle">Streamline your hiring process with intelligent, data-driven resume analysis.</p>
+        </div>
+    </section>
+
+    <main class="container main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages-container">
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="flash-message {{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="dashboard-grid">
+            <section class="form-panel data-card">
+                <h2 class="card-title">Upload & Evaluate Candidate</h2>
+                <form method="POST" enctype="multipart/form-data" class="evaluation-form">
+                    <div class="form-group">
+                        <label for="resume" class="form-label">Upload Resume (PDF only):</label>
+                        <input type="file" id="resume" name="resume" accept=".pdf" required class="input-file">
+                    </div>
+                    <div class="form-group">
+                        <label for="job_description" class="form-label">Job Description:</label>
+                        <textarea id="job_description" name="job_description" rows="12" placeholder="Paste the full job description here, including responsibilities, requirements, and preferred skills..." required class="input-textarea">{{ uploaded_data.job_description if uploaded_data.job_description }}</textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Analyze Resume</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="results-panel-wrapper">
+                {% if evaluation_result and 'total_score' in evaluation_result %}
+                    {# This overlay and blur class ONLY apply if the user is NOT authenticated #}
+                    {% if not current_user.is_authenticated %}
+                        <div class="login-prompt-overlay">
+                            <p class="overlay-message">
+                                Please <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('signup') }}">Sign Up</a> to view the full evaluation results.
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    <div class="results-panel data-card {% if not current_user.is_authenticated %}results-blurred{% endif %}">
+                        <h2 class="card-title">Evaluation Summary</h2>
+                        <div class="score-summary">
+                            <div class="score-circle">
+                                <span class="score-value">{{ evaluation_result.total_score }}</span><span class="score-max"> / 100</span>
+                            </div>
+                            <p class="score-message">
+                                {% if evaluation_result.total_score >= 85 %}
+                                    Perfect Candidate! 🎉
+                                {% elif evaluation_result.total_score >= 75 %}
+                                    Strong Candidate! ✨
+                                {% elif evaluation_result.total_score >= 65 %}
+                                    Good Fit! 👍
+                                {% elif evaluation_result.total_score >= 50 %}
+                                    Passable Fit.
+                                {% else %}
+                                    Not a strong match at this time.
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <h3 class="section-heading">Score Breakdown:</h3>
+                        <ul class="score-breakdown-list">
+                            <li><strong>Skills Match:</strong> <span>{{ evaluation_result.skills_score }} / 35</span></li>
+                            <li><strong>Experience Match:</strong> <span>{{ evaluation_result.experience_score }} / 25</span></li>
+                            <li><strong>Education Match:</strong> <span>{{ evaluation_result.education_score }} / 20</span></li>
+                            <li><strong>Project Relevance:</strong> <span>{{ evaluation_result.project_score }} / 20</span></li>
+                        </ul>
+
+                        <h3 class="section-heading">Detailed Reasoning:</h3>
+                        <div class="reasoning-section">
+                            <div class="reasoning-item">
+                                <h4 class="reasoning-title">Skills Reasoning:</h4>
+                                <p class="reasoning-text">{{ evaluation_result.reasoning.skills_reasoning }}</p>
+                            </div>
+                            <div class="reasoning-item">
+                                <h4 class="reasoning-title">Experience Reasoning:</h4>
+                                <p class="reasoning-text">{{ evaluation_result.reasoning.experience_reasoning }}</p>
+                            </div>
+                            <div class="reasoning-item">
+                                <h4 class="reasoning-title">Education Reasoning:</h4>
+                                <p class="reasoning-text">{{ evaluation_result.reasoning.education_reasoning }}</p>
+                            </div>
+                            <div class="reasoning-item">
+                                <h4 class="reasoning-title">Project Reasoning:</h4>
+                                <p class="reasoning-text">{{ evaluation_result.reasoning.project_reasoning }}</p>
+                            </div>
+                            <div class="reasoning-item">
+                                <h4 class="reasoning-title">Overall Assessment:</h4>
+                                <p class="reasoning-text">{{ evaluation_result.reasoning.overall_assessment }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </section>
+
+        </div>
+        {% if recommended_jobs %}
+            <section class="recommendations-panel data-card mt-8">
+                <h2 class="card-title">Job Recommendations for You</h2>
+                <p class="text-gray-600 mb-4">Based on your resume, here are some jobs you might be a great fit for:</p>
+                <div class="recommendations-list">
+                    {% for rec_job in recommended_jobs %}
+                        <div class="recommendation-item">
+                            <h3 class="rec-job-title">{{ rec_job.job_title }}</h3>
+                            <p class="rec-company-name">{{ rec_job.company_name }}</p>
+                            <p class="rec-score">Similarity Score: <strong>{{ "%.2f"|format(rec_job.score * 100) }}%</strong></p>
+                            {# Link to apply for the recommended job #}
+                            <a href="{{ url_for('candidate_apply') }}?job_id={{ rec_job.job_id }}" class="btn-primary rec-apply-btn">Apply Now</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+        
+        {% if uploaded_data.parsed_resume %}
+            <section class="debug-info data-card {% if not current_user.is_authenticated %}results-blurred{% endif %}">
+                {% if not current_user.is_authenticated %}
+                    <div class="login-prompt-overlay debug-overlay">
+                        <p class="overlay-message">
+                            Please <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('signup') }}">Sign Up</a> to view parsed resume data.
+                        </p>
+                    </div>
+                {% endif %}
+                <h2 class="card-title">Parsed Resume JSON (for debugging/review):</h2>
+                <pre><code class="language-json">{{ uploaded_data.parsed_resume }}</code></pre>
+            </section>
+        {% endif %}
+
+    </main> <footer class="footer-bar">
+        <div class="container">
+            <p>&copy; 2025 JOBSTIR - AI Resume Evaluator. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

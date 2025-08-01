@@ -3,113 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobStir - Sign Up</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" />
+    <title>JOBSTIR - signup</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Google Icon (optional, but good for aesthetics) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="page-wrapper">
-        <header class="header-section">
-            <h1>Sign Up for <span class="text-indigo-700">JobStir</span></h1>
-            <a href="{{ url_for('index') }}" class="btn-back-home">
-                Back to Home
-            </a>
-        </header>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">JOBSTIR</div>
+            <nav class="main-nav">
+                <span class="nav-label">For Recruiter</span>
+                <div class="auth-links">
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('signup') }}">Signup</a>
+                </div>
+            </nav>
+        </div>
+    </header>
 
-        <main>
-            <form id="signupForm">
+    <main class="container auth-container">
+        <section class="auth-card data-card">
+            <h2 class="card-title">signup for JOBSTIR</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages-container">
+                        <ul class="flashes">
+                            {% for category, message in messages %}
+                                <li class="flash-message {{ category }}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            <form method="POST" class="auth-form">
+                {{ form.csrf_token }}
                 <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" required class="input-field" placeholder="Choose a unique username">
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="input-field") }}
+                    {% if form.username.errors %}
+                        <ul class="errors">
+                            {% for error in form.username.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
                 <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" id="email" name="email" required class="input-field" placeholder="your@example.com">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="input-field") }}
+                    {% if form.password.errors %}
+                        <ul class="errors">
+                            {% for error in form.password.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
                 <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" required class="input-field" placeholder="Create a strong password">
+                    {{ form.confirm_password.label(class="form-label") }}
+                    {{ form.confirm_password(class="input-field") }}
+                    {% if form.confirm_password.errors %}
+                        <ul class="errors">
+                            {% for error in form.confirm_password.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
-                <div class="form-group">
-                    <label for="confirm_password" class="form-label">Confirm Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" required class="input-field" placeholder="Re-enter your password">
-                </div>
-                <button type="submit" class="btn-primary">
-                    Sign Up
-                </button>
+            
+<div class="form-group form-group-checkbox"> {# Add a specific class for checkbox styling if needed #}
+    {{ form.is_hr(class="input-checkbox") }} {# Use type="checkbox" in render_kw if not automatically done by WTForms #}
+    {{ form.is_hr.label(class="checkbox-label") }}
+    {% if form.is_hr.errors %}
+        <ul class="errors">
+            {% for error in form.is_hr.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+                {{ form.submit(class="btn-primary btn-auth-submit") }}
             </form>
 
-            <div id="messageBox" class="message-box"></div>
+            <div class="divider">OR</div>
 
-            <p class="text-center mt-4 text-sm">
-                Already have an account? <a href="{{ url_for('login') }}" class="text-blue-600 hover:underline">Log In here</a>
-            </p>
-        </main>
-    </div>
+            <a href="{{ url_for('google.login') }}" class="btn-google-login">
+                <i class="fab fa-google"></i> signup with Google
+            </a>
 
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevent default form submission
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        </section>
+    </main>
 
-            const form = event.target;
-            const formData = new FormData(form);
-            const messageBox = document.getElementById('messageBox');
-            const submitButton = form.querySelector('button[type="submit"]');
-
-            // Clear previous messages and hide message box
-            messageBox.classList.remove('show', 'message-success', 'message-error');
-            messageBox.textContent = '';
-
-            // Basic client-side password validation
-            const password = formData.get('password');
-            const confirmPassword = formData.get('confirm_password');
-
-            if (password !== confirmPassword) {
-                showMessage('Passwords do not match. Please try again.', 'error');
-                return;
-            }
-
-            submitButton.disabled = true; // Disable button during submission
-            submitButton.textContent = 'Signing Up...'; // Change button text
-
-            try {
-                const response = await fetch('/signup', {
-                    method: 'POST',
-                    body: JSON.stringify(Object.fromEntries(formData)), // Convert FormData to JSON object
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    showMessage(result.message, 'success');
-                    form.reset(); // Clear the form on success
-                    // Redirect to login page or dashboard after successful signup
-                    setTimeout(() => {
-                        window.location.href = result.redirect_url || '{{ url_for("login") }}';
-                    }, 1500); // Redirect after 1.5 seconds
-                } else {
-                    showMessage(result.error || 'An error occurred during signup.', 'error');
-                }
-            } catch (error) {
-                console.error('Network error or unexpected response:', error);
-                showMessage('An unexpected error occurred. Please try again.', 'error');
-            } finally {
-                submitButton.disabled = false; // Re-enable button
-                submitButton.textContent = 'Sign Up'; // Reset button text
-            }
-        });
-
-        function showMessage(message, type) {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = message;
-            messageBox.classList.remove('message-success', 'message-error'); // Remove previous types
-            messageBox.classList.add(`message-${type}`);
-            messageBox.classList.add('show'); // Show the message box
-        }
-    </script>
+    <footer class="footer-bar">
+        <div class="container">
+            <p>&copy; 2025 JOBSTIR - AI Resume Evaluator. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

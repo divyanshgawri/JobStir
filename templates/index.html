@@ -403,20 +403,24 @@
                 
                 
                 <ul class="nav-links">
-                    {% if user_logged_in %}
-                        {% if is_hr %}
-                            <li><a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a></li>
-                            <li><a href="{{ url_for('hr_job_upload') }}">Upload Job</a></li>
-                        {% else %}
-                            <li><a href="{{ url_for('candidate_apply') }}">Apply for Job</a></li>
-                            <li><a href="{{ url_for('client_portal') }}">My Applications</a></li>
-                        {% endif %}
-                    {% else %}
-                        <li><a href="{{ url_for('index') }}">Home</a></li>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    {% endif %}
-                </ul>
+    {% if user_logged_in %}
+        {# ADDED: Universal link for all logged-in users #}
+        <li><a href="{{ url_for('evaluate_resume') }}"><b>Evaluate Your Resume</b></a></li>
+        {% if is_hr %}
+            <li><a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a></li>
+            <li><a href="{{ url_for('hr_job_upload') }}">Upload Job</a></li>
+        {% else %}
+            <li><a href="{{ url_for('candidate_apply') }}">Apply for Job</a></li>
+            <li><a href="{{ url_for('client_portal') }}">My Applications</a></li>
+        {% endif %}
+    {% else %}
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        {# ADDED: Universal link for all non-logged-in users #}
+        <li><a href="{{ url_for('evaluate_resume') }}"><b>Evaluate Your Resume</b></a></li>
+    {% endif %}
+</ul>
                 
                 
                 <div class="nav-buttons">
@@ -440,21 +444,25 @@
             <button class="close-menu" id="closeMenu">✕</button>
         </div>
         <div class="mobile-nav-content">
-            <ul class="mobile-nav-links">
-                {% if user_logged_in %}
-                    {% if is_hr %}
-                        <li><a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a></li>
-                        <li><a href="{{ url_for('hr_job_upload') }}">Upload Job</a></li>
-                    {% else %}
-                        <li><a href="{{ url_for('candidate_apply') }}">Apply for Job</a></li>
-                        <li><a href="{{ url_for('client_portal') }}">My Applications</a></li>
-                    {% endif %}
-                {% else %}
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                {% endif %}
-            </ul>
+           <ul class="mobile-nav-links">
+    {% if user_logged_in %}
+        {# ADDED: Universal link for all logged-in users in mobile nav #}
+        <li><a href="{{ url_for('evaluate_resume') }}"><b>Evaluate Your Resume</b></a></li>
+        {% if is_hr %}
+            <li><a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a></li>
+            <li><a href="{{ url_for('hr_job_upload') }}">Upload Job</a></li>
+        {% else %}
+            <li><a href="{{ url_for('candidate_apply') }}">Apply for Job</a></li>
+            <li><a href="{{ url_for('client_portal') }}">My Applications</a></li>
+        {% endif %}
+    {% else %}
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        {# ADDED: Universal link for all non-logged-in users in mobile nav #}
+        <li><a href="{{ url_for('evaluate_resume') }}"><b>Evaluate Your Resume</b></a></li>
+    {% endif %}
+</ul>
             <div class="mobile-nav-buttons">
                 {% if user_logged_in %}
                     <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
@@ -473,19 +481,24 @@
                     <h1>The Smartest Way to Hire or Get Hired</h1>
                     <p>AI-Powered Hiring for Modern Teams. We connect exceptional talent with the world's most innovative companies.</p>
                     <div class="hero-buttons">
-                        {% if user_logged_in %}
-                            {% if is_hr %}
-                                <a href="{{ url_for('hr_job_upload') }}" class="btn btn-primary">Post a Job</a>
-                                <a href="{{ url_for('hr_dashboard') }}" class="btn btn-secondary">View Dashboard</a>
-                            {% else %}
-                                <a href="{{ url_for('candidate_apply') }}" class="btn btn-primary">Apply for a Job</a>
-                                <a href="{{ url_for('client_portal') }}" class="btn btn-secondary">My Applications</a>
-                            {% endif %}
-                        {% else %}
-                            <a href="{{ url_for('signup') }}" class="btn btn-primary">Post a Job</a>
-                            <a href="{{ url_for('signup') }}" class="btn btn-secondary">Find Opportunities</a>
-                        {% endif %}
-                    </div>
+    {# Universal Evaluate Resume button, perhaps prominent for all #}
+    <a href="{{ url_for('evaluate_resume') }}" class="btn btn-primary">Evaluate Your Resume Now!</a>
+    <a href="{{ url_for('candidate_apply') }}" class="btn btn-primary">Apply for a Job</a>
+    {% if user_logged_in %}
+        {% if is_hr %}
+            <a href="{{ url_for('hr_job_upload') }}" class="btn btn-secondary">Post a Job (HR)</a>
+            <a href="{{ url_for('hr_dashboard') }}" class="btn btn-secondary">View HR Dashboard</a>
+        {% else %}
+            <a href="{{ url_for('candidate_apply') }}" class="btn btn-secondary">Apply for a Job</a>
+            <a href="{{ url_for('client_portal') }}" class="btn btn-secondary">My Applications</a>
+        {% endif %}
+    {% else %}
+        
+        <a href="{{ url_for('signup') }}" class="btn btn-secondary">Get Started (Sign Up)</a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary">Already have an account? Log In</a>
+        
+    {% endif %}
+</div>
                 </div>
                 <div class="hero-image">
                     <svg viewBox="0 0 592 395" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -725,4 +738,4 @@
         });
     </script>
 </body>
-</html>
+</html> 

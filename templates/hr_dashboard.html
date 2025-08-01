@@ -42,6 +42,11 @@
                                     <p><strong>Email:</strong> {{ candidate_app.extracted_info.email or 'N/A' }}</p>
                                     <p><strong>Phone:</strong> {{ candidate_app.extracted_info.phone or 'N/A' }}</p>
                                     <p><strong>Submission Date:</strong> {{ candidate_app.submission_date }}</p>
+                                    <p><strong>Approve : </strong>
+                                    <form action="{{ url_for('approve_candidate', application_id=candidate_app.id) }}" method="POST" style="display:inline-block; margin-left: 10px;">
+                                    <button type="submit" class="btn-primary approve-btn">Approve Candidate</button>
+                                    </form>
+                                    </p>
                                     <p>
                                         <strong>Status:</strong> 
                                         <span class="eligibility-status 
@@ -147,30 +152,34 @@
                                         </div>
                                     {% endif %}
 
-                                    {% if candidate_app.extracted_info.projects %}
-                                        {# Collapsible section for Projects #}
-                                        <div class="collapsible-header" data-target="projects-{{ candidate_app.application_id }}">
-                                            <span>Projects</span>
-                                        </div>
-                                        <div id="projects-{{ candidate_app.application_id }}" class="collapsible-content hidden">
-                                            <div class="info-section">
-                                                <h5>Projects</h5>
-                                                <ul>
-                                                    {% for project in candidate_app.extracted_info.projects %}
-                                                        <li>
-                                                            {{ project.title or 'N/A' }} 
-                                                            {% if project.link %}(<a href="{{ project.link }}" target="_blank" class="project-link">{{ project.link }}</a>){% endif %}
-                                                            {% if project.insights %}
-                                                                <a href="{{ url_for('project_insights', job_id=job_data.id, candidate_id=candidate_app.application_id, project_index=loop.index0) }}" class="text-link">View Insights</a>
-                                                            {% else %}
-                                                                <span class="text-red-500 text-xs ml-2">(No insights available)</span>
-                                                            {% endif %}
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    {% endif %}
+                                   {% if candidate_app.extracted_info.projects %}
+    {# Collapsible section for Projects #}
+    <div class="collapsible-container">
+        <div class="collapsible-header" data-target="#projects-{{ candidate_app.id }}">
+            <span>Projects <i class="fas fa-chevron-down"></i></span>
+        </div>
+        <div id="projects-{{ candidate_app.id }}" class="collapsible-content hidden">
+            <div class="info-section">
+                <ul>
+                    {% for project in candidate_app.extracted_info.projects %}
+                        <li>
+                            {{ project.title or 'N/A' }} 
+                            {% if project.link %}(<a href="{{ project.link }}" target="_blank" class="project-link">{{ project.link }}</a>){% endif %}
+                            {% if project.insights %}
+                                {# MODIFIED: Ensure correct parameters for url_for and add debug text #}
+                                <a href="{{ url_for('project_insights', job_id=job_data.id, candidate_id=candidate_app.id, project_index=loop.index0) }}" class="text-link">View Insights</a>
+                                {# ADDED TEMPORARY DEBUG TEXT (REMOVE AFTER FIXING) #}
+                                <!-- <span style="color:red; font-size: 0.7em; margin-left: 5px;">(Job:{{ job_data.id[:4] }}... Cand:{{ candidate_app.id[:4] }}... Proj:{{ loop.index0 }})</span> -->
+                            {% else %}
+                                <span class="text-red-500 text-xs ml-2">(No insights available)</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -186,22 +195,123 @@
         <a href="{{ url_for('index') }}" class="back-link">&larr; Back to Home</a>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let currentCardIndex = 0; // Keep track of the currently displayed card
+        let applicationCards = document.querySelectorAll('.application-card'); // All candidate cards
 
-            collapsibleHeaders.forEach(header => {
-                header.addEventListener('click', function() {
-                    const targetId = this.dataset.target;
-                    const content = document.getElementById(targetId);
+        // --- Collapsible Sections Logic (already there, just ensuring it works) ---
+        const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+        collapsibleHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling; // Get the next sibling (collapsible-content)
+                const icon = this.querySelector('i'); // Assuming Font Awesome icon for chevron
 
-                    if (content) {
-                        this.classList.toggle('active');
-                        content.classList.toggle('hidden');
+                if (content) {
+                    content.classList.toggle('hidden');
+                    content.classList.toggle('visible'); // Toggle 'visible' class as well
+                    if (icon) {
+                        icon.classList.toggle('fa-chevron-down');
+                        icon.classList.toggle('fa-chevron-up');
                     }
-                });
+                    // Optional: Scroll to make the header visible if content expands
+                    if (content.classList.contains('visible')) {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
             });
         });
-    </script>
+
+        // --- Candidate Card Carousel / Navigation Logic (MODIFIED) ---
+        function showCard(index) {
+            if (applicationCards.length === 0) return;
+
+            // Ensure the index is within bounds
+            index = Math.max(0, Math.min(index, applicationCards.length - 1));
+            currentCardIndex = index; // Update the global index
+
+            // Hide all cards first
+            applicationCards.forEach(card => {
+                card.classList.remove('active');
+                card.classList.add('hidden');
+            });
+
+            // Show the selected card
+            applicationCards[currentCardIndex].classList.remove('hidden');
+            applicationCards[currentCardIndex].classList.add('active');
+
+            // Update button visibility (prev/next)
+            const prevBtn = document.getElementById('prevCardBtn');
+            const nextBtn = document.getElementById('nextCardBtn');
+
+            if (prevBtn) {
+                prevBtn.classList.toggle('hidden', currentCardIndex === 0);
+            }
+            if (nextBtn) {
+                nextBtn.classList.toggle('hidden', currentCardIndex === applicationCards.length - 1);
+            }
+        }
+
+        function nextCard() {
+            if (currentCardIndex < applicationCards.length - 1) {
+                showCard(currentCardIndex + 1);
+            }
+        }
+
+        function prevCard() {
+            if (currentCardIndex > 0) {
+                showCard(currentCardIndex - 1);
+            }
+        }
+
+        // Initialize display on page load
+        if (applicationCards.length > 0) {
+            // Check if applicationCards is inside job-card
+            applicationCards = document.querySelectorAll('.job-card .application-card'); // Correct selector
+            showCard(0); // Display the very first candidate card when the page loads
+        } else {
+            // Hide navigation buttons if there are no cards
+            const prevBtn = document.getElementById('prevCardBtn');
+            const nextBtn = document.getElementById('nextCardBtn');
+            if (prevBtn) prevBtn.classList.add('hidden');
+            if (nextBtn) nextBtn.classList.add('hidden');
+        }
+
+        // Attach event listeners to navigation buttons
+        const prevBtn = document.getElementById('prevCardBtn');
+        const nextBtn = document.getElementById('nextCardBtn');
+        if (prevBtn) prevBtn.addEventListener('click', prevCard);
+        if (nextBtn) nextBtn.addEventListener('click', nextCard);
+
+        // --- "Take Exam" Button Logic (from previous turns) ---
+        document.querySelectorAll('.btn-take-exam').forEach(button => {
+            button.addEventListener('click', function() {
+                const jobId = this.dataset.jobId;
+                const candidateId = this.dataset.candidateId;
+                
+                console.log(`DEBUG: Take Exam button clicked! Job ID: ${jobId}, Candidate ID: ${candidateId}`);
+
+                if (jobId && candidateId) {
+                    const examUrl = `/get_exam?job_id=${jobId}&candidate_id=${candidateId}`;
+                    window.location.href = examUrl; // Perform the redirection
+                } else {
+                    alert('Error: Missing job or candidate ID for the exam link.');
+                    console.error('ERROR: Missing data-job-id or data-candidate-id on Take Exam button.');
+                }
+            });
+        });
+
+        // --- Flash Messages Fade Out (if you had this globally) ---
+        const flashMessages = document.querySelectorAll('.flash-message');
+        flashMessages.forEach(msg => {
+            setTimeout(() => {
+                msg.style.opacity = '0';
+                msg.style.transition = 'opacity 0.5s ease-out';
+                setTimeout(() => msg.remove(), 500);
+            }, 5000);
+        });
+    });
+
+</script>
 </body>
 </html>

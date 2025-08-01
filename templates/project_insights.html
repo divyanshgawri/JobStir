@@ -218,26 +218,41 @@
         <div class="border-b border-gray-200 pb-5">
             <h2 class="text-2xl font-bold text-gray-800">Overview</h2>
         </div>
-
+        {% if not project %}
+            <div class="text-center py-8">
+                <p class="text-xl text-gray-600">Project not found or has been deleted.</p>
+            </div>
+        {% else %}
+            {% if not project.insights %}
+                <div class="text-center py-8">
+                    <p class="text-xl text-gray-600">No insights available for this project.</p>
+                    {% if project.link %}
+                        <p class="mt-4 text-gray-500">Insights generation from GitHub repository failed. Please ensure the repository exists and has a README.md file.</p>
+                    {% endif %}
+                </div>
+            {% else %}
         <!-- Purpose Card -->
-        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
-            <h3 class="text-xl font-semibold text-gray-700 mb-3">Purpose</h3>
-            <p class="text-gray-600 leading-relaxed">{{ project.insights.purpose if project.insights.purpose else 'N/A' }}</p>
-        </div>
+            <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3">Purpose</h3>
+                    <p class="text-gray-600 leading-relaxed">{{ project.insights.get('purpose', 'N/A') }}</p>
+                </div>
 
         <!-- Key Features Card -->
-        <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
-            <h3 class="text-xl font-semibold text-gray-700 mb-3">Key Features</h3>
-            {% if project.insights.key_features %}
-                <ul class="list-disc list-inside text-gray-600 space-y-2">
-                    {% for feature in project.insights.key_features %}
-                        <li>{{ feature }}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-gray-600">N/A</p>
+     <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3">Key Features</h3>
+                    {% if project.insights.get('key_features') %}
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            {% for feature in project.insights.get('key_features', []) %}
+                                <li>{{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-gray-600">N/A</p>
+                    {% endif %}
+                </div>
+
+                <!-- ... Rest of your existing cards with similar null checks ... -->
             {% endif %}
-        </div>
 
         <!-- Technologies Used Card -->
         <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
@@ -308,14 +323,16 @@
         </div>
 
         <!-- Project Link (if available) -->
-        {% if project.link %}
-            <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
-                <h3 class="text-xl font-semibold text-gray-700 mb-3">Project Link</h3>
-                <a href="{{ project.link }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 break-all underline">
-                    {{ project.link }}
-                </a>
-            </div>
+      {% if project.link %}
+                <div class="card bg-gray-50 p-6 rounded-lg shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3">Project Link</h3>
+                    <a href="{{ project.link }}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 break-all underline">
+                        {{ project.link }}
+                    </a>
+                </div>
+            {% endif %}
         {% endif %}
+
 
         <div class="text-center pt-8">
             <a href="{{ url_for('hr_dashboard') }}" class="btn-primary inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-lg shadow-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
