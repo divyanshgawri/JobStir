@@ -22,7 +22,6 @@ flask_dance
 flask
 flask_mail
 oauth2client
-secrets
 uuid
 sentence-transformers
 torch
