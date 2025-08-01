@@ -20,7 +20,7 @@ from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 from flask_bcrypt import Bcrypt # <--- ENSURE THIS IS IMPORTED
 
 from sentence_transformers import SentenceTransformer, util
-import torch 
+
 
 
 from flask_dance.contrib.google import make_google_blueprint # Ensure this import is at the top
