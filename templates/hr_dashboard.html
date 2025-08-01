@@ -48,6 +48,7 @@
                                     </form>
                                     </p>
                                     <p>
+                                        
                                         <strong>Status:</strong> 
                                         <span class="eligibility-status 
                                             {% if candidate_app.eligibility_status == 'Eligible' %}eligible
@@ -62,7 +63,7 @@
                                             {{ candidate_app.match_score or 'N/A' }}%
                                         </span>
                                     </p>
-                                    
+                               
                                     {# Collapsible section for Evaluation Reason #}
                                     <div class="collapsible-header" data-target="evaluation-reason-{{ candidate_app.application_id }}">
                                         <span>Evaluation Reason</span>
@@ -72,7 +73,7 @@
                                             <p>{{ candidate_app.eligibility_reason or 'N/A' }}</p>
                                         </div>
                                     </div>
-
+                                
                                     {% if candidate_app.exam_taken %}
                                         <p class="mt-4"><strong>Exam Taken:</strong> Yes</p>
                                         <p><strong>Exam Score:</strong> {{ candidate_app.exam_score or 'N/A' }}</p>

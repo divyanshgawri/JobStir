@@ -405,3 +405,46 @@ html, body {
         font-size: 22px;
     }
 }
+/* --- Professional Logo Styling --- */
+
+/* This targets the <a> tag inside the .logo div */
+.logo a {
+    text-decoration: none; /* Remove underline from the link */
+    color: var(--primary-blue); /* Use your primary brand color */
+    font-size: 28px; /* A prominent font size */
+    font-weight: 800; /* Extra bold for emphasis */
+    letter-spacing: -0.5px; /* Tighten the letter spacing slightly */
+    transition: color 0.3s ease; /* Smooth color transition on hover */
+    
+    /* Add a subtle text shadow for depth */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add a subtle gradient effect for a more modern look */
+/* If you don't want a gradient, you can remove this block */
+.logo a.gradient-text {
+    background: linear-gradient(45deg, var(--primary-blue), #6366F1); /* A nice blue-purple gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Hover effect: Change color or gradient position */
+.logo a:hover {
+    color: #2563EB; /* A slightly darker shade of blue on hover */
+    /* If using gradient, you can shift it like this: */
+    /* background-position: 100% 0; */
+}
+
+/* Ensure the parent container handles alignment */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+/* Make sure your root color variables are defined in the file where this CSS is placed */
+:root {
+    --primary-blue: #3B82F6;
+    --bg-white: #FFFFFF;
+}

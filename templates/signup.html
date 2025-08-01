@@ -12,9 +12,12 @@
 <body>
     <header class="top-nav">
         <div class="container nav-content">
-            <div class="logo">JOBSTIR</div>
+            <div class="logo">
+                <picture>
+                    <img src="{{ url_for('static', filename='images/ok.png') }}" alt="JobStir Logo" class="logo-img" style="height: 38px; width: auto; margin-left: -8px;margin-right: 10px; vertical-align: middle;">                
+                </picture>
+                <a href="{{ url_for('index') }}">JOBSTIR</a></div>
             <nav class="main-nav">
-                <span class="nav-label">For Recruiter</span>
                 <div class="auth-links">
                     <a href="{{ url_for('login') }}">Login</a>
                     <a href="{{ url_for('signup') }}">Signup</a>

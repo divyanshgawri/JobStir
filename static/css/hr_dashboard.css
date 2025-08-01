@@ -729,70 +729,101 @@ a.text-link:hover {
 }
 
 /* Add these rules to your hr_dashboard.css file */
+/* Add to hr_dashboard.css */
 
-/* Ensure basic button styles are consistent */
+/* Define color for the new 'approved' status badge */
+.eligibility-status.approved {
+    background-color: var(--success-green);
+    color: white;
+}
+
+/* Style for the 'Approved!' message (e.g., after button disappears) */
+.status-approved {
+    color: var(--success-green);
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+/* Style for the 'Awaiting Exam Submission' message */
+.status-pending-action {
+    color: var(--warning-orange);
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+/* Ensure these root variables are defined in your hr_dashboard.css or a linked global one */
+/* :root {
+    --success-green: #10B981;
+    --warning-orange: #F59E0B;
+}
+*//* --- Professional Styling for HR Action Buttons --- */
+
+/* Base style for the Approve Candidate button */
 .btn-primary.approve-btn {
-    /* Inherit main btn-primary styles but allow specific overrides */
-    background-color: var(--primary-blue); /* Your main blue color */
-    color: var(--bg-white); /* White text */
-    padding: 8px 16px; /* Slightly smaller padding for a button within a list item */
+    /* Ensures consistent button feel with padding, border-radius, font */
+    background-color: var(--primary-blue);
+    color: var(--bg-white);
+    padding: 8px 16px; 
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9rem; /* Slightly smaller font size */
+    font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
+    display: inline-flex; /* Use flex to align icon and text */
+    align-items: center;
+    gap: 8px; /* Space between text and icon */
+    
+    /* Smooth transitions for hover/active states */
     transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    display: inline-block; /* Essential for padding and sizing */
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(59, 130, 246, 0.15); /* Soft shadow */
+    
+    /* A subtle shadow for depth */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Hover effect: lift and darken */
 .btn-primary.approve-btn:hover {
-    background-color: #2563EB; /* Slightly darker blue on hover */
-    transform: translateY(-1px); /* Slight lift effect */
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.25); /* Enhanced shadow on hover */
+    background-color: #2563EB;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* Active effect: press down */
 .btn-primary.approve-btn:active {
-    background-color: #1D4ED8; /* Even darker blue on active */
+    background-color: #1D4ED8;
     transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2); /* Flat shadow on active */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-/* Optional: Styles for status indicators (if not already defined) */
+/* New status indicators for better visual feedback */
 .status-pending-action {
-    color: var(--warning-orange); /* Or a yellow/orange color */
+    color: var(--warning-orange);
     font-weight: 600;
-    margin-left: 10px;
 }
 
 .status-approved {
-    color: var(--success-green); /* Green color */
+    color: var(--success-green);
     font-weight: 600;
-    margin-left: 10px;
 }
 
 .status-not-eligible {
-    color: var(--error-red); /* Red color */
+    color: var(--error-red);
     font-weight: 600;
-    margin-left: 10px;
 }
 
-/* Ensure the hr-actions container helps with layout if needed */
+/* General container for HR actions to ensure consistent spacing and alignment */
 .hr-actions {
-    margin-top: 15px; /* Space above buttons/status */
-    display: flex; /* Use flex to align items */
+    margin-top: 15px; /* Spacing below the candidate info */
+    display: flex;
     align-items: center;
-    gap: 10px; /* Space between button and text */
+    gap: 10px; /* Space between different buttons or status indicators */
 }
 
-/* Add or ensure these root variables are defined in your hr_dashboard.css or a global style.css */
-/* :root {
+/* Add or ensure these root variables are defined in your hr_dashboard.css or a linked global one */
+:root {
     --primary-blue: #3B82F6; 
     --bg-white: #FFFFFF;
     --success-green: #10B981;
     --error-red: #EF4444;
     --warning-orange: #F59E0B;
 }
-*/
