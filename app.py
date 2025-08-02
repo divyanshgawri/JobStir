@@ -2486,5 +2486,5 @@ if __name__ == '__main__':
         print("DEBUG: Skipping one-time setup in reloader process.")
 
     print("DEBUG: About to call app.run(). Server should start now.")
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=5000)
     print("DEBUG: app.run() has finished (this message appears after server stops).")
