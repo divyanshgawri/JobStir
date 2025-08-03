@@ -873,7 +873,7 @@ a.text-link:hover {
     outline: none;
 }
 
-/* The "Copy" button */
+
 .btn-copy {
     background-color: var(--primary-blue);
     color: var(--bg-white);
