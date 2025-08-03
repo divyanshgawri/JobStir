@@ -28,6 +28,14 @@
                     <h2>{{ job_data.job_title }}</h2>
                     <h3>{{ job_data.company_name }}</h3>
                     <p><strong>Job ID:</strong> {{ job_data.id }}</p>
+                    {# ADDED: Sharable link button and display area #}
+        <div class="sharable-link-container">
+        <button class="btn-secondary share-btn" onclick="toggleShareLink(this)">Share Job</button>
+        <div class="share-link-box hidden">
+            <input type="text" class="share-link-input" value="{{ job_data.sharable_link }}" readonly>
+            <button class="btn-copy" onclick="copyShareLink(this)">Copy</button>
+        </div>
+    </div>
                     <p><strong>Description:</strong> {{ job_data.job_description }}</p>
 
                     <div class="candidate-list">
@@ -311,6 +319,25 @@
                 setTimeout(() => msg.remove(), 500);
             }, 5000);
         });
+    });
+        function toggleShareLink(button) {
+        const shareBox = button.nextElementSibling;
+        shareBox.classList.toggle('hidden');
+    }
+
+    function copyShareLink(button) {
+        const input = button.previousElementSibling;
+        input.select();
+        document.execCommand('copy');
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+            button.textContent = 'Copy';
+        }, 2000);
+    }
+    // END ADDED JavaScript
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // ... (your existing JavaScript code) ...
     });
 
 </script>

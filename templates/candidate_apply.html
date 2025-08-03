@@ -182,16 +182,16 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RecruitMate - Apply for a Job</title>
+    <title>JOBSTIR - Apply for a Job</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/candidate_apply.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="page-wrapper">
@@ -199,208 +199,150 @@
             <h1>Apply for a Job</h1>
         </header>
 
-        <!-- Job Listings Section -->
-        <section id="jobListingsSection" class="job-listings-section visible">
-            <h2 class="section-title">Available Opportunities</h2>
-            <div id="jobCardsContainer" class="job-cards-grid">
-                <!-- Job cards will be dynamically rendered here by JS -->
-            </div>
-        </section>
-
-        <!-- Job Detail & Application Section (Initially hidden) -->
-        <section id="jobDetailSection" class="job-detail-section hidden">
-            <button id="backToListingsBtn" class="btn-secondary-back">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                </svg>
-                Back to Listings
-            </button>
-            <div class="job-details-content">
-                <h2 id="detailJobTitle" class="job-detail-title"></h2>
-                <p id="detailCompanyName" class="job-detail-company"></p>
-                <div class="job-detail-description-box">
-                    <h3>Job Description</h3>
-                    <p id="detailJobDescription" class="job-detail-description"></p>
-                </div>
-
-                <form id="applyForm" class="mt-8">
-                    <input type="hidden" id="selectedJobId" name="job_id">
-                    <div class="form-group">
-                        <label for="resume">Upload Your Resume (PDF, DOCX):</label>
-                        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+        <main class="container main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages-container">
+                        <ul class="flashes">
+                            {% for category, message in messages %}
+                                <li class="flash-message {{ category }}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <button type="submit" class="btn-submit">
-                        Submit Application
+                {% endif %}
+            {% endwith %}
+
+            {# --- MODIFIED: Conditional Rendering of Job List vs. Single Job Details --- #}
+            {% if selected_job %}
+                {# Display the form for a single selected job #}
+                <section id="jobDetailSection" class="job-detail-section visible fade-in">
+                    <button id="backToListingsBtn" class="btn-secondary-back">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                         </svg>
+                        Back to Listings
                     </button>
-                </form>
-                <div id="messageBox" class="message-success hidden"></div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Hidden script tag to safely pass JSON data from Flask to JavaScript -->
-    <script id="availableJobsData" type="application/json">
-        {{ available_jobs | tojson }}
-    </script>
-
-    <script>
-        let availableJobs = []; // Initialize as empty array
-
-        try {
-            // Get the JSON string from the hidden script tag
-            const jobsDataElement = document.getElementById('availableJobsData');
-            const jobsJsonString = jobsDataElement.textContent;
-
-            // Parse the JSON string
-            availableJobs = JSON.parse(jobsJsonString);
-
-            // Ensure it's an array, even if Flask sends null or something else unexpected
-            if (!Array.isArray(availableJobs)) {
-                console.error("availableJobs is not an array after parsing, received:", availableJobs);
-                availableJobs = []; // Fallback to empty array
-            }
-        } catch (e) {
-            console.error("Error parsing availableJobs from Flask (JSON.parse error or element not found):", e);
-            availableJobs = []; // Fallback to empty array on error
-            // Optionally, show a user-facing message about job loading failure
-            document.addEventListener('DOMContentLoaded', () => {
-                showMessage('Failed to load job opportunities. Please try refreshing the page.', 'error');
-            });
-        }
-
-        const jobListingsSection = document.getElementById('jobListingsSection');
-        const jobDetailSection = document.getElementById('jobDetailSection');
-        const jobCardsContainer = document.getElementById('jobCardsContainer');
-        const backToListingsBtn = document.getElementById('backToListingsBtn');
-        const detailJobTitle = document.getElementById('detailJobTitle');
-        const detailCompanyName = document.getElementById('detailCompanyName');
-        const detailJobDescription = document.getElementById('detailJobDescription');
-        const selectedJobIdInput = document.getElementById('selectedJobId');
-        const applyForm = document.getElementById('applyForm');
-        const messageBox = document.getElementById('messageBox');
-
-        // Function to display job listings
-        function showJobListings() {
-            jobDetailSection.classList.remove('visible');
-            jobDetailSection.classList.add('hidden');
-            jobListingsSection.classList.remove('hidden');
-            jobListingsSection.classList.add('visible');
-            messageBox.classList.add('hidden'); // Hide message box when switching views
-            applyForm.reset(); // Clear form fields when going back to listings
-        }
-
-        // Function to display job details
-        function showJobDetails(jobId) {
-            const selectedJob = availableJobs.find(job => job.id == jobId);
-            if (!selectedJob) {
-                showMessage('Job details not found.', 'error');
-                return;
-            }
-
-            detailJobTitle.textContent = selectedJob.title;
-            detailCompanyName.textContent = `at ${selectedJob.company_name}`; // Display company name
-            detailJobDescription.textContent = selectedJob.description;
-            selectedJobIdInput.value = selectedJob.id; // Set the hidden job ID
-
-            jobListingsSection.classList.remove('visible');
-            jobListingsSection.classList.add('hidden');
-            jobDetailSection.classList.remove('hidden');
-            jobDetailSection.classList.add('visible');
-            messageBox.classList.add('hidden'); // Hide message box when showing details
-        }
-
-        // Render job cards
-        function renderJobCards() {
-            jobCardsContainer.innerHTML = ''; // Clear existing cards
-            if (availableJobs.length === 0) {
-                jobCardsContainer.innerHTML = '<p class="text-center text-gray-600 col-span-full">No job opportunities available at the moment. Please check back later!</p>';
-                return;
-            }
-            availableJobs.forEach(job => {
-                const jobCard = document.createElement('div');
-                jobCard.classList.add('job-card');
-                jobCard.dataset.jobId = job.id;
-                jobCard.innerHTML = `
-                    <h3>${job.title}</h3>
-                    <p class="company-name">${job.company_name}</p>
-                `;
-                jobCard.addEventListener('click', () => showJobDetails(job.id));
-                jobCardsContainer.appendChild(jobCard);
-            });
-        }
-
-        // Event Listeners
-        backToListingsBtn.addEventListener('click', showJobListings);
-
-        applyForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            messageBox.style.display = 'none';
-            messageBox.classList.remove('message-success', 'message-error');
-
-            const formData = new FormData();
-            const resumeFile = document.getElementById('resume').files[0];
-            const jobId = selectedJobIdInput.value; // Get job ID from the hidden input
-
-            if (!jobId) {
-                showMessage('No job selected. Please go back and select a job.', 'error');
-                return;
-            }
-
-            if (resumeFile) {
-                formData.append('resume', resumeFile);
-                formData.append('job_id', jobId);
-            } else {
-                showMessage('Please select a resume file.', 'error');
-                return;
-            }
-
-            // Disable button and show loading state
-            const submitButton = applyForm.querySelector('.btn-submit');
-            submitButton.disabled = true;
-            submitButton.innerHTML = 'Submitting... <svg class="animate-spin h-5 w-5 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-
-
-            try {
-                const response = await fetch('/candidate_apply', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    showMessage(result.message, 'success');
-                    applyForm.reset(); // Clear form on success
-                    // Optionally, redirect or show a confirmation screen
-                    setTimeout(() => showJobListings(), 2000); // Go back to listings after 2 seconds
-                } else {
-                    showMessage(result.error || 'An error occurred during submission.', 'error');
+                    <div class="job-details-content">
+                        <h2 id="detailJobTitle" class="job-detail-title">{{ selected_job.job_title }}</h2>
+                        <p id="detailCompanyName" class="job-detail-company">at {{ selected_job.company_name }}</p>
+                        <div class="job-detail-description-box">
+                            <h3>Job Description</h3>
+                            <p id="detailJobDescription" class="job-detail-description">{{ selected_job.job_description }}</p>
+                        </div>
+                        <form id="applyForm" class="mt-8">
+                            <input type="hidden" id="selectedJobId" name="job_id" value="{{ selected_job.id }}">
+                            <div class="form-group">
+                                <label for="resume">Upload Your Resume (PDF only):</label>
+                                <input type="file" id="resume" name="resume" accept=".pdf" required>
+                            </div>
+                            <button type="submit" class="btn-submit">
+                                Submit Application
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                                </svg>
+                            </button>
+                        </form>
+                        <div id="messageBox" class="message-success hidden"></div>
+                    </div>
+                </section>
+            {% else %}
+                {# Display the list of all jobs #}
+                <section id="jobListingsSection" class="job-listings-section visible fade-in">
+                    <h2 class="section-title">Available Opportunities</h2>
+                    <div id="jobCardsContainer" class="job-cards-grid">
+                        {% if available_jobs %}
+                            {% for job in available_jobs %}
+                                <div class="job-card" data-job-id="{{ job.id }}">
+                                    <h3>{{ job.title }}</h3>
+                                    <p class="company-name">{{ job.company_name }}</p>
+                                    <p class="description">{{ job.description | truncate(150, true) }}</p>
+                                    <a href="{{ url_for('candidate_apply', job_id=job.id) }}" class="btn-primary-small">Apply for this Job</a>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-center text-gray-600 col-span-full">No job opportunities available at the moment. Please check back later!</p>
+                        {% endif %}
+                    </div>
+                </section>
+            {% endif %}
+            {# --- END MODIFIED --- #}
+        </main>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // --- Back to Listings Button Logic ---
+                const backToListingsBtn = document.getElementById('backToListingsBtn');
+                if (backToListingsBtn) {
+                    backToListingsBtn.addEventListener('click', () => {
+                        window.location.href = "{{ url_for('candidate_apply') }}";
+                    });
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('An unexpected error occurred. Please try again.', 'error');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Submit Application <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" /></svg>';
-            }
-        });
 
-        function showMessage(message, type) {
-            messageBox.textContent = message;
-            messageBox.classList.remove('hidden', 'message-success', 'message-error');
-            messageBox.classList.add(type === 'success' ? 'message-success' : 'message-error');
-            messageBox.style.display = 'block'; // Ensure it's displayed
-        }
+                // --- Form Submission Logic ---
+                const applyForm = document.getElementById('applyForm');
+                const messageBox = document.getElementById('messageBox');
+                if (applyForm) {
+                    applyForm.addEventListener('submit', async function(event) {
+                        event.preventDefault();
+                        messageBox.style.display = 'none';
+                        messageBox.classList.remove('message-success', 'message-error');
 
-        // Initial render when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            renderJobCards();
-            showJobListings(); // Start by showing the job listings
-        });
-    </script>
+                        const formData = new FormData(this);
+                        const resumeFile = document.getElementById('resume').files[0];
+                        const jobId = document.getElementById('selectedJobId').value;
+
+                        if (!jobId) {
+                            showMessage('No job selected. Please go back and select a job.', 'error');
+                            return;
+                        }
+                        if (!resumeFile) {
+                            showMessage('Please select a resume file.', 'error');
+                            return;
+                        }
+                        formData.append('resume', resumeFile);
+                        formData.append('job_id', jobId);
+
+                        const submitButton = applyForm.querySelector('.btn-submit');
+                        submitButton.disabled = true;
+                        submitButton.innerHTML = 'Submitting... <svg class="animate-spin h-5 w-5 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+
+                        try {
+                            const response = await fetch('/candidate_apply', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            
+                            const result = await response.json();
+
+                            if (response.ok) {
+                                showMessage(result.message, 'success');
+                                applyForm.reset();
+                                setTimeout(() => {
+                                    window.location.href = "{{ url_for('client_portal') }}";
+                                }, 2000);
+                            } else {
+                                showMessage(result.error || 'An error occurred during submission.', 'error');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            showMessage('An unexpected error occurred. Please try again.', 'error');
+                        } finally {
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = 'Submit Application <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" /></svg>';
+                        }
+                    });
+                }
+
+                function showMessage(message, type) {
+                    if (messageBox) {
+                        messageBox.textContent = message;
+                        messageBox.className = '';
+                        messageBox.classList.add(type === 'success' ? 'message-success' : 'message-error');
+                        messageBox.style.display = 'block';
+                    }
+                }
+            });
+        </script>
+    </div>
 </body>
 </html>

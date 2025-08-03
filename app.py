@@ -416,14 +416,30 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f'<User {self.username}>'
 
+# class Job(db.Model):
+#     __table_args__ = {'extend_existing': True} # <--- ADD THIS LINE
+#     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+#     company_name = db.Column(db.String(100), nullable=False)
+#     job_title = db.Column(db.String(100), nullable=False)
+#     job_description = db.Column(db.Text, nullable=False)
+#     date_posted = db.Column(db.String(50), nullable=False)
+
+#     applications = db.relationship('CandidateApplication', backref='job', lazy=True, cascade="all, delete-orphan")
+
+#     def __repr__(self):
+#         return f'<Job {self.job_title} at {self.company_name}>'
+
 class Job(db.Model):
-    __table_args__ = {'extend_existing': True} # <--- ADD THIS LINE
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     company_name = db.Column(db.String(100), nullable=False)
     job_title = db.Column(db.String(100), nullable=False)
     job_description = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.String(50), nullable=False)
+    # Correct, single definition of the foreign key for the HR user
+    hr_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+    # This relationship creates the 'applications' attribute
     applications = db.relationship('CandidateApplication', backref='job', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
@@ -1264,7 +1280,9 @@ temp_analysis_cache = {}
 def index():
     user_logged_in = current_user.is_authenticated
     is_hr = (current_user.is_authenticated and getattr(current_user, 'is_hr', False)) 
-    return render_template('index.html', user_logged_in=user_logged_in, is_hr=is_hr)
+    all_jobs_from_db = Job.query.order_by(Job.date_posted.desc()).all()
+
+    return render_template('index.html', user_logged_in=user_logged_in, is_hr=is_hr,jobs_data=all_jobs_from_db)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -1322,14 +1340,83 @@ def submit_contact():
         flash(f"❌ Something went wrong. Please try again later: {e}", "error")
         return redirect(url_for('contact'))
 
+# --- New Route for Magic Moment Page (MODIFIED for session tracking) ---
+@app.route('/magic_moment')
+@login_required # Ensure only logged-in users can access this page
+def magic_moment():
+    # --- ADDED: Check session variable to only show the page once ---
+    # If the flag is already True, it means the user has seen this page before.
+    if session.get('magic_moment_seen', False):
+        # If there's a pending analysis, redirect there, otherwise to index
+        if 'pending_analysis_id' in session:
+            return redirect(url_for('evaluate_resume'))
+        elif current_user.is_hr: # Redirect HRs to their dashboard if they've seen magic moment
+            return redirect(url_for('hr_dashboard'))
+        else:
+            return redirect(url_for('index')) # Default for regular users
+    
+    # If this is the first visit (magic_moment_seen is False or not set), set it to True
+    session['magic_moment_seen'] = True
+    
+    # Check if a pending resume analysis exists, redirect there first if needed
+    # This takes precedence over the magic moment page itself if an analysis is waiting
+    if 'pending_analysis_id' in session:
+        return redirect(url_for('evaluate_resume'))
+
+    # Render the magic moment page for the first time
+    return render_template('magic_moment.html')
+
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     form = RegisterForm()
+#     if form.validate_on_submit():
+#         try:
+#             hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            
+#             is_hr_user = form.is_hr.data # This will be True if checked, False otherwise
+            
+#             new_user = User(
+#                 username=form.username.data, 
+#                 password=hashed_password, 
+#                 google_id=None, 
+#                 is_hr=is_hr_user
+#             )
+            
+#             db.session.add(new_user)
+#             db.session.commit()
+            
+#             login_user(new_user)
+#             flash('Registration successful! You are now logged in.', 'success')
+            
+#             next_page = request.args.get('next')
+#             if next_page:
+#                 return redirect(next_page)
+#             elif 'pending_analysis_id' in session:
+#                 return redirect(url_for('evaluate_resume'))
+#             elif new_user.is_hr:
+#                 # return redirect(url_for('index'))
+#                 return redirect(url_for('magic_moment'))
+#             else:
+#                 # return redirect(url_for('index')) # Default for regular users
+#                 return redirect(url_for('magic_moment'))
+            
+                
+#         except ValidationError as e: # WTForms validation error
+#             flash(str(e), 'error')
+#             db.session.rollback() # Rollback in case of DB error
+#         except Exception as e: # Catch other potential errors
+#             flash(f'An unexpected error occurred during registration: {e}', 'error')
+#             db.session.rollback()
+            
+#     return render_template('signup.html', form=form)
+# --- Flask Routes (MODIFIED SIGNUP ROUTE for magic moment session tracking) ---
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
     if form.validate_on_submit():
         try:
             hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            
-            is_hr_user = form.is_hr.data # This will be True if checked, False otherwise
+            is_hr_user = form.is_hr.data
             
             new_user = User(
                 username=form.username.data, 
@@ -1344,16 +1431,19 @@ def signup():
             login_user(new_user)
             flash('Registration successful! You are now logged in.', 'success')
             
+            # --- ADDED: Set session variable for magic moment tracking ---
+            session['magic_moment_seen'] = False # New user hasn't seen it yet
+            # --- END ADDED ---
+
             next_page = request.args.get('next')
             if next_page:
                 return redirect(next_page)
             elif 'pending_analysis_id' in session:
                 return redirect(url_for('evaluate_resume'))
-            elif new_user.is_hr:
-                return redirect(url_for('hr_dashboard'))
-            else:
-                return redirect(url_for('index')) # Default for regular users
-                
+            
+            # --- MODIFIED: Redirect all new users to the magic_moment page ---
+            return redirect(url_for('magic_moment'))
+            
         except ValidationError as e: # WTForms validation error
             flash(str(e), 'error')
             db.session.rollback() # Rollback in case of DB error
@@ -1383,12 +1473,13 @@ def hr_job_upload():
         date_posted = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         new_job = Job(
-            id=job_id,
-            company_name=company_name,
-            job_title=job_title,
-            job_description=job_description,
-            date_posted=date_posted
-        )
+        id=job_id,
+        company_name=company_name,
+        job_title=job_title,
+        job_description=job_description,
+        date_posted=date_posted,
+        hr_user_id=current_user.id   # Track which HR uploaded
+)
         
         try:
             db.session.add(new_job)
@@ -1401,26 +1492,176 @@ def hr_job_upload():
             flash(f'An error occurred uploading the job: {e}', 'error')
             return render_template('hr_job_upload.html')
     return render_template('hr_job_upload.html')
+# @app.route('/candidate_apply', methods=['GET', 'POST'])
+# @login_required
+# def candidate_apply():
+#     # Fetch all available jobs from the database
+#     all_jobs_from_db = Job.query.all()
+#     available_jobs = [
+#         {
+#             "id": job.id,
+#             "title": job.job_title,
+#             "company_name": job.company_name,
+#             "description": job.job_description
+#         }
+#         for job in all_jobs_from_db
+#     ]
+
+#     if request.method == 'POST':
+#         job_id_to_apply = request.form.get('job_id')
+#         candidate_user_id = str(current_user.id) # Use current_user.id for the logged-in user
+        
+#         # Initialize variables with default/empty values
+#         filepath = None
+#         extracted_info = {}
+#         eligibility_result = {"decision": "Undetermined", "score": 0, "reason": "Processing did not complete."}
+#         exam_questions = None
+
+#         selected_job = Job.query.get(job_id_to_apply)
+#         if not selected_job:
+#             return jsonify({"error": "Invalid Job ID selected."}), 400
+
+#         resume_file = request.files.get('resume')
+#         if not resume_file or resume_file.filename == '':
+#             return jsonify({"error": "No resume file selected."}), 400
+
+#         if not allowed_file(resume_file.filename):
+#             return jsonify({"error": "Invalid file type. Only PDF files are allowed."}), 400
+
+#         filepath = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4()) + "_" + resume_file.filename)
+#         try:
+#             resume_file.save(filepath)
+#         except Exception as e:
+#             return jsonify({"error": f"Failed to save resume file: {e}"}), 500
+
+#         resume_text = extract_text_from_pdf(filepath)
+#         if not resume_text:
+#             os.remove(filepath)
+#             return jsonify({"error": "Failed to extract text from resume. Please ensure it's a valid PDF."}), 400
+
+#         extracted_info = extract_resume_info_llm(resume_text)
+#         if "error" in extracted_info:
+#             os.remove(filepath)
+#             return jsonify({"error": f"Failed to extract resume info: {extracted_info['error']}"}), 500
+
+#         job_description = selected_job.job_description
+        
+#         processed_projects = []
+#         if 'projects' in extracted_info and extracted_info['projects']:
+#             for project in extracted_info['projects']:
+#                 if project.get('link') and 'github.com' in project['link']:
+#                     readme_content = fetch_github_readme(project['link'])
+#                     if readme_content:
+#                         insights = generate_project_insights(readme_content)
+#                         if insights:
+#                             project['insights'] = insights
+#                 processed_projects.append(project)
+#         extracted_info['projects'] = processed_projects
+
+#         eligibility_result = evaluate_candidate_llm(extracted_info, job_description)
+
+#         if eligibility_result.get("decision") == "Not Eligible":
+#             eligibility_result["reason"] = generate_detailed_feedback(
+#                 extracted_info, job_description, eligibility_result.get("score", 0)
+#             )
+#         elif eligibility_result.get("decision") == "Eligible":
+#             eligibility_result["reason"] = generate_selection_reason(
+#                 extracted_info, job_description, eligibility_result.get("score", 0)
+#             )
+
+#         if eligibility_result.get("decision") == "Eligible":
+#             exam_questions = generate_exam_llm(job_description)
+#             if exam_questions is None:
+#                 if "Exam generation failed" not in eligibility_result["reason"]:
+#                     eligibility_result["reason"] += " (Note: Exam generation failed, please contact HR.)"
+#                 eligibility_result["decision"] = "Eligible (Exam Gen Failed)"
+        
+#         # --- Create new_application object and save to DB ---
+#         new_application = CandidateApplication(
+#             job_id=selected_job.id, # Link to the Job via foreign key
+#             candidate_user_id=candidate_user_id, # Use Flask-Login user ID
+#             submission_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+#             eligibility_status=eligibility_result.get("decision"),
+#             match_score=eligibility_result.get("score", 0),
+#             eligibility_reason=eligibility_result.get("reason", "N/A"),
+#             extracted_info=extracted_info, # Uses the @property setter
+#             exam_questions=exam_questions, # Uses the @property setter
+#             exam_taken=False, # Initially false, updated by submit_exam
+#             exam_score=None,
+#             exam_feedback=[],
+#             submitted_answers=[],
+#             resume_filepath=filepath # Store resume file path
+#         )
+
+#         try:
+#             db.session.add(new_application)
+#             db.session.commit()
+
+#             # --- Email Sending Logic for Eligible Candidates (Correctly placed) ---
+#             if new_application.eligibility_status == "Eligible" and new_application.exam_taken is False:
+#                 candidate_email = new_application.extracted_info.get('email')
+#                 candidate_name = new_application.extracted_info.get('name', 'Candidate')
+                
+#                 if candidate_email:
+#                     send_exam_invitation_email(
+#                         recipient_email=candidate_email,
+#                         candidate_name=candidate_name,
+#                         job_title=selected_job.job_title,
+#                         job_id=selected_job.id,
+#                         application_id=new_application.id
+#                     )
+#                 else:
+#                     print(f"WARNING: No email found for candidate {new_application.id}. Cannot send exam invite.")
+#             # --- End Email Sending Logic ---
+
+#             # Optionally, upload to Google Sheet if that integration is active
+#             # if candidates_worksheet is not None: # Check if Google Sheets is initialized
+#             #     upload_success = upload_candidate_to_master_sheet(new_application.id, new_application, selected_job.id)
+#             #     if not upload_success:
+#             #         print(f"WARNING: Failed to upload candidate application {new_application.id} to Google Sheet.")
+#             # else:
+#             #     print("WARNING: Google Sheets candidates_worksheet not initialized. Skipping upload to sheet.")
+            
+#             flash('Application submitted successfully!', 'success')
+#             return jsonify({"message": "Application submitted successfully!", "application_id": new_application.id}), 200
+#         except Exception as e:
+#             db.session.rollback()
+#             return jsonify({"error": f"Failed to save application: {e}"}), 500
+    
+#     return render_template('candidate_apply.html', available_jobs=available_jobs)
 @app.route('/candidate_apply', methods=['GET', 'POST'])
 @login_required
 def candidate_apply():
-    # Fetch all available jobs from the database
-    all_jobs_from_db = Job.query.all()
-    available_jobs = [
-        {
-            "id": job.id,
-            "title": job.job_title,
-            "company_name": job.company_name,
-            "description": job.job_description
-        }
-        for job in all_jobs_from_db
-    ]
+    selected_job_id = request.args.get('job_id')
+    selected_job_details = None
+    available_jobs = [] # This will be populated only if no specific job is requested
+
+    if selected_job_id:
+        # If a job_id is provided in the URL, fetch only that job
+        selected_job_details = Job.query.get(selected_job_id)
+        if not selected_job_details:
+            flash('The job you are looking for was not found.', 'warning')
+            # If job not found, reset selected_job_id to show all available jobs instead
+            selected_job_id = None 
+            # And proceed to load all jobs below
+    
+    # If no specific job was requested or the requested job wasn't found, load all available jobs
+    if not selected_job_details:
+        all_jobs_from_db = Job.query.order_by(Job.date_posted.desc()).all()
+        available_jobs = [
+            {
+                "id": job.id,
+                "title": job.job_title,
+                "company_name": job.company_name,
+                "description": job.job_description
+            }
+            for job in all_jobs_from_db
+        ]
 
     if request.method == 'POST':
         job_id_to_apply = request.form.get('job_id')
-        candidate_user_id = str(current_user.id) # Use current_user.id for the logged-in user
+        candidate_user_id = str(current_user.id)
         
-        # Initialize variables with default/empty values
         filepath = None
         extracted_info = {}
         eligibility_result = {"decision": "Undetermined", "score": 0, "reason": "Processing did not complete."}
@@ -1485,28 +1726,26 @@ def candidate_apply():
                     eligibility_result["reason"] += " (Note: Exam generation failed, please contact HR.)"
                 eligibility_result["decision"] = "Eligible (Exam Gen Failed)"
         
-        # --- Create new_application object and save to DB ---
         new_application = CandidateApplication(
-            job_id=selected_job.id, # Link to the Job via foreign key
-            candidate_user_id=candidate_user_id, # Use Flask-Login user ID
+            job_id=selected_job.id,
+            candidate_user_id=candidate_user_id,
             submission_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             eligibility_status=eligibility_result.get("decision"),
             match_score=eligibility_result.get("score", 0),
             eligibility_reason=eligibility_result.get("reason", "N/A"),
-            extracted_info=extracted_info, # Uses the @property setter
-            exam_questions=exam_questions, # Uses the @property setter
-            exam_taken=False, # Initially false, updated by submit_exam
+            extracted_info=extracted_info,
+            exam_questions=exam_questions,
+            exam_taken=False,
             exam_score=None,
             exam_feedback=[],
             submitted_answers=[],
-            resume_filepath=filepath # Store resume file path
+            resume_filepath=filepath
         )
 
         try:
             db.session.add(new_application)
             db.session.commit()
 
-            # --- Email Sending Logic for Eligible Candidates (Correctly placed) ---
             if new_application.eligibility_status == "Eligible" and new_application.exam_taken is False:
                 candidate_email = new_application.extracted_info.get('email')
                 candidate_name = new_application.extracted_info.get('name', 'Candidate')
@@ -1521,24 +1760,14 @@ def candidate_apply():
                     )
                 else:
                     print(f"WARNING: No email found for candidate {new_application.id}. Cannot send exam invite.")
-            # --- End Email Sending Logic ---
-
-            # Optionally, upload to Google Sheet if that integration is active
-            # if candidates_worksheet is not None: # Check if Google Sheets is initialized
-            #     upload_success = upload_candidate_to_master_sheet(new_application.id, new_application, selected_job.id)
-            #     if not upload_success:
-            #         print(f"WARNING: Failed to upload candidate application {new_application.id} to Google Sheet.")
-            # else:
-            #     print("WARNING: Google Sheets candidates_worksheet not initialized. Skipping upload to sheet.")
-            
             flash('Application submitted successfully!', 'success')
             return jsonify({"message": "Application submitted successfully!", "application_id": new_application.id}), 200
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": f"Failed to save application: {e}"}), 500
     
-    return render_template('candidate_apply.html', available_jobs=available_jobs)
-
+    # Pass both available_jobs (if no specific job selected) and selected_job_details
+    return render_template('candidate_apply.html', available_jobs=available_jobs, selected_job=selected_job_details)
 @app.route('/approve_candidate/<application_id>', methods=['POST'])
 @hr_required 
 def approve_candidate(application_id):
@@ -1783,48 +2012,97 @@ def send_exam_invitation_email(recipient_email: str, candidate_name: str, job_ti
     
 #     return render_template('hr_dashboard.html', jobs=dashboard_jobs)
 
-
 @app.route('/hr_dashboard')
 @hr_required
 def hr_dashboard():
-    # Fetch all jobs from the database, ordered by date
-    all_jobs_from_db = Job.query.order_by(Job.date_posted.desc()).all()
-    
-    dashboard_jobs = []
-    for job_obj in all_jobs_from_db:
-        # Fetch applications related to this job using the relationship defined in the Job model
-        job_applications = job_obj.applications # This gives a list of CandidateApplication objects
+    try:
+        hr_jobs = Job.query.filter_by(hr_user_id=current_user.id)\
+                          .order_by(Job.date_posted.desc())\
+                          .all()
         
-        job_data = {
-            'id': job_obj.id,
-            'company_name': job_obj.company_name,
-            'job_title': job_obj.job_title,
-            'job_description': job_obj.job_description,
-            'date_posted': job_obj.date_posted,
-            'candidates_list': [] # List to hold formatted candidate data
-        }
+        dashboard_jobs = []
+        total_candidates = 0
+        pending_reviews = 0
         
-        for app_obj in job_applications: # app_obj is a CandidateApplication object
-            candidate_data = {
-                'id': app_obj.id, # Use the actual ID of the CandidateApplication object
-                'candidate_user_id': app_obj.candidate_user_id,
-                'submission_date': app_obj.submission_date,
-                'eligibility_status': app_obj.eligibility_status,
-                'match_score': app_obj.match_score,
-                'eligibility_reason': app_obj.eligibility_reason,
-                'extracted_info': app_obj.extracted_info, # Uses the @property
-                'exam_taken': app_obj.exam_taken,
-                'exam_score': app_obj.exam_score,
-                'exam_questions': app_obj.exam_questions, # Uses the @property
-                'exam_feedback': app_obj.exam_feedback, # Uses the @property
-                'submitted_answers': app_obj.submitted_answers, # Uses the @property
-                'resume_filepath': app_obj.resume_filepath
+        for job_obj in hr_jobs:
+            job_applications = CandidateApplication.query.filter_by(job_id=job_obj.id).all()
+            
+            total_applications = len(job_applications)
+            eligible_candidates = sum(1 for app in job_applications if app.eligibility_status == 'Eligible')
+            completed_exams = sum(1 for app in job_applications if app.exam_taken)
+            
+            job_data = {
+                'id': job_obj.id,
+                'company_name': job_obj.company_name,
+                'job_title': job_obj.job_title,
+                'job_description': job_obj.job_description,
+                'date_posted': job_obj.date_posted,
+                'total_applications': total_applications,
+                'eligible_candidates': eligible_candidates,
+                'completed_exams': completed_exams,
+                'candidates_list': [],
+                'status': 'Active',
+                # ADDED: Generate a sharable link for this job
+                'sharable_link': url_for('candidate_apply', job_id=job_obj.id, _external=True)
             }
-            job_data['candidates_list'].append(candidate_data)
+            
+            for app_obj in job_applications:
+                total_candidates += 1
+                if app_obj.exam_taken and app_obj.eligibility_status == 'Eligible' \
+                   and app_obj.eligibility_status != 'Approved':
+                    pending_reviews += 1
+                
+                candidate_data = {
+                    'id': app_obj.id,
+                    'candidate_user_id': app_obj.candidate_user_id,
+                    'submission_date': app_obj.submission_date,
+                    'eligibility_status': app_obj.eligibility_status,
+                    'match_score': app_obj.match_score,
+                    'eligibility_reason': app_obj.eligibility_reason,
+                    'extracted_info': app_obj.extracted_info,
+                    'exam_taken': app_obj.exam_taken,
+                    'exam_score': app_obj.exam_score,
+                    'exam_questions': app_obj.exam_questions,
+                    'exam_feedback': app_obj.exam_feedback,
+                    'submitted_answers': app_obj.submitted_answers,
+                    'resume_filepath': app_obj.resume_filepath,
+                    'needs_review': (
+                        app_obj.exam_taken and 
+                        app_obj.eligibility_status == 'Eligible' and 
+                        app_obj.eligibility_status != 'Approved'
+                    )
+                }
+                job_data['candidates_list'].append(candidate_data)
+            
+            job_data['candidates_list'].sort(
+                key=lambda x: datetime.strptime(x['submission_date'], "%Y-%m-%d %H:%M:%S"),
+                reverse=True
+            )
+            
+            dashboard_jobs.append(job_data)
+
+        dashboard_summary = {
+            'total_jobs': len(hr_jobs),
+            'total_candidates': total_candidates,
+            'pending_reviews': pending_reviews,
+            'last_updated': datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        return render_template(
+            'hr_dashboard.html',
+            jobs=dashboard_jobs,
+            summary=dashboard_summary,
+            current_user=current_user
+        )
         
-        dashboard_jobs.append(job_data)
+    except Exception as e:
+        print(f"ERROR in hr_dashboard: {str(e)}")
+        flash('An error occurred while loading the dashboard.', 'error')
+        db.session.rollback()
+        return render_template('hr_dashboard.html', jobs=[], summary={}, error=str(e))
     
-    return render_template('hr_dashboard.html', jobs=dashboard_jobs)
+
+
 
 # --- Helper Function for Sending Candidate Approval Email (ADD THIS) ---
 def send_candidate_approval_email(recipient_email: str, candidate_name: str, job_title: str):
