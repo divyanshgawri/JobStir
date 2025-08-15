@@ -1,905 +1,571 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700&display=swap');
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f3f4f6;
-  padding: 2rem;
-  min-height: 100vh;
-  color: #1f2937;
-}
-
-.container {
-  background-color: #ffffff;
-  padding: 2.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.07);
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-
-.job-card {
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.job-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.1);
-}
-
-.candidate-card {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  margin-top: 1.25rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease;
-}
-.candidate-card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.07);
-}
-
-
-.info-section {
-  margin-bottom: 1rem;
-}
-.info-section h5 {
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-.info-section ul {
-  list-style: none;
-  padding-left: 0;
-}
-.info-section ul li {
-  margin-bottom: 0.35rem;
-  color: #4b5563;
-}
-.info-section p {
-  color: #4b5563;
-}
-
-
-.collapsible-header {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.6rem 0;
-  font-weight: 600;
-  color: #1f2937;
-  border-bottom: 1px solid #e5e7eb;
-  transition: color 0.2s ease;
-}
-.collapsible-header:hover {
-  color: #4f46e5;
-}
-.collapsible-content {
-  display: none;
-  padding-top: 0.75rem;
-  margin-top: 0.5rem;
-}
-.collapsible-header.active + .collapsible-content {
-  display: block;
-}
-
-
-.eligibility-tag {
-  display: inline-block;
-  padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-left: 0.5rem;
-  white-space: nowrap;
-}
-
-.eligible {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-.not-eligible {
-  background-color: #fee2e2;
-  color: #991b1b;
-} */
-
-
-
-
-/* ffffffffffffffffffffffffff */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap');
-
-/* Define CSS Variables for consistent theming */
+/* --- CSS Variables for Theming --- */
 :root {
-    --primary-color: #6366f1; /* Indigo 500 */
-    --primary-dark-color: #4f46e5; /* Indigo 600 */
-    --primary-light-color: #e0e7ff; /* Indigo 100 */
-    --secondary-color: #10b981; /* Emerald 500 */
-    --text-color-light: #f9fafb;
-    --text-color-dark: #1f2937;
-    --bg-body: #f3f4f6; /* Light gray background */
-    --bg-container: #ffffff;
-    --bg-job-card: #f9fafb; /* Slightly off-white for job cards */
-    --bg-candidate-card: #ffffff; /* White for candidate cards */
-    --bg-info-section: #f7f9fc; /* Slightly darker light blue for info sections */
-    --border-color-light: #e5e7eb;
-    --border-color-medium: #cbd5e1;
-    --shadow-light: rgba(0, 0, 0, 0.05);
-    --shadow-medium: rgba(0, 0, 0, 0.1);
-    --shadow-strong: rgba(0, 0, 0, 0.15);
-    --hover-shadow-primary: rgba(99, 102, 241, 0.4); /* Even more intense hover shadow */
-    --error-bg: #fee2e2; /* Red 100 */
-    --error-text: #991b1b; /* Red 800 */
-    --success-bg: #d1fae5; /* Green 100 */
-    --success-text: #065f46; /* Green 800 */
-    --info-bg: #e0f2fe; /* Blue 100 */
-    --info-text: #1e40af; /* Blue 800 */
-    --active-gradient: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%); /* Gradient for active buttons */
-    --button-gap: 1.25rem; /* Increased button spacing */
+    --primary-color: #3b82f6; /* A clean, professional blue */
+    --accent-color: #10b981;  /* A complementary green for highlights */
+    --secondary-color: #14b8a6; /* A refreshing teal */
+    --danger-color: #ef4444;
+    --success-color: #22c55e;
+    --warning-color: #f97316;
+    --info-color: #3b82f6;
+
+    --text-color: #1e293b; /* Dark text for high contrast */
+    --text-muted: #64748b; /* Lighter text for secondary info */
+    --bg-body: #f1f5f9; /* Soft gray background */
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    --border-light: #cbd5e1; /* Lighter border for lists */
+
+    --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+    --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Base Body Styling - Complementing Tailwind's body classes */
+/* --- Keyframe Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* --- Base & Layout Styles --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: var(--bg-body);
-    color: var(--text-color-dark);
+    color: var(--text-color);
+    margin: 0;
+    padding: 2.5rem;
     line-height: 1.6;
-    /* Tailwind classes min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8 handle layout */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Main Container Styling - Complementing Tailwind's container classes */
 .container {
-    background-color: var(--bg-container);
-    padding: 3.5rem; /* More generous padding */
-    border-radius: 1.5rem; /* More rounded corners */
-    box-shadow: 0 20px 40px var(--shadow-medium); /* Stronger initial shadow */
-    max-width: 1400px; /* Wider container */
-    width: 100%;
+    max-width: 1300px;
     margin: 0 auto;
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle inner border for depth */
-    backdrop-filter: blur(5px); /* Soft blur effect */
-    -webkit-backdrop-filter: blur(5px);
-    /* Tailwind classes like max-w-6xl w-full bg-white shadow-xl rounded-lg p-8 space-y-8 are replaced or overridden */
+    animation: fadeIn 0.8s ease-out forwards;
 }
 
-/* Dashboard Header & Buttons */
+/* --- Dashboard Header --- */
 .dashboard-header {
-    border-bottom: 2px solid var(--border-color-light); /* Thicker border */
-    padding-bottom: 1.5rem;
-    margin-bottom: 2.5rem;
-    display: flex; /* Handled by Tailwind d-flex */
-    justify-content: space-between; /* Handled by Tailwind justify-content-between */
-    align-items: center; /* Handled by Tailwind align-items-center */
-    /* Tailwind classes pb-4 mb-5 border-bottom are kept for base */
-}
-
-.dashboard-header h1 {
-    font-family: 'Orbitron', sans-serif; /* Techy font for main title */
-    font-size: 2.8rem; /* Larger title */
-    font-weight: 700;
-    color: var(--primary-dark-color);
-    letter-spacing: -0.05em; /* Tighter letter spacing */
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-    /* Tailwind classes text-3xl font-extrabold text-gray-900 mb-0 are overridden */
-}
-
-.action-buttons {
-    display: flex; /* Handled by Tailwind d-flex */
-    gap: 0.75rem; /* Handled by Tailwind gap-3 */
-    /* Tailwind class space-x-4 is replaced by gap-3 */
-}
-
-.action-buttons .btn-primary,
-.action-buttons .btn-danger {
-    display: inline-flex; /* Handled by Tailwind inline-flex */
-    align-items: center; /* Handled by Tailwind items-center */
-    padding: 0.85rem 2rem; /* More generous padding */
-    border-radius: 0.75rem; /* More rounded */
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); /* Smooth transition */
-    box-shadow: 0 4px 8px var(--shadow-light);
-    text-decoration: none; /* Remove underline from links */
-    /* Tailwind classes px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm are overridden */
-}
-
-.action-buttons .btn-primary {
-    background-color: var(--primary-color);
-    color: var(--text-color-light);
-    border: 1px solid var(--primary-dark-color);
-    /* Tailwind classes bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 are overridden */
-}
-.action-buttons .btn-primary:hover {
-    background-color: var(--primary-dark-color);
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 16px var(--hover-shadow-primary);
-}
-
-.action-buttons .btn-danger {
-    background-color: #ef4444; /* Red 500 */
-    color: var(--text-color-light);
-    border: 1px solid #dc2626; /* Red 600 */
-    /* Tailwind classes bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 are overridden */
-}
-.action-buttons .btn-danger:hover {
-    background-color: #dc2626; /* Red 600 */
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 16px rgba(239, 68, 68, 0.25);
-}
-
-/* Job Posting Card */
-.job-card {
-    background-color: var(--bg-job-card);
-    border: 1px solid var(--border-color-light);
-    border-radius: 1.5rem; /* Larger border-radius */
-    padding: 3rem; /* More padding */
-    margin-bottom: 3rem; /* Handled by Tailwind mb-5 */
-    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
-    position: relative;
-    overflow: hidden;
-    /* Tailwind classes card bg-gray-50 p-6 rounded-lg shadow-md border border-gray-100 are overridden */
-}
-.job-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 8px; /* A more prominent top border indicator */
-    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    border-top-left-radius: 1.5rem;
-    border-top-right-radius: 1.5rem;
-}
-
-.job-card:hover {
-    transform: translateY(-10px); /* More pronounced lift */
-    box-shadow: 0 25px 40px var(--hover-shadow-primary); /* Enhanced shadow on hover */
-}
-
-.job-card h2 {
-    font-size: 2.2rem; /* Larger job title */
-    font-weight: 700;
-    color: var(--primary-dark-color);
-    margin-bottom: 1rem; /* Handled by Tailwind mb-3 */
-    /* Tailwind classes text-2xl font-bold text-gray-800 are overridden */
-}
-.job-card h3 {
-    font-size: 2.2rem; /* Larger job title */
-    font-weight: 700;
-    color: var(--primary-dark-color);
-    margin-bottom: 1rem; /* Handled by Tailwind mb-3 */
-    /* Tailwind classes text-2xl font-bold text-gray-800 are overridden */
-}
-.job-card p {
-    color: #4b5563;
-    margin-bottom: 2rem; /* Handled by Tailwind mb-4 */
-    /* Tailwind class text-gray-600 is kept */
-}
-
-.candidates-heading {
-    font-size: 1.5rem; /* Equivalent to text-xl */
-    font-weight: 600; /* Equivalent to font-semibold */
-    color: #374151; /* Equivalent to text-gray-700 */
-    margin-bottom: 1rem; /* Equivalent to mb-3 */
-}
-
-/* Candidate Match Card */
-.candidate-card {
-    background-color: var(--bg-candidate-card);
-    border: 1px solid var(--border-color-light);
-    border-radius: 1.25rem; /* Slightly less rounded than job card */
-    padding: 2rem; /* More padding */
-    margin-top: 1.75rem; /* Handled by Tailwind mb-4 */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); /* Softer initial shadow */
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    /* Tailwind classes bg-white p-4 rounded-md shadow-sm border border-gray-200 are overridden */
-}
-.candidate-card:hover {
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.09); /* Stronger shadow on hover */
-    transform: translateY(-5px); /* Subtle lift */
-}
-
-.candidate-card p {
-    margin-bottom: 0.6rem;
-}
-.candidate-card .font-semibold { /* Targeting Tailwind's font-semibold */
-    color: var(--text-color-dark);
-}
-
-.eligibility-status {
-    font-weight: 700;
-    padding: 0.2em 0.6em;
-    border-radius: 0.5em;
-    display: inline-block;
-}
-.eligibility-status.eligible { /* Targeting custom 'eligible' class */
-    background-color: var(--success-bg);
-    color: var(--success-text);
-}
-.eligibility-status.not-eligible { /* Targeting custom 'not-eligible' class */
-    background-color: var(--error-bg);
-    color: var(--error-text);
-}
-
-/* Info Sections for Skills, Education, etc. */
-.info-section {
-    margin-bottom: 1.5rem;
-    padding: 1.25rem; /* Consistent padding */
-    background-color: var(--bg-info-section); /* Very light background for info sections */
-    border-radius: 1rem;
-    border: 1px solid var(--primary-light-color); /* Lighter border using primary light */
-    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04); /* Subtle inner shadow */
-}
-.info-section h5 {
-    font-weight: 600;
-    color: var(--primary-dark-color); /* Highlight section titles with primary color */
-    margin-bottom: 0.8rem;
-    font-size: 1.1rem;
-    border-bottom: 1px dashed rgba(var(--primary-color), 0.2); /* Dashed border for visual interest */
-    padding-bottom: 0.6rem;
-    /* Tailwind classes text-base font-semibold text-gray-700 are overridden */
-}
-.info-section ul {
-    list-style: none;
-    padding-left: 0;
-}
-.info-section ul li {
-    margin-bottom: 0.5rem;
-    color: #374151; /* Darker gray for readability */
-    line-height: 1.5;
-    position: relative;
-    padding-left: 1.2em; /* Space for custom bullet */
-}
-.info-section ul li::before {
-    content: '•'; /* Custom bullet point */
-    color: var(--primary-color); /* Primary color for bullets */
-    font-size: 1.2em;
-    position: absolute;
-    left: 0;
-    top: 0;
-}
-.info-section p {
-    color: #374151;
-}
-.info-section ul li ul { /* Nested lists */
-    list-style: disc; /* Revert to disc for nested lists if desired */
-    padding-left: 1.5rem; /* Indent nested lists */
-    margin-top: 0.5rem;
-}
-.info-section ul li ul li {
-    color: #4b5563; /* Medium gray for nested lists */
-    font-size: 0.95rem;
-    padding-left: 0; /* Reset padding for nested list */
-}
-.info-section ul li ul li::before {
-    content: ''; /* Remove custom bullet for nested list */
-}
-
-
-/* Collapsible UI - Styled as Buttons */
-.collapsible-header {
-    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.25rem 2rem; /* Increased padding for a larger button feel */
-    font-weight: 700; /* Bolder text for button prominence */
-    font-size: 1.05rem; /* Slightly larger text */
-    color: var(--primary-dark-color);
-    background-color: var(--primary-light-color); /* Light blue background for buttons */
-    border-radius: 0.75rem; /* Rounded button corners */
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    margin-top: var(--button-gap); /* Use new variable for top margin */
-    margin-bottom: var(--button-gap); /* Add margin-bottom for spacing */
-    border: 2px solid var(--primary-color); /* Thicker border for more buttony look */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12); /* Stronger initial button shadow */
-    position: relative; /* For arrow icon */
-    overflow: hidden; /* For gradient overlay */
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    z-index: 10;
 }
-.collapsible-header::before {
+
+.dashboard-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.6rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+.btn-primary {
+    background-color: var(--primary-color, #3b82f6); /* fallback if var missing */
+    color: white;
+    padding: 0.65rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem; /* rounded button */
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* space for icon if added */
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    transition: 
+        background-color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
+    text-decoration: none; /* This line removes the underline */
+}
+
+.btn-primary:hover {
+    text-decoration: none; /* Best practice to ensure no underline on hover */
+    background-color: #2563eb;
+    box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(59, 130, 246, 0.25);
+}
+
+.btn-primary:focus {
+    outline: 2px solid rgba(59, 130, 246, 0.5);
+    outline-offset: 2px;
+    text-decoration: none;
+}
+
+.btn-danger {
+    background-color: var(--danger-color, #ef4444);
+    color: white;
+    padding: 0.65rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    transition:
+        background-color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
+    text-decoration: none;       /* removes underline for <a> */
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(239, 68, 68, 0.4);
+    text-decoration: none;
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(239, 68, 68, 0.25);
+}
+
+.btn-danger:focus {
+    outline: 2px solid rgba(239, 68, 68, 0.5);
+    outline-offset: 2px;
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    box-shadow: none;
+}
+.btn-secondary:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(59, 130, 246, 0.4);
+}
+
+/* --- Summary Section --- */
+.summary-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 5;
+}
+
+.summary-card {
+    background-color: var(--bg-card);
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    animation: fadeIn 0.6s ease-out forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--active-gradient);
-    opacity: 0;
+    background-image: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
     transition: opacity 0.3s ease;
-    z-index: 0;
-}
-.collapsible-header:hover::before {
-    opacity: 0.15; /* More visible gradient on hover */
-}
-
-.collapsible-header span {
-    position: relative; /* Ensure text is above pseudo-element */
+    opacity: 0;
     z-index: 1;
 }
 
-.collapsible-header:hover {
-    background-color: var(--primary-color); /* Darker on hover */
-    color: var(--text-color-light);
-    box-shadow: 0 10px 25px var(--hover-shadow-primary); /* Even stronger shadow on hover */
-    transform: translateY(-3px); /* More pronounced lift on hover */
-    border-color: var(--primary-dark-color); /* Darken border on hover */
-}
-.collapsible-header.active {
-    background: var(--active-gradient); /* Gradient background when active */
-    color: var(--text-color-light);
-    border-color: var(--primary-dark-color);
-    box-shadow: 0 8px 18px var(--hover-shadow-primary); /* Keep consistent shadow when active */
-    transform: translateY(0); /* Reset lift when active */
-    border-bottom-left-radius: 0; /* Flat bottom when content is open */
-    border-bottom-right-radius: 0;
+.summary-card:hover::before {
+    opacity: 1;
 }
 
-/* Arrow Icon for Collapsible Headers */
-.collapsible-header span::after {
-    content: '▶'; /* Unicode right-pointing triangle */
-    font-size: 0.9em; /* Slightly larger arrow */
-    margin-left: 15px; /* More space for arrow */
-    transition: transform 0.3s ease, color 0.3s ease; /* Add color transition */
-    display: inline-block;
-    color: var(--primary-dark-color); /* Default arrow color */
-}
-.collapsible-header:hover span::after,
-.collapsible-header.active span::after {
-    color: var(--text-color-light); /* White arrow on hover/active */
-}
-.collapsible-header.active span::after {
-    transform: rotate(90deg); /* Rotate to point down when active */
+.summary-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    animation: pulse 1.5s infinite;
 }
 
-/* FIX: Ensure content is visible when 'active' and hidden when 'hidden' */
-.collapsible-content {
-    /* Remove default display: none; from here */
-    padding: 1.75rem;
-    margin-top: 0; /* Remove margin, connect to header */
-    border: 1px solid var(--border-color-light);
-    border-top: none; /* No top border, blends with header */
-    border-bottom-left-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
-    background-color: var(--bg-container);
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02); /* Subtle inner shadow */
-    animation: fadeInDown 0.4s ease-out; /* Animation for showing content */
-}
-
-.collapsible-content.hidden {
-    display: none; /* This class will now control the hiding */
-}
-
-
-/* Specific styling for the reason/feedback box inside collapsible content */
-.collapsible-feedback-box { /* New class name for clarity */
-    padding: 1.25rem;
-    border-radius: 0.75rem;
-    font-size: 0.95rem;
-    line-height: 1.8; /* Increased line height for readability */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow for the box */
-    border: 1px solid; /* Add a border to the box */
-    /* Tailwind classes p-3 rounded-md text-sm are overridden */
-}
-
-.collapsible-feedback-box.bg-red-50 {
-    background-color: #fef2f2; /* Lighter red background */
-    border-color: #fca5a5; /* Red 300 border */
-    color: var(--error-text);
-    /* Tailwind classes bg-red-50 border border-red-200 text-red-800 are overridden */
-}
-
-.collapsible-feedback-box.bg-green-50 {
-    background-color: #ecfdf5; /* Lighter green background */
-    border-color: #a7f3d0; /* Green 300 border */
-    color: var(--success-text);
-    /* Tailwind classes bg-green-50 border border-green-200 text-green-800 are overridden */
-}
-
-
-/* Keyframe for fade-in effect */
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Exam Results and Feedback */
-.exam-results-card {
-    margin-top: 2rem; /* Handled by Tailwind mt-4 */
-    padding: 2rem; /* Handled by Tailwind p-4 */
-    background-color: var(--info-bg); /* Light blue for exam results */
-    border: 1px solid #93c5fd; /* Blue 300 */
-    border-radius: 1rem; /* Handled by Tailwind rounded-lg */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07); /* Handled by Tailwind shadow-sm */
-    position: relative;
-    overflow: hidden;
-    /* Tailwind classes bg-blue-50 border border-blue-200 are overridden */
-}
-.exam-results-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%); /* Blue gradient top border */
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-}
-
-.exam-results-card h4 {
-    font-size: 1.4rem; /* Handled by Tailwind text-lg */
-    font-weight: 700; /* Handled by Tailwind font-semibold */
-    color: var(--info-text); /* Handled by Tailwind text-blue-700 */
-    margin-bottom: 1rem; /* Handled by Tailwind mb-2 */
-}
-.exam-results-card p {
-    color: var(--info-text); /* Handled by Tailwind text-blue-800 */
+.summary-card h2 {
+    margin: 0 0 0.75rem 0;
     font-size: 1.1rem;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 2;
 }
 
-.exam-results-card .collapsible-header {
-    background-color: #bfdbfe; /* Lighter blue for exam collapsible header */
-    border-color: #93c5fd;
-    color: var(--info-text);
-    /* Tailwind class mt-3 is overridden */
-}
-.exam-results-card .collapsible-header:hover {
-    background-color: #93c5fd;
-    color: var(--text-color-light);
-}
-.exam-results-card .collapsible-header.active {
-    background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%); /* Blue gradient when active */
-    color: var(--text-color-light);
-}
-.exam-results-card .collapsible-header span::after {
-    color: var(--info-text); /* Default arrow color for exam button */
-}
-.exam-results-card .collapsible-header:hover span::after,
-.exam-results-card .collapsible-header.active span::after {
-    color: var(--text-color-light); /* White arrow on hover/active for exam button */
+.summary-card p {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+    color: var(--text-color);
+    position: relative;
+    z-index: 2;
 }
 
+/* Add a line on the side for visual distinction */
+.summary-card.total-jobs { border-left: 5px solid var(--primary-color); }
+.summary-card.total-candidates { border-left: 5px solid var(--accent-color); }
+.summary-card.pending-reviews { border-left: 5px solid var(--warning-color); }
+.summary-card.offers-extended { border-left: 5px solid var(--info-color); }
 
-.exam-feedback-list {
-    list-style: none; /* Handled by Tailwind list-disc list-inside */
-    padding-left: 0;
-    margin-top: 1rem; /* Handled by Tailwind mt-2 */
+
+/* --- Job Listings & Candidate Layout --- */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
 }
-.exam-feedback-list li {
-    padding: 1rem; /* Handled by Tailwind p-2 */
-    border-bottom: 1px dashed rgba(var(--info-text), 0.3); /* Handled by Tailwind border-b border-blue-100 */
-    color: #1e40af; /* Handled by Tailwind text-blue-800 */
-    background-color: #f0f8ff; /* Very light blue for feedback items */
+
+.job-listings h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.job-listing-item {
+    padding: 1.5rem;
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow);
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+    transition: var(--transition);
+}
+
+.job-listing-item:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+}
+
+.job-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 1rem;
+}
+
+.job-card-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+}
+
+.candidate-list {
+    padding-top: 1rem;
+}
+
+.candidate-list h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.candidate-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem;
+    border-left: 3px solid transparent;
+    transition: var(--transition);
+    cursor: pointer;
+    background-color: #fcfcfd;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+}
+
+.candidate-item:hover {
+    border-left: 3px solid var(--accent-color);
+    background-color: #e0e7ff;
+    transform: scale(1.01);
+}
+
+/* --- Collapsible Sections --- */
+.collapsible-container {
+    margin-bottom: 1.5rem;
+}
+
+.collapsible-header {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    color: var(--primary-color);
+    background-color: var(--bg-card);
     border-radius: 0.5rem;
-    margin-bottom: 0.75rem; /* Handled by Tailwind space-y-3 */
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03); /* Subtle shadow for each feedback item */
-}
-.exam-feedback-list li:last-child {
-    border-bottom: none; /* Handled by Tailwind last:border-b-0 */
-    margin-bottom: 0;
-}
-.exam-feedback-list li strong {
-    color: #1c3c78; /* Even darker blue for strong text */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
 }
 
-.text-muted { /* Targeting Tailwind's text-gray-500 */
-    color: #6b7280 !important;
-    margin-top: 1rem; /* Handled by Tailwind mt-2 */
+.collapsible-header:hover {
+    background-color: #e0e7ff;
+    color: #3730a3;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
-/* Empty State Styling */
-.empty-state {
-    text-align: center; /* Handled by Tailwind text-center */
-    padding: 5rem 3rem;
-    background-color: #f0f4f8; /* Light blue-gray for empty state */
-    border-radius: 1.5rem;
-    margin-top: 3rem; /* Handled by Tailwind mt-6 */
-    border: 1px dashed #cbd5e1; /* Dashed border */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-}
-.empty-state p {
-    font-size: 1.3rem; /* Handled by Tailwind text-lg */
-    color: #64748b; /* Handled by Tailwind text-gray-600 */
-    margin-bottom: 2rem; /* Handled by Tailwind mb-4 */
-}
-.empty-state .btn-primary {
-    padding: 1rem 2.5rem; /* Handled by Tailwind px-6 py-3 */
-    font-size: 1.1rem; /* Handled by Tailwind text-base */
+.collapsible-header i {
+    transition: transform 0.3s ease;
 }
 
-/* General Link Styling */
-a.text-link { /* New class to target specific links for custom styling */
-    display: inline-block; /* Make it behave like a block for padding/margin */
-    padding: 0.4rem 0.8rem; /* Smaller padding for a compact button */
-    border-radius: 0.5rem; /* Rounded corners */
-    background-color: var(--primary-light-color); /* Light background for the button */
-    color: var(--primary-dark-color); /* Dark text color */
-    border: 1px solid var(--primary-color); /* Border for definition */
-    font-weight: 600; /* Slightly bolder text */
-    font-size: 0.85rem; /* Smaller font size */
-    text-decoration: none; /* Remove default underline */
-    transition: all 0.2s ease; /* Smooth transitions */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* Subtle shadow */
-    margin-left: 0.75rem; /* Space from previous content */
-    white-space: nowrap; /* Prevent text wrapping */
-}
-a.text-link:hover {
-    text-decoration: none; /* Ensure no underline on hover */
-    background-color: var(--primary-color); /* Darker background on hover */
-    color: var(--text-color-light); /* White text on hover */
-    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2); /* Stronger shadow on hover */
-    transform: translateY(-1px); /* Subtle lift */
+.collapsible-header.active i {
+    transform: rotate(180deg);
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    body {
-        padding: 1rem;
-        padding-top: 2rem;
-    }
-    .container {
-        padding: 1.5rem;
-        border-radius: 1rem;
-    }
-    .dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-bottom: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    .dashboard-header h1 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-    }
-    .action-buttons {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    .action-buttons .btn-primary,
-    .action-buttons .btn-danger {
-        width: 100%;
-        justify-content: center;
-        padding: 0.75rem 1.5rem;
-    }
-    .job-card {
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        border-radius: 1rem;
-    }
-    .job-card h2 {
-        font-size: 1.7rem;
-    }
-    .candidate-card {
-        padding: 1.25rem;
-        margin-top: 1rem;
-        border-radius: 0.75rem;
-    }
-    .info-section {
-        padding: 0.8rem;
-        margin-bottom: 1rem;
-        border-radius: 0.75rem;
-    }
-    .info-section ul li {
-        padding-left: 1em;
-    }
-    .collapsible-header {
-        padding: 0.8rem 1rem;
-        border-radius: 0.6rem;
-        font-size: 0.9rem;
-    }
-    .collapsible-content {
-        padding: 1rem;
-    }
-    .exam-results-card {
-        padding: 1.5rem;
-        margin-top: 1.5rem;
-        border-radius: 0.75rem;
-    }
-    .exam-results-card h4 {
-        font-size: 1.2rem;
-    }
-    .exam-feedback-list li {
-        padding: 0.75rem;
-    }
-    .empty-state {
-        padding: 3rem 1rem;
-        border-radius: 1rem;
-    }
-    .empty-state p {
-        font-size: 1rem;
-    }
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+    background-color: #f8fafc;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-top: none;
 }
 
-/* Add these rules to your hr_dashboard.css file */
-/* Add to hr_dashboard.css */
+.collapsible-header.active + .collapsible-content {
+    max-height: 2000px;
+    padding: 1.5rem;
+}
 
-/* Define color for the new 'approved' status badge */
-.eligibility-status.approved {
-    background-color: var(--success-green);
+.detail-section {
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--primary-color);
+    padding-left: 1rem;
+    transition: var(--transition);
+}
+
+.detail-section:hover {
+    border-color: var(--accent-color);
+}
+
+.detail-section h5 {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.detail-section p, .detail-section ul {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0.5rem 0;
+}
+
+/* --- Status Badge --- */
+.status-badge {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+.status-badge.status-pass {
+    background-color: var(--success-color);
     color: white;
 }
 
-/* Style for the 'Approved!' message (e.g., after button disappears) */
-.status-approved {
-    color: var(--success-green);
-    font-weight: 600;
-    margin-left: 10px;
+.status-badge.status-pending {
+    background-color: var(--warning-color);
+    color: white;
 }
 
-/* Style for the 'Awaiting Exam Submission' message */
-.status-pending-action {
-    color: var(--warning-orange);
-    font-weight: 600;
-    margin-left: 10px;
+.status-badge.status-fail {
+    background-color: var(--danger-color);
+    color: white;
 }
 
-/* Ensure these root variables are defined in your hr_dashboard.css or a linked global one */
-/* :root {
-    --success-green: #10B981;
-    --warning-orange: #F59E0B;
-}
-*//* --- Professional Styling for HR Action Buttons --- */
-
-/* Base style for the Approve Candidate button */
-.btn-primary.approve-btn {
-    /* Ensures consistent button feel with padding, border-radius, font */
-    background-color: var(--primary-blue);
-    color: var(--bg-white);
-    padding: 8px 16px; 
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex; /* Use flex to align icon and text */
-    align-items: center;
-    gap: 8px; /* Space between text and icon */
-    
-    /* Smooth transitions for hover/active states */
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    
-    /* A subtle shadow for depth */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Hover effect: lift and darken */
-.btn-primary.approve-btn:hover {
-    background-color: #2563EB;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Active effect: press down */
-.btn-primary.approve-btn:active {
-    background-color: #1D4ED8;
-    transform: translateY(0);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-/* New status indicators for better visual feedback */
-.status-pending-action {
-    color: var(--warning-orange);
-    font-weight: 600;
-}
-
-.status-approved {
-    color: var(--success-green);
-    font-weight: 600;
-}
-
-.status-not-eligible {
-    color: var(--error-red);
-    font-weight: 600;
-}
-
-/* General container for HR actions to ensure consistent spacing and alignment */
-.hr-actions {
-    margin-top: 15px; /* Spacing below the candidate info */
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Space between different buttons or status indicators */
-}
-/* Add to hr_dashboard.css */
-
-/* --- Sharable Link Container --- */
+/* --- Interactive Elements --- */
 .sharable-link-container {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    text-align: left; /* Align button to the left */
-}
-
-/* The "Share Job" button */
-.share-btn {
-    background-color: transparent;
-    color: var(--primary-blue);
-    border: 1px solid var(--primary-blue);
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.share-btn:hover {
-    background-color: var(--primary-blue);
-    color: var(--bg-white);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(59, 130, 246, 0.2);
-}
-
-.share-link-box {
     display: flex;
-    gap: 8px;
+    gap: 0.75rem;
+    margin-top: 1rem;
     align-items: center;
-    margin-top: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background-color: var(--bg-light);
-    padding: 5px;
 }
 
 .share-link-input {
     flex-grow: 1;
-    padding: 5px;
-    border: none;
-    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    padding: 0.6rem 1rem;
     font-size: 0.9rem;
-    color: var(--dark-text);
-    cursor: text;
-    user-select: all; /* Allows easy selection of the link */
+    background-color: #fcfcfd;
+    transition: var(--transition);
 }
-
 .share-link-input:focus {
-    outline: none;
+    outline: 2px solid var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
 }
 
+.btn-copy, .btn-approve {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    color: white;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
 
 .btn-copy {
-    background-color: var(--primary-blue);
-    color: var(--bg-white);
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
+    background-color: var(--text-muted);
 }
-
 .btn-copy:hover {
-    background-color: #2563EB;
+    background-color: #4b5563;
+}
+.btn-approve {
+    background-color: var(--secondary-color);
+}
+.btn-approve:hover {
+    background-color: #0d7f72;
 }
 
-.btn-copy.copied {
-    background-color: var(--success-green);
-    color: var(--bg-white);
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    .container {
+        padding: 0 0.5rem;
+    }
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    .action-buttons {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .btn {
+        width: 100%;
+    }
+}
+.job-card {
+    background-color: var(--bg-card, #ffffff);
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    padding: 1.5rem 2rem; /* gives breathing space */
+    line-height: 1.75;   /* more line spacing for readability */
+    border: 1px solid var(--border-color, #e5e7eb);
 }
 
-/* Add or ensure these root variables are defined in your hr_dashboard.css or a linked global one */
-:root {
-    --primary-blue: #3B82F6; 
-    --bg-white: #FFFFFF;
-    --success-green: #10B981;
-    --error-red: #EF4444;
-    --warning-orange: #F59E0B;
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
+
+.job-card-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.job-card-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: var(--text-color, #1e293b);
+    letter-spacing: 0.5px; /* airy letter spacing */
+}
+
+.job-card p {
+    font-size: 1rem;
+    color: var(--text-muted, #64748b);
+    margin-bottom: 1rem;
+}
+
+.job-card .status-badge {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.85rem;
+}
+
+.alert {
+    padding: 10px 15px;
+    margin: 10px auto;
+    max-width: 800px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.alert-success { background-color: #d4edda; color: #155724; }
+.alert-warning { background-color: #fff3cd; color: #856404; }
+.alert-error   { background-color: #f8d7da; color: #721c24; }
+.alert-info    { background-color: #d1ecf1; color: #0c5460; }

@@ -7,45 +7,27 @@
     <!-- Tailwind CSS CDN - Used for foundational reset and default browser styles -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Favicon link to prevent 404 for favicon.ico -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 color=%22white%22>JB</text></svg>" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/hr_job_upload.css') }}">
 </head>
 <body>
-    <div class="page-wrapper">
-        <!-- Hero Title Section -->
+ <div class="page-wrapper">
         <section class="hero-section fade-in">
-            <h1 class="hero-title">
-                Upload a Job Opportunity
-            </h1>
-            <p class="hero-subtitle">
-                Easily post your openings to attract top-matched talent using Jobstir's AI-powered engine.
-            </p>
-            <!-- Illustrative SVG Icon -->
-            <div class="hero-icon-wrapper">
-                <svg class="hero-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 16v4m-2-2h4m-6-11V7a4 4 0 00-4-4H4a2 2 0 00-2 2v10a2 2 0 002 2h1.5M14 4h6a2 2 0 012 2v7.5M14 4h-4a2 4 0 00-2 2v3.5"></path>
-                </svg>
-            </div>
+            <h1 class="hero-title">Upload a Job Opportunity</h1>
+            <p class="hero-subtitle">Easily post your openings to attract top-matched talent using JobStir's AI-powered engine.</p>
         </section>
 
         <main class="main-content-grid">
-            <!-- Left Column: Info and Complementary CTA -->
             <section class="info-column fade-in">
-                <h2>Why Post with Jobstir?</h2>
-                <p>
-                    Jobstir leverages advanced AI to intelligently match your job openings with the most qualified candidates, cutting down on screening time and improving hiring quality. Say goodbye to endless resume sifting and hello to precision matching.
-                </p>
-                <p>
-                    Our platform provides real-time insights into candidate applications, allowing you to track progress, review AI-generated assessments, and make informed hiring decisions faster.
-                </p>
-                <a href="{{ url_for('hr_dashboard') }}" class="btn-secondary-cta">
-                    View Your Dashboard
-                </a>
+                <h2>Why Post with JobStir?</h2>
+                <p>JobStir leverages advanced AI to intelligently match your job openings with the most qualified candidates, cutting down on screening time and improving hiring quality.</p>
+                <a href="{{ url_for('hr_dashboard') }}" class="btn-secondary-cta">View Your Dashboard</a>
             </section>
 
-            <!-- Right Column: Job Upload Form -->
             <section class="form-section fade-in">
                 <form id="jobUploadForm">
+                    <div id="errorMessage" class="error-message hidden"></div>
+                    
                     <div class="form-group">
                         <label for="company_name" class="form-label">Company Name</label>
                         <input type="text" id="company_name" name="company_name" required class="input-field" placeholder="e.g., Tech Innovators Inc.">
@@ -55,25 +37,34 @@
                         <input type="text" id="job_title" name="job_title" required class="input-field" placeholder="e.g., Senior Software Engineer">
                     </div>
                     <div class="form-group">
-                        <label for="job_description" class="form-label">Job Description</label>
-                        <textarea id="job_description" name="job_description" rows="8" required class="input-field" placeholder="Provide a detailed description of the job, responsibilities, and required qualifications."></textarea>
+                        <div class="label-with-counter">
+                            <label for="job_description" class="form-label">Job Description</label>
+                            <span id="charCounter" class="char-counter">0 / 5000</span>
+                        </div>
+                        <textarea id="job_description" name="job_description" rows="8" required class="input-field" placeholder="Provide a detailed description..." maxlength="5000"></textarea>
                     </div>
                     <div class="submit-button-wrapper">
-                        <button type="submit" class="btn-primary">
-                            Upload Job
+                        <button type="submit" id="submitBtn" class="btn-primary">
+                            <span class="btn-text">Upload Job</span>
+                            <span class="btn-spinner hidden"></span>
                         </button>
                     </div>
                 </form>
 
-                <!-- Success Message (Initially hidden) -->
                 <div id="successMessage" class="success-message hidden">
                     <svg class="success-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span>Your job has been posted successfully!</span>
+                    <button id="postAnotherJobBtn" class="btn-secondary-cta">Post Another Job</button>
                 </div>
             </section>
         </main>
+        
+        <section class="post-job-process-section fade-in">
+             </section>
+    </div>
+
 
         <!-- What Happens After You Post a Job Section -->
         <section class="post-job-process-section fade-in">

@@ -4,11 +4,8 @@
     "phone": "+91 7988947904",
     "education": [
         {
-            "degree": "B.Sc.",
-            "university": "Guru Nanak Dev University",
-            "start_year": "2023",
-            "end_year": "Present",
-            "concentration": "Computational Statistics and Data Analytics"
+            "degree": "B.Sc. in Computational Statistics and Data Analytics",
+            "university": "Guru Nanak Dev University, Amritsar"
         }
     ],
     "skills": [
@@ -42,10 +39,12 @@
         {
             "title": "Freelance Machine Learning Engineer",
             "duration": "Jan 2025 – Apr 2025",
-            "location": "Remote",
+            "location": "Startup Client (Skincare/Wellness)",
             "description": [
                 "Collaborated with a skincare startup to build a personalized recommendation engine based on facial condition data.",
+                "Collected and structured datasets covering various skin conditions (e.g., dryness, acne, pigmentation) and mapped them to product ingredients and nutrients.",
                 "Designed and trained machine learning models to identify condition-specific needs and suggest optimal product compositions.",
+                "Developed logic to generate personalized usage notes, estimated treatment duration, and projected benefit levels.",
                 "Delivered a deployable ML pipeline and actionable insights for integration into the client’s product strategy."
             ]
         }
@@ -55,30 +54,26 @@
             "title": "Face Recognition System",
             "link": "https://github.com/divyanshgawri/Image_recognition",
             "description": [
-                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring."
+                "Built a facial recognition application using OpenCV and TensorFlow to detect and match individual faces with confidence scoring.",
+                "Optimized model for improved real-time performance and accuracy in security-based applications."
             ]
         },
         {
             "title": "Skincare Recommendation System",
+            "link": "",
             "description": [
-                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions."
+                "Created a machine learning-based engine to analyze facial condition data and provide personalized skincare product suggestions.",
+                "Mapped facial condition labels to nutrient needs and active ingredients using supervised learning and rule-based logic.",
+                "Integrated usage frequency estimation and expected outcome duration into the recommendation workflow."
             ]
         },
         {
             "title": "E-commerce Product Description Classifier",
             "link": "https://github.com/divyanshgawri/E-commerce-Product-Description-Analysis",
             "description": [
-                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions."
+                "Developed an NLP-based model to automatically predict product categories and subcategories from customer descriptions.",
+                "Performed Exploratory Data Analysis (EDA) to provide insights into sales trends and product distribution, helping businesses streamline product categorization and enhance user experience."
             ]
         }
-    ],
-    "certificates": [
-        "Certified Python Developer Associate (CPDA) – SkillEnable",
-        "CRM Essentials – HP Life",
-        "Machine Learning Specialization – Stanford University",
-        "Data Analysis with Python – freeCodeCamp",
-        "Databases and SQL for Data Analysis – IBM (Coursera)"
-    ],
-    "memberships": [],
-    "campus_involvement": []
+    ]
 }

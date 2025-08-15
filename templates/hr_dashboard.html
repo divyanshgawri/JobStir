@@ -1,345 +1,213 @@
-
-<!-- above working 13 july -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HR Dashboard - JobStir</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>JobStir - HR Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/hr_dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 color=%22white%22>JB</text></svg>" />
+   
+    
 </head>
 <body>
     <div class="container">
-        <div class="dashboard-header">
+        <header class="dashboard-header">
             <h1>HR Dashboard</h1>
             <div class="action-buttons">
-                <a href="{{ url_for('hr_job_upload') }}" class="btn-primary">Upload New Job</a>
+                <a href="{{ url_for('index') }}" class="btn-primary">Home</a>
+                <a href="{{ url_for('hr_job_upload') }}" class="btn-primary">Post New Job</a>
                 <a href="{{ url_for('logout') }}" class="btn-danger">Logout</a>
             </div>
+        </header>
+        <!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% set category, message = messages[-1] %} {# Show only last message #}
+        <div id="flash-message" class="alert alert-{{ category }}">
+            {{ message }}
         </div>
+        <script>
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                const flash = document.getElementById('flash-message');
+                if (flash) {
+                    flash.style.transition = "opacity 0.5s ease";
+                    flash.style.opacity = "0";
+                    setTimeout(() => flash.remove(), 500);
+                }
+            }, 3000);
+        </script>
+    {% endif %}
+{% endwith %}
+        <section class="summary-section">
+            <div class="summary-card"><h2>Total Jobs</h2><p>{{ summary.total_jobs or 0 }}</p></div>
+            <div class="summary-card"><h2>Total Candidates</h2><p>{{ summary.total_candidates or 0 }}</p></div>
+            <div class="summary-card"><h2>Pending Reviews</h2><p>{{ summary.pending_reviews or 0 }}</p></div>
+        </section>
 
-        {% if jobs %}
-            {% for job_data in jobs %} {# Corrected: Iterate directly over the list #}
-                {# Add a dynamic class based on loop index to apply different styles #}
-                <div class="job-card job-card-style-{{ loop.index0 % 4 }}">
-                    <h2>{{ job_data.job_title }}</h2>
-                    <h3>{{ job_data.company_name }}</h3>
-                    <p><strong>Job ID:</strong> {{ job_data.id }}</p>
-                    {# ADDED: Sharable link button and display area #}
-        <div class="sharable-link-container">
-        <button class="btn-secondary share-btn" onclick="toggleShareLink(this)">Share Job</button>
-        <div class="share-link-box hidden">
-            <input type="text" class="share-link-input" value="{{ job_data.sharable_link }}" readonly>
-            <button class="btn-copy" onclick="copyShareLink(this)">Copy</button>
-        </div>
+        <main class="job-listings">
+            <h2>Your Job Postings</h2>
+            {% if jobs %}
+                {% for job in jobs %}
+                    <div class="job-card">
+                        <h3>{{ job.job_title }} at {{ job.company_name }}</h3>
+
+<div class="sharable-link-container">
+    <input type="text" class="share-link-input" value="{{ job.sharable_link }}" readonly>
+    <button class="btn-copy">Copy Link</button>
+</div>
+                        <div class="job-details-card">
+    <div class="job-details-header">
+        <span>View Job Details & Knockout Criteria</span>
+        <i class="fas fa-chevron-down"></i>
     </div>
-                    <p><strong>Description:</strong> {{ job_data.job_description }}</p>
+    <div class="job-details-content">
+        <div class="detail-section">
+            <h5>Job Description</h5>
+            <p>{{ job.job_description | nl2br }}</p>
 
-                    <div class="candidate-list">
-                        <h3 class="candidates-heading">Candidates for this Job ({{ job_data.candidates_list|length }}):</h3>
-                        {% if job_data.candidates_list %}
-                            {% for candidate_app in job_data.candidates_list %}
-                                <div class="candidate-card">
-                                    <!-- <strong>Name:<h4>{{ candidate_app.extracted_info.name or 'N/A' }}</h4></strong>  -->
-                                     <strong>Name: {{ candidate_app.extracted_info.name or 'N/A' }}</strong>
-
-                                    <p><strong>Application ID:</strong> {{ candidate_app.application_id }}</p>
-                                    <p><strong>Email:</strong> {{ candidate_app.extracted_info.email or 'N/A' }}</p>
-                                    <p><strong>Phone:</strong> {{ candidate_app.extracted_info.phone or 'N/A' }}</p>
-                                    <p><strong>Submission Date:</strong> {{ candidate_app.submission_date }}</p>
-                                    <p><strong>Approve : </strong>
-                                    <form action="{{ url_for('approve_candidate', application_id=candidate_app.id) }}" method="POST" style="display:inline-block; margin-left: 10px;">
-                                    <button type="submit" class="btn-primary approve-btn">Approve Candidate</button>
-                                    </form>
-                                    </p>
-                                    <p>
-                                        
-                                        <strong>Status:</strong> 
-                                        <span class="eligibility-status 
-                                            {% if candidate_app.eligibility_status == 'Eligible' %}eligible
-                                            {% elif candidate_app.eligibility_status == 'Not Eligible' %}not-eligible
-                                            {% else %}pending{% endif %}">
-                                            {{ candidate_app.eligibility_status or 'Pending Evaluation' }}
-                                        </span>
-                                    </p>
-                                    <p>
-                                        <strong>Match Score:</strong> 
-                                        <span class="score {% if candidate_app.match_score < 75 %}low{% endif %}">
-                                            {{ candidate_app.match_score or 'N/A' }}%
-                                        </span>
-                                    </p>
-                               
-                                    {# Collapsible section for Evaluation Reason #}
-                                    <div class="collapsible-header" data-target="evaluation-reason-{{ candidate_app.application_id }}">
-                                        <span>Evaluation Reason</span>
-                                    </div>
-                                    <div id="evaluation-reason-{{ candidate_app.application_id }}" class="collapsible-content hidden">
-                                        <div class="collapsible-feedback-box {% if candidate_app.eligibility_status == 'Eligible' %}bg-green-50{% elif candidate_app.eligibility_status == 'Not Eligible' %}bg-red-50{% endif %}">
-                                            <p>{{ candidate_app.eligibility_reason or 'N/A' }}</p>
-                                        </div>
-                                    </div>
-                                
-                                    {% if candidate_app.exam_taken %}
-                                        <p class="mt-4"><strong>Exam Taken:</strong> Yes</p>
-                                        <p><strong>Exam Score:</strong> {{ candidate_app.exam_score or 'N/A' }}</p>
-                                        {% if candidate_app.exam_feedback %}
-                                            {# Collapsible section for Exam Feedback #}
-                                            <div class="collapsible-header" data-target="exam-feedback-{{ candidate_app.application_id }}">
-                                                <span>Exam Feedback</span>
-                                            </div>
-                                            <div id="exam-feedback-{{ candidate_app.application_id }}" class="collapsible-content hidden">
-                                                <ul class="exam-feedback-list">
-                                                    {% for feedback_item in candidate_app.exam_feedback %}
-                                                        <li>
-                                                            <strong>Q:</strong> {{ feedback_item.question }} <br>
-                                                            <strong>Score:</strong> {{ feedback_item.score }}/10 <br>
-                                                            <strong>Feedback:</strong> {{ feedback_item.feedback }}
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        {% endif %}
-                                    {% else %}
-                                        <p class="mt-4"><strong>Exam Taken:</strong> No</p>
-                                    {% endif %}
-
-                                    {% if candidate_app.extracted_info.skills %}
-                                        {# Collapsible section for Skills #}
-                                        <div class="collapsible-header" data-target="skills-{{ candidate_app.application_id }}">
-                                            <span>Skills</span>
-                                        </div>
-                                        <div id="skills-{{ candidate_app.application_id }}" class="collapsible-content hidden">
-                                            <div class="info-section">
-                                                <h5>Skills</h5>
-                                                <ul>
-                                                    {% for skill in candidate_app.extracted_info.skills %}
-                                                        <li>{{ skill }}</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-
-                                    {% if candidate_app.extracted_info.education %}
-                                        {# Collapsible section for Education #}
-                                        <div class="collapsible-header" data-target="education-{{ candidate_app.application_id }}">
-                                            <span>Education</span>
-                                        </div>
-                                        <div id="education-{{ candidate_app.application_id }}" class="collapsible-content hidden">
-                                            <div class="info-section">
-                                                <h5>Education</h5>
-                                                <ul>
-                                                    {% for edu in candidate_app.extracted_info.education %}
-                                                        <li>
-                                                            {{ edu.degree or 'N/A' }}
-                                                            {% if edu.concentration %}, {{ edu.concentration }}{% endif %}
-                                                            at {{ edu.university or 'N/A' }} ({{ edu.start_year or 'N/A' }} - {{ edu.end_year or 'N/A' }})
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-
-                                    {% if candidate_app.extracted_info.experience %}
-                                        {# Collapsible section for Experience #}
-                                        <div class="collapsible-header" data-target="experience-{{ candidate_app.application_id }}">
-                                            <span>Experience</span>
-                                        </div>
-                                        <div id="experience-{{ candidate_app.application_id }}" class="collapsible-content hidden">
-                                            <div class="info-section">
-                                                <h5>Experience</h5>
-                                                <ul>
-                                                    {% for exp in candidate_app.extracted_info.experience %}
-                                                        <li>{{ exp.title or 'N/A' }} at {{ exp.location or 'N/A' }} ({{ exp.duration or 'N/A' }})</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-
-                                   {% if candidate_app.extracted_info.projects %}
-    {# Collapsible section for Projects #}
-    <div class="collapsible-container">
-        <div class="collapsible-header" data-target="#projects-{{ candidate_app.id }}">
-            <span>Projects <i class="fas fa-chevron-down"></i></span>
         </div>
-        <div id="projects-{{ candidate_app.id }}" class="collapsible-content hidden">
-            <div class="info-section">
-                <ul>
-                    {% for project in candidate_app.extracted_info.projects %}
-                        <li>
-                            {{ project.title or 'N/A' }} 
-                            {% if project.link %}(<a href="{{ project.link }}" target="_blank" class="project-link">{{ project.link }}</a>){% endif %}
-                            {% if project.insights %}
-                                {# MODIFIED: Ensure correct parameters for url_for and add debug text #}
-                                <a href="{{ url_for('project_insights', job_id=job_data.id, candidate_id=candidate_app.id, project_index=loop.index0) }}" class="text-link">View Insights</a>
-                                {# ADDED TEMPORARY DEBUG TEXT (REMOVE AFTER FIXING) #}
-                                <!-- <span style="color:red; font-size: 0.7em; margin-left: 5px;">(Job:{{ job_data.id[:4] }}... Cand:{{ candidate_app.id[:4] }}... Proj:{{ loop.index0 }})</span> -->
-                            {% else %}
-                                <span class="text-red-500 text-xs ml-2">(No insights available)</span>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+       {% if job.knockout_questions_parsed and job.knockout_questions_parsed.criteria %}
+    <div class="detail-section">
+        <h5>Knockout Criteria</h5>
+        <ul>
+            {# Loop through the parsed dictionary's criteria list #}
+            {% for criterion in job.knockout_questions_parsed.criteria %}
+                <li><strong>{{ criterion.type | replace('_', ' ') | title }}:</strong> {{ criterion.value }}</li>
+            {% endfor %}
+        </ul>
     </div>
 {% endif %}
+        
+    </div>
+</div>
+                        <div class="candidate-list">
+                            <h4>Applicants ({{ job.total_applications or 0 }})</h4>
+                            {% set job_applications = apps_by_job.get(job.id, []) %}
+                            {% for app in job_applications %}
+                                <div class="candidate-card">
+                                    <p><strong>{{ app.extracted_info.get('name', 'N/A') }}</strong></p>
+                                    <p><strong>Status:</strong> <span class="status-badge">{{ app.eligibility_status or 'Pending' }}</span></p>
+                                    
+{% if app.eligibility_status != 'Approved' %}
+    <form action="{{ url_for('approve_candidate', application_id=app.id) }}" method="POST" style="margin-top:10px;">
+        <button type="submit" class="btn-primary" style="padding:5px 10px; background-color:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">
+            Approve Candidate
+        </button>
+    </form>
+{% else %}
+    <span class="status-badge" style="background-color: #28a745; color: white; padding: 3px 8px; border-radius: 4px;">Approved</span>
+{% endif %}
+                                    <div class="collapsible-container">
+                                        <div class="collapsible-header">
+                                            <span>View Full Analysis & Profile</span> <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                        <div class="collapsible-content">
+                                            <div class="detail-section">
+                                                <h5>AI Evaluation ({{ app.match_score }}%)</h5>
+                                                <p>{{ app.eligibility_reason or 'N/A' }}</p>
+                                            </div>
+
+                                            {% if app.knockout_analysis %}
+                                            <div class="detail-section">
+                                                <h5>Knockout Analysis ({{ app.knockout_analysis.score }}%)</h5>
+                                                <p><strong>Result:</strong> {% if app.knockout_analysis.passed %}Passed{% else %}Failed{% endif %}</p>
+                                                <p><strong>Reason:</strong> {{ app.knockout_analysis.reason }}</p>
+                                            </div>
+                                            {% endif %}
+
+                                            <div class="detail-section">
+                                                <h5>Exam Status</h5>
+                                                {% if app.exam_taken %}
+                                                    <p><strong>Taken:</strong> Yes</p>
+                                                    <p><strong>Score:</strong> {{ app.exam_score or 'N/A' }}</p>
+                                                {% else %}
+                                                    <p><strong>Taken:</strong> No</p>
+                                                {% endif %}
+                                            </div>
+
+                                            {% set info = app.extracted_info %}
+                                            <div class="detail-section">
+                                                <h5>Extracted Resume</h5>
+                                                {% if info.skills %}<p><strong>Skills:</strong> {{ info.skills | join(', ') }}</p>{% endif %}
+                                                {% if info.experience %}<p><strong>Experience:</p><ul>{% for exp in info.experience %}<li>{{ exp.title }} at {{ exp.location }} ({{ exp.duration }})</li>{% endfor %}</ul>{% endif %}
+                                                {% if info.education %}<p><strong>Education:</p><ul>{% for edu in info.education %}<li>{{ edu.degree }} at {{ edu.university }}</li>{% endfor %}</ul>{% endif %}
+                                                {% if info.projects %}<p><strong>Projects:</p><ul>{% for project in info.projects %}<li>{{ project.title }} <a href="{{ url_for('project_insights', job_id=job.id, application_id=app.id, project_index=loop.index0) }}" class="text-link">View Insights</a></li>{% endfor %}</ul>{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             {% endfor %}
-                        {% else %}
-                            <p class="no-candidates empty-state">No candidates have applied for this job yet.</p>
-                        {% endif %}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p class="no-jobs empty-state">No jobs have been uploaded yet. Please upload a job to get started!</p>
-        {% endif %}
-
-        <a href="{{ url_for('index') }}" class="back-link">&larr; Back to Home</a>
+                {% endfor %}
+            {% endif %}
+        </main>
     </div>
+ <script id="dashboard-data" type="application/json">
+        {
+            "jobs": {{ jobs | tojson | safe }},
+            "applicationsByJob": {{ apps_by_job | tojson | safe }}
+        }
+    </script>
+     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const dataElement = document.getElementById('dashboard-data');
+                const data = JSON.parse(dataElement.textContent);
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let currentCardIndex = 0; // Keep track of the currently displayed card
-        let applicationCards = document.querySelectorAll('.application-card'); // All candidate cards
+                console.log("--- HR DASHBOARD DATA RECEIVED ---");
+                console.log("Jobs:", data.jobs);
+                console.log("Applications by Job ID:", data.applicationsByJob);
+                console.log("---------------------------------");
+            } catch (e) {
+                console.error("Failed to parse dashboard data:", e);
+            }
 
-        // --- Collapsible Sections Logic (already there, just ensuring it works) ---
-        const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
-        collapsibleHeaders.forEach(header => {
-            header.addEventListener('click', function() {
-                const content = this.nextElementSibling; // Get the next sibling (collapsible-content)
-                const icon = this.querySelector('i'); // Assuming Font Awesome icon for chevron
-
-                if (content) {
+            // Your other JavaScript for collapsible sections, etc., can go here
+        });
+    </script>   
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.collapsible-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
                     content.classList.toggle('hidden');
-                    content.classList.toggle('visible'); // Toggle 'visible' class as well
+                    const icon = this.querySelector('i');
                     if (icon) {
                         icon.classList.toggle('fa-chevron-down');
                         icon.classList.toggle('fa-chevron-up');
                     }
-                    // Optional: Scroll to make the header visible if content expands
-                    if (content.classList.contains('visible')) {
-                        this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }
-                }
+                });
             });
         });
-
-        // --- Candidate Card Carousel / Navigation Logic (MODIFIED) ---
-        function showCard(index) {
-            if (applicationCards.length === 0) return;
-
-            // Ensure the index is within bounds
-            index = Math.max(0, Math.min(index, applicationCards.length - 1));
-            currentCardIndex = index; // Update the global index
-
-            // Hide all cards first
-            applicationCards.forEach(card => {
-                card.classList.remove('active');
-                card.classList.add('hidden');
-            });
-
-            // Show the selected card
-            applicationCards[currentCardIndex].classList.remove('hidden');
-            applicationCards[currentCardIndex].classList.add('active');
-
-            // Update button visibility (prev/next)
-            const prevBtn = document.getElementById('prevCardBtn');
-            const nextBtn = document.getElementById('nextCardBtn');
-
-            if (prevBtn) {
-                prevBtn.classList.toggle('hidden', currentCardIndex === 0);
-            }
-            if (nextBtn) {
-                nextBtn.classList.toggle('hidden', currentCardIndex === applicationCards.length - 1);
-            }
-        }
-
-        function nextCard() {
-            if (currentCardIndex < applicationCards.length - 1) {
-                showCard(currentCardIndex + 1);
-            }
-        }
-
-        function prevCard() {
-            if (currentCardIndex > 0) {
-                showCard(currentCardIndex - 1);
-            }
-        }
-
-        // Initialize display on page load
-        if (applicationCards.length > 0) {
-            // Check if applicationCards is inside job-card
-            applicationCards = document.querySelectorAll('.job-card .application-card'); // Correct selector
-            showCard(0); // Display the very first candidate card when the page loads
-        } else {
-            // Hide navigation buttons if there are no cards
-            const prevBtn = document.getElementById('prevCardBtn');
-            const nextBtn = document.getElementById('nextCardBtn');
-            if (prevBtn) prevBtn.classList.add('hidden');
-            if (nextBtn) nextBtn.classList.add('hidden');
-        }
-
-        // Attach event listeners to navigation buttons
-        const prevBtn = document.getElementById('prevCardBtn');
-        const nextBtn = document.getElementById('nextCardBtn');
-        if (prevBtn) prevBtn.addEventListener('click', prevCard);
-        if (nextBtn) nextBtn.addEventListener('click', nextCard);
-
-        // --- "Take Exam" Button Logic (from previous turns) ---
-        document.querySelectorAll('.btn-take-exam').forEach(button => {
-            button.addEventListener('click', function() {
-                const jobId = this.dataset.jobId;
-                const candidateId = this.dataset.candidateId;
-                
-                console.log(`DEBUG: Take Exam button clicked! Job ID: ${jobId}, Candidate ID: ${candidateId}`);
-
-                if (jobId && candidateId) {
-                    const examUrl = `/get_exam?job_id=${jobId}&candidate_id=${candidateId}`;
-                    window.location.href = examUrl; // Perform the redirection
-                } else {
-                    alert('Error: Missing job or candidate ID for the exam link.');
-                    console.error('ERROR: Missing data-job-id or data-candidate-id on Take Exam button.');
-                }
-            });
-        });
-
-        // --- Flash Messages Fade Out (if you had this globally) ---
-        const flashMessages = document.querySelectorAll('.flash-message');
-        flashMessages.forEach(msg => {
-            setTimeout(() => {
-                msg.style.opacity = '0';
-                msg.style.transition = 'opacity 0.5s ease-out';
-                setTimeout(() => msg.remove(), 500);
-            }, 5000);
+          // This script should be inside your DOMContentLoaded listener
+    document.querySelectorAll('.job-details-header').forEach(header => {
+        header.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
         });
     });
-        function toggleShareLink(button) {
-        const shareBox = button.nextElementSibling;
-        shareBox.classList.toggle('hidden');
-    }
-
-    function copyShareLink(button) {
-        const input = button.previousElementSibling;
-        input.select();
-        document.execCommand('copy');
-        button.textContent = 'Copied!';
-        setTimeout(() => {
-            button.textContent = 'Copy';
-        }, 2000);
-    }
-    // END ADDED JavaScript
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        // ... (your existing JavaScript code) ...
+    // This should be inside your DOMContentLoaded listener
+    document.querySelectorAll('.btn-copy').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            
+            navigator.clipboard.writeText(input.value).then(() => {
+                // Provide visual feedback to the user
+                this.textContent = 'Copied!';
+                setTimeout(() => {
+                    this.textContent = 'Copy Link';
+                }, 2000); // Reset text after 2 seconds
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
     });
-
-</script>
+    </script>
 </body>
-</html>
+</html> 

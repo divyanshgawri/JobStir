@@ -1,398 +1,373 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>JobStir - Your Applications</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/client_portal.css')}}">
-    {# Link to Font Awesome for icons if used (e.g., for chevron down/up) #}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobStir - Candidate Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/client_portal.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="page-wrapper">
+    <div class="container">
         <header class="client-portal-header">
             <h1>Your Applications</h1>
-            <a href="{{ url_for('index') }}" class="btn-back-home">
-                Back to Home
-            </a>
+            <div class="action-buttons">
+                <a href="{{ url_for('index') }}" class="btn-back-home">Browse Jobs</a>
+                <a href="{{ url_for('logout') }}" class="btn-back-home btn-danger">Logout</a>
+            </div>
         </header>
 
         <main>
             {% if applications %}
                 <div class="card-carousel-container">
-                    <button id="prevCardBtn" class="carousel-nav-btn prev-btn hidden">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                        </svg>
-                        Previous
-                    </button>
+                    <button id="prevCardBtn" class="carousel-nav-btn prev-btn hidden">&lt; Previous</button>
                     <div class="application-cards-list">
                         {% for app in applications %}
-                            <div class="application-card {% if loop.index == 1 %}active{% endif %}">
-                                <h2>
-                                    Applied for: {{ app.job_title }} at {{ app.company_name }}
-                                </h2>
+                            <div class="application-card {% if loop.first %}active{% endif %}">
+                                <h2>Applied for: <strong>{{ app.job_title | default('Unknown Job') }}</strong> at {{ app.company_name | default('Unknown Company') }}</h2>
+
                                 <div class="card-status-section">
                                     <h4>
-                                        Your Status:
-                                        <span class="eligibility-status-badge
-                                            {% if app.eligibility_status == 'Eligible' %}eligible
-                                            {% else %}not-eligible{% endif %}">
-                                            {{ app.eligibility_status }}
+                                        Status:
+                                        <span class="eligibility-status-badge status-{{ app.eligibility_status | lower | replace(' ', '-') | replace('(', '') | replace(')', '') | default('pending') }}">
+                                            {{ app.eligibility_status | default('Pending') }}
                                         </span>
                                     </h4>
-                                    <span class="submission-date">Submitted: {{ app.submission_date }}</span>
+                                    <span class="submission-date">Submitted: {{ app.submission_date | default('Not available') }}</span>
                                 </div>
 
-                                <div class="mb-4">
-                                    <p class="match-score-text">Match Score: 
-                                        <span class="score-value">{{ app.match_score if app.match_score is not none else 'N/A' }}%</span>
+                                <div class="card-body">
+                                    <p class="match-score-text">AI Match Score: 
+                                        <span class="score-value">{{ app.match_score | default('N/A') }}%</span>
                                     </p>
 
-                                    {% if app.eligibility_status == 'Not Eligible' %}
-                                        <div class="reason-feedback-box error">
-                                            <h4>Reason for Non-Selection & Areas for Improvement:</h4>
-                                            <p class="leading-relaxed">{{ app.eligibility_reason }}</p>
-                                        </div>
-                                    {% endif %}
+                                    <div class="reason-feedback-box">
+                                        <h4>Reasoning & Areas for Improvement</h4>
+                                        <p>{{ app.eligibility_reason | default('No feedback available at this time.') }}</p>
+                                    </div>
                                 </div>
 
-                                {# MODIFIED: Exam button logic #}
-                                {% if app.eligibility_status == 'Eligible' %}
-                                    {# Check if exam_questions exist (means exam could be generated) #}
-                                    {% if app.exam_questions %}
-                                        {% if not app.exam_taken %}
-                                            {# Button that triggers JavaScript redirect to get_exam #}
-                                            <button class="btn-take-exam"
-                                                    data-job-id="{{ app.job_id }}" data-candidate-id="{{ app.id }}"> {# Use app.id here #}
-                                                Take Exam
-                                            </button>
-                                        {% else %}
-                                            <div class="exam-results-card">
-                                                <h3>Exam Results:</h3>
-                                                <p>Total Score: <span class="font-bold">{{ app.exam_score }} / 30</span></p>
-                                                {# Collapsible section for Exam Feedback #}
-                                                <!-- {% if app.exam_feedback %}
-                                                    <div class="collapsible-container">
-                                                        <div class="collapsible-header">
-                                                            <span>View Detailed Exam Feedback <i class="fas fa-chevron-down"></i></span>
-                                                        </div>
-                                                        <div class="collapsible-content hidden">
-                                                            <ul class="exam-feedback-list">
-                                                                {% for feedback_item in app.exam_feedback %}
-                                                                    <li>
-                                                                        <strong>Q:</strong> {{ feedback_item.question }} <br>
-                                                                        <strong>Score:</strong> {{ feedback_item.score }}/10<br>
-                                                                        <strong>Feedback:</strong> {{ feedback_item.feedback }}
-                                                                    </li>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                {% else %}
-                                                    <p class="text-muted">No detailed feedback available.</p>
-                                                {% endif %} -->
-                                            </div>
-                                        {% endif %}
-                                    {% else %}
-                                        <p class="text-yellow-600 mt-4">Exam questions not yet generated or failed to generate. Please check back later.</p>
-                                    {% endif %}
-                                {% endif %}
+{% if app.eligibility_status == 'Recommended' and app.exam_questions %}
+    {% if not app.exam_taken %}
+        <a class="btn-take-exam" 
+           href="{{ url_for('get_exam', job_id=app.job_id, candidate_id=app.id) }}">
+            Take Your Technical Exam
+        </a>
+    {% elif app.exam_taken %}
+        <div class="exam-results-card">
+            <h3>Exam Results</h3>
+            <p>Total Score: <span class="font-bold">{{ app.exam_score | default('N/A') }} / 30</span></p>
+            
+            {% if app.exam_feedback %}
+                <div class="collapsible-container">
+                    <div class="collapsible-header">
+                        <span>View Detailed Exam Feedback</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="collapsible-content hidden">
+                        <ul class="exam-feedback-list">
+                            {% for feedback_item in app.exam_feedback %}
+                                <li>
+                                    <strong>Question:</strong> {{ feedback_item.question | default('N/A') }} <br>
+                                    <strong>Score:</strong> {{ feedback_item.score | default('N/A') }}/10 <br>
+                                    <strong>Feedback:</strong> {{ feedback_item.feedback | default('No feedback provided') }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% else %}
+                <p>No detailed exam feedback available.</p>
+            {% endif %}
+        </div>
+    {% endif %}  
+{% endif %}
 
-                                {# Collapsible section for Resume Details #}
+
                                 <div class="collapsible-container">
-                                    <div class="collapsible-header">
-                                        <span>View Your Resume Details </span>
+                                    <div class="collapsible-header active">
+                                        <span>View Your Submitted Resume Details</span>
+                                        <i class="fas fa-chevron-up"></i>
                                     </div>
-                                    <div class="collapsible-content hidden">
-                                        {% set info = app.extracted_info %}
+                                    <div class="collapsible-content">
+                                        {% set info = app.extracted_info | default({}) %}
                                         
-                                        {% if info.email or info.phone %}
                                         <div class="info-section">
                                             <h5>Contact Information</h5>
-                                            {% if info.email %}<p><strong>Email:</strong> {{ info.email }}</p>{% endif %}
-                                            {% if info.phone %}<p><strong>Phone:</strong> {{ info.phone }}</p>{% endif %}
+                                            <p><strong>Name:</strong> {{ info.name | default('Not provided') }}</p>
+                                            <p><strong>Email:</strong> {{ info.email | default('Not provided') }}</p>
+                                            <p><strong>Phone:</strong> {{ info.phone | default('Not provided') }}</p>
                                         </div>
-                                        {% endif %}
-
-                                        {% if info.education %}
-                                        <div class="info-section">
-                                            <h5>Education</h5>
-                                            <ul>
-                                                {% for edu in info.education %}
-                                                    <li>
-                                                        <strong>{{ edu.degree if edu.degree else 'N/A' }}</strong> from {{ edu.university if edu.university else 'N/A' }}
-                                                        {% if edu.start_year or edu.end_year %}
-                                                            ({{ edu.start_year if edu.start_year else '' }} - {{ edu.end_year if edu.end_year else 'Present' }})
-                                                        {% endif %}
-                                                        {% if edu.concentration %}<p>Concentration: {{ edu.concentration }}</p>{% endif %}
-                                                        {% if edu.cumulative_gpa %}<p>GPA: {{ edu.cumulative_gpa }}</p>{% endif %}
-                                                        {% if edu.relevant_coursework %}
-                                                            <p>Relevant Coursework: {{ edu.relevant_coursework | join(', ') }}</p>
-                                                        {% endif %}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                        {% endif %}
-
-                                        {% if info.experience %}
+                                        
                                         <div class="info-section">
                                             <h5>Experience</h5>
-                                            <ul>
-                                                {% for exp in info.experience %}
-                                                    <li>
-                                                        <strong>{{ exp.title if exp.title else 'N/A' }}</strong> at {{ exp.company if exp.company else 'N/A' }}
-                                                        {% if exp.duration %}({{ exp.duration }}){% endif %}
-                                                        {% if exp.location %}, {{ exp.location }}{% endif %}
-                                                        {% if exp.description %}
-                                                            <ul>
-                                                                {% for desc_item in exp.description %}
-                                                                    <li>{{ desc_item }}</li>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        {% endif %}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
+                                            {% if info.experience %}
+                                                <ul>
+                                                    {% for exp in info.experience %}
+                                                        <li>
+                                                            <strong>{{ exp.title | default('Role Unknown') }}</strong> at 
+                                                            {{ exp.location | default('Unknown Company') }} 
+                                                            ({{ exp.duration | default('Not provided') }})
+                                                            {% if exp.description %}
+                                                                <ul class="exp-description">
+                                                                    {% for desc in exp.description %}
+                                                                        <li>{{ desc }}</li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p>No experience details provided.</p>
+                                            {% endif %}
                                         </div>
-                                        {% endif %}
 
-                                        {% if info.skills %}
                                         <div class="info-section">
-                                            <h5>Skills</h5>
-                                            <p>{{ info.skills | join(', ') }}</p>
-                                        </div>
-                                        {% endif %}
-
-                                        {% if info.projects %}
+    <h5>Skills</h5>
+    {% if info.skills %}
+        <ul>
+            {% for skill in info.skills %}
+                <li>{{ skill }}</li>
+            {% endfor %} 
+        </ul>
+    {% else %}
+        <p>No skills listed.</p>
+    {% endif %}
+</div>
                                         <div class="info-section">
                                             <h5>Projects</h5>
-                                            <ul>
-                                                {% for proj in info.projects %}
-                                                    <li>
-                                                        <strong>{{ proj.title if proj.title else 'N/A' }}</strong>
-                                                        {% if proj.link %}<a href="{{ proj.link }}" target="_blank" class="text-link">{{ proj.link }}</a>{% endif %}
-                                                        {% if proj.description %}
-                                                            <ul>
-                                                                {% for desc_item in proj.description %}
-                                                                    <li>{{ desc_item }}</li>
+                                            {% if info.projects %}
+                                                <ul>
+                                                    {% for project in info.projects %}
+                                                        <li>
+                                                            <strong>{{ project.title | default('Untitled Project') }}</strong>
+                                                            {% if project.link != '[Link]' %}
+                                                                (<a href="{{ project.link }}" class="text-link" target="_blank">Link</a>)
+                                                            {% endif %}
+                                                            <ul class="project-description">
+                                                                {% for desc in project.description %}
+                                                                    <li>{{ desc }}</li>
                                                                 {% endfor %}
                                                             </ul>
-                                                        {% endif %}
-                                                    
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p>No projects listed.</p>
+                                            {% endif %}
                                         </div>
-                                        {% endif %}
 
-                                        {% if info.certificates %}
                                         <div class="info-section">
-                                            <h5>Certificates</h5>
-                                            <ul>
-                                                {% for cert in info.certificates %}
-                                                    <li>{{ cert }}</li>
-                                                {% endfor %}
-                                            </ul>
+                                            <h5>Education</h5>
+                                            {% if info.education %}
+                                                <ul>
+                                                    {% for edu in info.education %}
+                                                        <li>{{ edu.degree }} - {{ edu.university }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p>No education details provided.</p>
+                                            {% endif %}
                                         </div>
-                                        {% endif %}
 
-                                        {% if info.achievments %}
                                         <div class="info-section">
-                                            <h5>Achievements</h5>
-                                            <ul>
-                                                {% for achievement in info.achievments %}
-                                                    <li>{{ achievement }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                        {% endif %}
-
-                                        {% if info.memberships %}
-                                        <div class="info-section">
-                                            <h5>Memberships</h5>
-                                            <ul>
-                                                {% for member in info.memberships %}
-                                                    <li>
-                                                        <strong>{{ member.name if member.name else 'N/A' }}</strong>
-                                                        {% if member.duration %}({{ member.duration }}){% endif %}
-                                                        {% if member.location %}, {{ member.location }}{% endif %}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                        {% endif %}
-
-                                        {% if info.campus_involvement %}
-                                        <div class="info-section">
-                                            <h5>Campus Involvement</h5>
-                                            <ul>
-                                                {% for involvement in info.campus_involvement %}
-                                                    <li>
-                                                        <strong>{{ involvement.name if involvement.name else 'N/A' }}</strong>
-                                                        {% if involvement.duration %}({{ involvement.duration }}){% endif %}
-                                                        {% if involvement.location %}, {{ involvement.location }}{% endif %}
-                                                        {% if involvement.description %}
-                                                            <ul>
-                                                                {% for desc_item in involvement.description %}
-                                                                    <li>{{ desc_item }}</li>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        {% endif %}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                        {% endif %}
+    <h5>Achievements</h5>
+    {% if info.achievements and info.achievements | length > 0 and info.achievements[0] != 'No achievements listed.' %}
+        <ul>
+            {% for achievement in info.achievements %}
+                <li>{{ achievement }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %} 
+</div>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
-                    <button id="nextCardBtn" class="carousel-nav-btn next-btn {% if applications|length <= 1 %}hidden{% endif %}">
-                        Next 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                    </button>
+                    <button id="nextCardBtn" class="carousel-nav-btn next-btn {% if applications|length <= 1 %}hidden{% endif %}">Next &gt;</button>
                 </div>
             {% else %}
-                <div class="empty-state fade-in">
-                    <p>You have not submitted any applications yet.</p>
-                    <a href="{{ url_for('candidate_apply') }}" class="btn-primary">
-                        Apply for a Job
-                    </a>
+                <div class="empty-state">
+                    <h2>No Applications Found</h2>
+                    <p>You have not submitted any applications yet. Find a job to get started!</p>
+                    <a href="{{ url_for('index') }}" class="btn-primary">Browse Jobs</a>
                 </div>
             {% endif %}
-        </main>
 
-        <div id="examModal" class="modal hidden">
-            <div class="modal-content">
-                <span class="close-button" id="closeModalBtn">&times;</span>
-                <h2>Technical Exam</h2>
-                <form id="examForm">
-                    <input type="hidden" id="modalJobId">
-                    <input type="hidden" id="modalCandidateId">
-                    <div id="questionsContainer">
-                        
-                    </div>
-                    <div class="modal-buttons">
-                        <button type="button" id="cancelExamBtn" class="btn-cancel">
-                            Cancel
-                        </button>
-                        <button type="submit" id="submitExamBtn" class="btn-submit-modal">
-                            Submit Exam
-                        </button>
-                    </div>
-                </form>
-                <div id="examMessageBox" class="hidden"></div>
-            </div>
-        </div>
-    </div>
 
     <script>
-    let applicationCards = [];
-    let currentCardIndex = 0;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carousel Logic
+            const applicationCards = document.querySelectorAll('.application-card');
+            const prevBtn = document.getElementById('prevCardBtn');
+            const nextBtn = document.getElementById('nextCardBtn');
+            let currentCardIndex = 0;
 
-    // --- Card Carousel Navigation ---
-    function showCard(index) {
-        if (applicationCards.length === 0) return;
+            function showCard(index) {
+                if (applicationCards.length === 0) return;
+                applicationCards.forEach((card, i) => {
+                    card.classList.toggle('active', i === index);
+                });
+                if (prevBtn) prevBtn.classList.toggle('hidden', index === 0);
+                if (nextBtn) nextBtn.classList.toggle('hidden', index >= applicationCards.length - 1);
+            }
 
-        applicationCards.forEach(card => {
-            card.classList.remove('active');
-            card.classList.add('hidden');
-        });
+            if (applicationCards.length > 0) {
+                showCard(currentCardIndex);
+            }
 
-        applicationCards[index].classList.remove('hidden');
-        applicationCards[index].classList.add('active');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentCardIndex < applicationCards.length - 1) {
+                        currentCardIndex++;
+                        showCard(currentCardIndex);
+                    }
+                });
+            }
 
-        const prevBtn = document.getElementById('prevCardBtn');
-        const nextBtn = document.getElementById('nextCardBtn');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentCardIndex > 0) {
+                        currentCardIndex--;
+                        showCard(currentCardIndex);
+                    }
+                });
+            }
 
-        if (prevBtn) {
-            prevBtn.classList.toggle('hidden', index === 0);
-        }
-        if (nextBtn) {
-            nextBtn.classList.toggle('hidden', index === applicationCards.length - 1);
-        }
-    }
-
-    function nextCard() {
-        if (currentCardIndex < applicationCards.length - 1) {
-            currentCardIndex++;
-            showCard(currentCardIndex);
-        }
-    }
-
-    function prevCard() {
-        if (currentCardIndex > 0) {
-            currentCardIndex--;
-            showCard(currentCardIndex);
-        }
-    }
-
-    // --- Collapsible Sections Logic ---
-    function toggleCollapsible(header) {
-        header.classList.toggle('active');
-        const content = header.nextElementSibling;
-        if (content.classList.contains('hidden')) {
-            content.classList.remove('hidden');
-            content.classList.add('visible');
-        } else {
-            content.classList.remove('visible');
-            content.classList.add('hidden');
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Initialize carousel cards
-        applicationCards = document.querySelectorAll('.application-card');
-        if (applicationCards.length > 0) {
-            showCard(currentCardIndex);
-        }
-
-        // Attach carousel navigation
-        const prevBtn = document.getElementById('prevCardBtn');
-        const nextBtn = document.getElementById('nextCardBtn');
-        if (prevBtn) prevBtn.addEventListener('click', prevCard);
-        if (nextBtn) nextBtn.addEventListener('click', nextCard);
-
-        // Attach collapsible headers
-        const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
-        collapsibleHeaders.forEach(header => {
-            header.addEventListener('click', function() {
-                toggleCollapsible(this);
+            // Collapsible Sections Logic
+            document.querySelectorAll('.collapsible-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    header.classList.toggle('active');
+                    const content = header.nextElementSibling;
+                    content.classList.toggle('hidden');
+                    const icon = header.querySelector('i');
+                    if (icon) {
+                        icon.classList.toggle('fa-chevron-down');
+                        icon.classList.toggle('fa-chevron-up');
+                    }
+                });
             });
-        });
 
-        // --- MODIFIED: "Take Exam" Button Logic (Redirects Directly to the page) ---
-        document.querySelectorAll('.btn-take-exam').forEach(button => {
-            button.addEventListener('click', function() {
-                const jobId = this.dataset.jobId;
-                const candidateId = this.dataset.candidateId;
-                
-                console.log(`DEBUG: Take Exam button clicked! Job ID: ${jobId}, Candidate ID: ${candidateId}`);
-
-                if (jobId && candidateId) {
-                    // Correctly form the URL with query parameters for the /get_exam route
-                    // This will cause a FULL PAGE REDIRECTION, NOT an AJAX call
-                    const examUrl = `/get_exam?job_id=${jobId}&candidate_id=${candidateId}`;
-                    window.location.href = examUrl; // Perform the redirection
-                } else {
-                    alert('Error: Missing job or candidate ID for the exam link.');
-                    console.error('ERROR: Missing data-job-id or data-candidate-id on Take Exam button.');
+            // Auto-expand active collapsible sections
+            document.querySelectorAll('.collapsible-header.active').forEach(header => {
+                const content = header.nextElementSibling;
+                content.classList.remove('hidden');
+                const icon = header.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
                 }
             });
-        });
 
-        // --- REMOVED: All Exam Modal related JavaScript ---
-        // The exam modal, fetching questions, and submission logic now belong SOLELY to the get_exam.html page.
-        // All related variables (examModal, examQuestionsDiv, submitExamBtn, etc.) and functions (closeExamModal, displayExamQuestions, showMessage)
-        // that were previously in client_portal.html are now removed from here.
-    });
-</script>
+            // Exam Modal Logic
+            const examModal = document.getElementById('examModal');
+            const examQuestionsContainer = document.getElementById('examQuestions');
+            const examMessageBox = document.getElementById('examMessageBox');
+            const closeModalBtn = document.querySelector('.close-button');
+            const submitModalBtn = document.querySelector('.btn-submit-modal');
+            const cancelModalBtn = document.querySelector('.btn-cancel');
+
+            document.querySelectorAll('.btn-take-exam').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const jobId = button.dataset.jobId;
+                    const applicationId = button.dataset.applicationId;
+
+                    if (!jobId || !applicationId) {
+                        examMessageBox.className = 'message-error';
+                        examMessageBox.textContent = 'Error: Missing job or application ID.';
+                        examModal.classList.add('visible');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`/get_exam?job_id=${jobId}&candidate_id=${applicationId}`);
+                        const data = await response.json();
+
+                        if (data.error) {
+                            examMessageBox.className = 'message-error';
+                            examMessageBox.textContent = data.error;
+                            examModal.classList.add('visible');
+                            return;
+                        }
+
+                        examQuestionsContainer.innerHTML = '';
+                        data.questions.forEach((q, index) => {
+                            const questionDiv = document.createElement('div');
+                            questionDiv.className = 'question-item';
+                            questionDiv.innerHTML = `
+                                <p>${index + 1}. ${q.question || 'Question not available'}</p>
+                                <textarea rows="4" name="answer_${index}"></textarea>
+                            `;
+                            examQuestionsContainer.appendChild(questionDiv);
+                        });
+
+                        examModal.classList.add('visible');
+                    } catch (error) {
+                        examMessageBox.className = 'message-error';
+                        examMessageBox.textContent = 'Failed to load exam questions.';
+                        examModal.classList.add('visible');
+                    }
+                });
+            });
+
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', () => {
+                    examModal.classList.remove('visible');
+                    examQuestionsContainer.innerHTML = '';
+                    examMessageBox.textContent = '';
+                    examMessageBox.className = '';
+                });
+            }
+
+            if (cancelModalBtn) {
+                cancelModalBtn.addEventListener('click', () => {
+                    examModal.classList.remove('visible');
+                    examQuestionsContainer.innerHTML = '';
+                    examMessageBox.textContent = '';
+                    examMessageBox.className = '';
+                });
+            }
+
+            if (submitModalBtn) {
+                submitModalBtn.addEventListener('click', async () => {
+                    const answers = Array.from(examQuestionsContainer.querySelectorAll('textarea')).map(textarea => textarea.value);
+                    const jobId = document.querySelector('.btn-take-exam')?.dataset.jobId;
+                    const applicationId = document.querySelector('.btn-take-exam')?.dataset.applicationId;
+
+                    if (!jobId || !applicationId) {
+                        examMessageBox.className = 'message-error';
+                        examMessageBox.textContent = 'Error: Missing job or application ID.';
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/submit_exam', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ job_id: jobId, candidate_id: applicationId, answers })
+                        });
+                        const result = await response.json();
+
+                        examMessageBox.className = result.success ? 'message-success' : 'message-error';
+                        examMessageBox.textContent = result.message;
+                        if (result.success) {
+                            setTimeout(() => {
+                                examModal.classList.remove('visible');
+                                location.reload();
+                            }, 2000);
+                        }
+                    } catch (error) {
+                        examMessageBox.className = 'message-error';
+                        examMessageBox.textContent = 'Failed to submit exam answers.';
+                    }
+                });
+            }
+        });
+        
+    </script>
 </body>
 </html>

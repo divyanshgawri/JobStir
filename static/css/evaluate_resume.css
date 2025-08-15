@@ -58,6 +58,34 @@ html, body {
     align-items: center;
     gap: 20px; /* Space between nav-label and auth-links */
 }
+/* Buttons inside navigation */
+.main-nav a {
+    display: inline-block;
+    padding: 10px 18px;
+    margin: 0 6px;
+    background-color: var(--primary-color, #2563eb); /* fallback if variable not set */
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Hover effect */
+.main-nav a:hover {
+    background-color: #1d4ed8; /* slightly darker blue */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Optional active/focus styles */
+.main-nav a:focus,
+.main-nav a:active {
+    outline: none;
+    background-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.4);
+}
 
 .top-nav .nav-label {
     font-size: 14px;
@@ -68,7 +96,7 @@ html, body {
 }
 
 .top-nav .auth-links a {
-    color: var(--dark-text);
+    color: white;
     text-decoration: none;
     font-weight: 500;
     padding: 8px 12px;

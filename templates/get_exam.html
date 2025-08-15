@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOBSTIR - Take Your Exam</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/get_exam.css') }}"> {# We'll create this CSS next #}
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/founder1.png') }}" type="image/png">
+    <title>JobStir - Technical Assessment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/get_exam.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="top-nav">
         <div class="container nav-content">
-            <div class="logo">JOBSTIR</div>
+            <div class="logo"><a href="{{ url_for('index') }}">JOBSTIR</a></div>
             <nav class="main-nav">
-                {% if current_user.is_authenticated %}
+                {% if session.get('user_info') %}
                     <a href="{{ url_for('evaluate_resume') }}"><b>Evaluate Resume</b></a>
-                    {% if current_user.is_hr %}
+                    {% if session.user_info.is_hr %}
                         <a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a>
-                        <a href="{{ url_for('hr_job_upload') }}">Upload Job</a>
                     {% else %}
-                        <a href="{{ url_for('candidate_apply') }}">Apply for Job</a>
                         <a href="{{ url_for('client_portal') }}">My Applications</a>
                     {% endif %}
                 {% endif %}
                 <div class="auth-links">
-                    {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
+                    {% if session.get('user_info') %}
+                        <a href="{{ url_for('logout') }}">Logout ({{ session.user_info.email }})</a>
                     {% else %}
                         <a href="{{ url_for('login') }}">Login</a>
                         <a href="{{ url_for('signup') }}">Signup</a>
@@ -35,31 +32,21 @@
         </div>
     </header>
 
-<div id="examMessageBox" class="message-box hidden"></div>
     <main class="container main-content">
-        <h1 class="page-title">Online Assessment</h1>
+        <h1 class="page-title">Technical Assessment</h1>
         <p class="subtitle">Job: <strong>{{ job_title }}</strong></p>
-        <p class="subtitle">Candidate: <strong>{{ candidate_name }}</strong></p>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages-container">
-                    <ul class="flashes">
-                        {% for category, message in messages %}
-                            <li class="flash-message {{ category }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-        {% endwith %}
+        
+        <div id="examMessageBox" class="message-box hidden"></div>
 
         <div class="exam-form-container data-card">
             <form id="exam-form">
-                <input type="hidden" id="modalJobId" name="job_id" value="">
-                <input type="hidden" id="modalCandidateId" name="candidate_id" value="">
-                <div id="questionsContainer"></div>
+                <div id="questionsContainer">
+                    </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">Submit Exam</button>
+                    <button type="submit" id="submitExamBtn" class="btn-primary">
+                        <span class="btn-text">Submit Exam</span>
+                        <span class="btn-spinner hidden"></span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -67,145 +54,194 @@
 
     <footer class="footer-bar">
         <div class="container">
-            <p>&copy; 2025 JOBSTIR - AI Resume Evaluator. All rights reserved.</p>
+            <p>&copy; 2025 JOBSTIR - All rights reserved.</p>
         </div>
     </footer>
 
-
-<!-- Place this before the closing </body> tag -->
-<script id="exam-questions-data" type="application/json">
-{{ exam_questions_json | safe }}
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const examForm = document.getElementById('exam-form');
-    const questionsContainer = document.getElementById('questionsContainer');
-    const examMessageBox = document.getElementById('examMessageBox');
-
-    // Get exam questions with proper error handling
-    const examQuestionsDataElement = document.getElementById('exam-questions-data');
-    let examQuestions = [];
-    
-    if (examQuestionsDataElement) {
-        try {
-            const parsedData = JSON.parse(examQuestionsDataElement.textContent);
-            // Handle both array format and {questions: []} format
-            examQuestions = Array.isArray(parsedData) ? parsedData : (parsedData.questions || []);
-            console.log("DEBUG: Successfully parsed exam JSON from hidden element.");
-        } catch (e) {
-            console.error("ERROR: Failed to parse exam JSON from hidden element:", e);
-            showMessage('Error loading exam questions. Please refresh the page or contact support.', 'error', examMessageBox);
+    <script id="exam-data" type="application/json">
+        {
+            "questions": {{ exam_questions_json | safe }},
+            "jobId": "{{ job_id }}",
+            "applicationId": "{{ candidate_id }}"
         }
-    } else {
-        console.error("ERROR: Could not find exam questions data element");
-        showMessage('Error loading exam questions. Please refresh the page or contact support.', 'error', examMessageBox);
-    }
-    
-    const jobId = "{{ job_id }}";
-    const candidateId = "{{ candidate_id }}";
+    </script>
 
-    // Set hidden field values
-    if (document.getElementById('modalJobId')) {
-        document.getElementById('modalJobId').value = jobId;
-    }
-    if (document.getElementById('modalCandidateId')) {
-        document.getElementById('modalCandidateId').value = candidateId;
-    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const examForm = document.getElementById('exam-form');
+            const questionsContainer = document.getElementById('questionsContainer');
+            const examMessageBox = document.getElementById('examMessageBox');
+            const submitBtn = document.getElementById('submitExamBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnSpinner = submitBtn.querySelector('.btn-spinner');
 
-    // Display questions
-    displayExamQuestions(examQuestions);
-
-    // Handle form submission
-    if (examForm) {
-        examForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const submitBtn = examForm.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            let examQuestions = [];
+            let jobId = '';
+            let applicationId = '';
 
             try {
-                const answers = Array.from(document.querySelectorAll('#questionsContainer textarea')).map(textarea => ({
-                    question_id: textarea.dataset.questionId,
-                    answer: textarea.value
-                }));
+                const dataEl = document.getElementById('exam-data');
+                const data = JSON.parse(dataEl.textContent);
+                examQuestions = data.questions || [];
+                jobId = data.jobId;
+                applicationId = data.applicationId;
+            } catch (e) {
+                console.error("Fatal Error: Could not parse exam data.", e);
+                showMessage('Error loading exam. Please refresh or contact support.', 'error');
+                return;
+            }
 
-                if (!answers.every(a => a.answer.trim())) {
+            // Display questions
+            displayExamQuestions(examQuestions);
+
+            examForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                setLoadingState(true);
+
+                try {
+                    const answers = getAnswersFromForm();
+                    const response = await submitAnswers(answers);
+                    
+                    // --- IMPROVEMENT: Display styled success message instead of alert ---
+                    const totalPossibleScore = examQuestions.reduce((sum, q) => sum + (q.score_possible || 10), 0);
+                    const successMessage = `${response.message} Your score: ${response.score}/${totalPossibleScore}`;
+                    showMessage(successMessage, 'success');
+                    
+                    // Redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = "{{ url_for('client_portal') }}";
+                    }, 2500);
+
+                } catch (error) {
+                    // --- IMPROVEMENT: Display styled error message instead of alert ---
+                    showMessage(error.message, 'error');
+                    setLoadingState(false);
+                }
+            });
+
+            function getAnswersFromForm() {
+                const answers = [];
+                const textareas = document.querySelectorAll('#questionsContainer textarea');
+                let allAnswered = true;
+                textareas.forEach(textarea => {
+                    if (!textarea.value.trim()) {
+                        allAnswered = false;
+                    }
+                    answers.push({
+                        question_id: textarea.dataset.questionId,
+                        answer: textarea.value
+                    });
+                });
+                if (!allAnswered) {
                     throw new Error('Please answer all questions before submitting.');
                 }
+                return answers;
+            }
 
-                const response = await fetch(`/submit_exam/${jobId}/${candidateId}`, {
+            async function submitAnswers(answers) {
+                const response = await fetch(`/submit_exam/${jobId}/${applicationId}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ answers })
                 });
-
                 const result = await response.json();
-
-                if (response.ok) {
-                    alert(`${result.message} Your total score: ${result.score}/30`);
-                    window.location.href = "{{ url_for('client_portal') }}";
-                } else {
-                    throw new Error(result.error || 'Something went wrong during submission.');
+                if (!response.ok) {
+                    throw new Error(result.error || 'An unknown error occurred during submission.');
                 }
-            } catch (error) {
-                console.error('Submission error:', error);
-                alert(error.message || 'Network error during submission. Please try again.');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Exam';
+                return result;
+            }
+
+            function displayExamQuestions(questions) {
+                if (!questions || questions.length === 0) {
+                    questionsContainer.innerHTML = '<p>No questions are available for this exam.</p>';
+                    submitBtn.disabled = true;
+                    return;
+                }
+                questionsContainer.innerHTML = questions.map((q, index) => `
+                    <div class="question-item">
+                        <label class="question-label" for="answer-${q.id}">Question ${index + 1}:</label>
+                        <p class="question-text">${escapeHtml(q.question)}</p>
+                        <textarea id="answer-${q.id}" class="answer-textarea" rows="6" data-question-id="${q.id}" placeholder="Type your answer here..." required></textarea>
+                    </div>
+                `).join('');
+            }
+
+            function setLoadingState(isLoading) {
+                submitBtn.disabled = isLoading;
+                btnText.textContent = isLoading ? 'Submitting...' : 'Submit Exam';
+                btnSpinner.classList.toggle('hidden', !isLoading);
+            }
+
+            function showMessage(message, type) {
+                examMessageBox.textContent = message;
+                examMessageBox.className = `message-box message-${type}`;
+            }
+
+            function escapeHtml(unsafe) {
+                return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             }
         });
-    }
 
-    function displayExamQuestions(questions) {
-        questionsContainer.innerHTML = '';
-        
-        if (!questions?.length) {
-            questionsContainer.innerHTML = '<p class="text-gray-600 text-center">No questions available for this exam.</p>';
-            return;
-        }
+           document.getElementById('exam-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Stop the default form submission
 
-        questions.forEach((q, index) => {
-            const questionHtml = `
-                <div class="question-item">
-                    <p class="question-number">Question ${index + 1}:</p>
-                    <p class="question-text">${escapeHtml(q.question)}</p>
-                    <textarea 
-                        class="answer-textarea" 
-                        rows="6" 
-                        data-question-id="${escapeHtml(q.id)}" 
-                        placeholder="Type your answer here..."
-                    ></textarea>
-                </div>
-            `;
-            questionsContainer.insertAdjacentHTML('beforeend', questionHtml);
+        const form = event.target;
+        const submitButton = form.querySelector('button[type="submit"]');
+        const statusDiv = document.getElementById('submission-status');
+
+        // Disable button and show loading message
+        submitButton.disabled = true;
+        submitButton.textContent = 'Submitting...';
+        statusDiv.textContent = '';
+        statusDiv.className = '';
+
+        // 1. Get the IDs from the hidden input fields in your form
+        const jobId = form.querySelector('input[name="job_id"]').value;
+        const candidateId = form.querySelector('input[name="candidate_id"]').value;
+
+        // 2. Construct the CORRECT URL with the IDs in the path
+        const submitUrl = `/submit_exam/${jobId}/${candidateId}`;
+
+        // 3. Collect all the answers
+        const answers = [];
+        const textareas = form.querySelectorAll('textarea[name^="answer_"]');
+        textareas.forEach(textarea => {
+            const questionId = textarea.name.split('_')[1];
+            answers.push({
+                question_id: questionId,
+                answer: textarea.value
+            });
         });
-        console.log("Questions displayed.");
-    }
 
-    function showMessage(message, type, targetElement) {
-        if (targetElement) {
-            targetElement.textContent = message;
-            targetElement.className = '';
-            targetElement.classList.add('message-box', `message-${type}`);
-            targetElement.classList.remove('hidden');
-        }
-    }
-
-    function escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-});
-</script>
-
+        // 4. Send the data using the correct URL
+        fetch(submitUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ answers: answers }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                statusDiv.textContent = 'Success! ' + data.message;
+                statusDiv.className = 'alert alert-success';
+                submitButton.textContent = 'Submitted!';
+                // Optionally redirect after a delay
+                setTimeout(() => {
+                    window.location.href = '/client_portal';
+                }, 3000);
+            } else {
+                throw new Error(data.error || 'An unknown error occurred.');
+            }
+        })
+        .catch((error) => {
+            statusDiv.textContent = 'Error: ' + error.message;
+            statusDiv.className = 'alert alert-danger';
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Exam';
+        });
+    });
+    </script>
 </body>
 </html>

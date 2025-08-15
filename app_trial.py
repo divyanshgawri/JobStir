@@ -268,6 +268,252 @@ parser = StrOutputParser()
 # Initialize Groq client for chat completions (used in get_resume_score_with_breakdown)
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+# # Resume Extraction Chain
+# resume_extraction_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      """
+#      "You are a professional resume parser. Extract and align the following fields from the resume text into a JSON object:\n\n"
+#      "name (string), email (string), phone (string), "
+#      "education (list of objects with degree (string), university (string), start_year (string), end_year (string), concentration (string), cumulative_gpa (string), relevant_coursework (list of strings)), "
+#      "skills (list of strings), "
+#      "experience (list of objects with title (string), duration (string), location (string), and description (list of strings)), "
+#      "projects (list of objects with title (string), description (list of strings), and link (string - the full and exact URL to the project. Prioritize URLs found within `[HYPERLINK_DETECTED: URL]` markers if present, ensuring the link starts with http:// or https://)), "
+#      "certificates (list of strings), achievements (list of strings), "
+#      "memberships (list of objects with name (string), location (string), duration (string)), "
+#      "campus_involvement (list of objects with name (string), location (string), duration (string), and description (list of strings)).\n\n"
+#      "If a field is not found, use `null` for single values or an empty array `[]` for lists. "
+#      "Ensure all fields from the schema are present and strictly adhere to the specified structure. Do NOT include any extra fields not listed here. Do NOT explain anything.\n"
+#      "You must always return valid JSON fenced by a markdown code block. Do not return any additional text.
+#      If unsure or if data is missing → empty list.
+# Never fabricate, guess, or add extra skills, universities, or dates.
+
+# Example 1:
+# [Resume Text]
+# Jane Smith
+# Email: jane.smith@example.com
+# Skills: Python, SQL
+# Experience:
+#   2020-2022: Data Analyst at Acme Corp
+
+# [Correct JSON Output]
+# {
+#   "name": "Jane Smith",
+#   "email": "jane.smith@example.com",
+#   "phone": null,
+#   "education": [],
+#   "skills": ["Python", "SQL"],
+#   "experience": [
+#     {"title": "Data Analyst", "duration": "2020-2022", "location": null, "description": []}
+#   ],
+#   "projects": [],
+#   "certificates": [],
+#   "achievements": [],
+#   "memberships": [],
+#   "campus_involvement": []
+# }
+     
+#      """),
+#     ("human", "{text}")
+# ])
+
+# Resume Extraction Chain (Improved Few-Shot Version)
+# resume_extraction_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      """
+# You are a professional resume parser. Your job is to extract structured JSON data from raw resume text.
+
+# --- SCHEMA ---
+# You must output ONLY the following fields:
+# - name (string)
+# - email (string)
+# - phone (string)
+# - education (list of objects with degree (string), university (string), start_year (string), end_year (string), concentration (string), cumulative_gpa (string), relevant_coursework (list of strings))
+# - skills (list of strings)
+# - experience (list of objects with title (string), duration (string), location (string), and description (list of strings))
+# - projects (list of objects with title (string), description (list of strings), and link (string - full URL starting with http:// or https://))
+# - certificates (list of strings)
+# - achievements (list of strings)
+# - memberships (list of objects with name (string), location (string), duration (string))
+# - campus_involvement (list of objects with name (string), location (string), duration (string), and description (list of strings))
+
+# --- RULES ---
+# 1. If a field is missing, use `null` for single values or `[]` for lists.
+# 2. NEVER fabricate or guess — extract only what is explicitly stated in the text.
+# 3. Do not infer universities, dates, or skills that are not clearly present.
+# 4. Do not add extra fields or change field names.
+# 5. Output MUST be valid JSON — no markdown code fences, no explanations, no extra text.
+
+# --- FEW-SHOT EXAMPLES ---
+
+# Example 1:
+# [Resume Text]
+# Jane Smith
+# Email: jane.smith@example.com
+# Skills: Python, SQL
+# Experience:
+#   2020-2022: Data Analyst at Acme Corp
+
+# [Correct JSON Output]
+# {{{{  
+#   "name": "Jane Smith",
+#   "email": "jane.smith@example.com",
+#   "phone": null,
+#   "education": [],
+#   "skills": ["Python", "SQL"],
+#   "experience": [
+#     {{"title": "Data Analyst", "duration": "2020-2022", "location": null, "description": []}}
+#   ],
+#   "projects": [],
+#   "certificates": [],
+#   "achievements": [],
+#   "memberships": [],
+#   "campus_involvement": []
+# }}}}
+
+# Now process the following resume text strictly according to these rules:
+# Now process the following resume text.  
+# **Remember: Output only valid JSON, no leading text, no explanations.**
+#      """),
+#     ("human", "{text}")
+# ])
+# resume_extraction_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      """
+# You are a high-precision resume parsing engine. Your sole purpose is to extract structured JSON data from raw resume text with 100% accuracy.
+
+# --- **Core Directive: No Fabrication & Methodical Processing** ---
+# 1.  **NO FABRICATION**: You MUST extract information ONLY from the provided text. If a detail is not present, use `[]`. NEVER invent data.
+# 2.  **PROCESS METHODICALLY**: Go through the resume section by section (Header, Skills, Experience, Education, Projects). Do not move to the next section until you have extracted all information from the current one. This is critical to avoid missing sections.
+# 3.  **Output Format**: Your entire response MUST be a single, valid JSON object. Do not include markdown fences (```json), explanations, or any text outside of the JSON structure itself.
+
+# --- **Schema** ---
+# - name (string), email (string), phone (string)
+# - education (list of objects)
+# - skills (list of strings)
+# - experience (list of objects with title, duration, location, and description as a LIST OF STRINGS)
+# - projects (list of objects with title, link, and description as a LIST OF STRINGS)
+
+# --- **EXAMPLE: Correct Handling of Missing Info & Formatting** ---
+# [Input Text]:
+# Jane Smith
+# Email: jane.smith@example.com
+# Experience: Data Analyst at Acme Corp
+# - Analyzed sales data.
+
+# [Correct JSON Output]:
+# {{
+#   "name": "Jane Smith", "email": "jane.smith@example.com", "phone": null, "education": [], "skills": [],
+#   "experience": [ {{"title": "Data Analyst", "location": "Acme Corp", "description": ["Analyzed sales data."]}} ],
+#   "projects": []
+# }}
+
+# --- **Final Checklist Before Responding** ---
+# 1.  Is my output ONLY a JSON object?
+# 2.  Does every `description` field contain a LIST of strings?
+# 3.  Have I processed every section of the resume?
+# 4.  Does every piece of data in my JSON come directly from the input text?
+
+# Now, process the following resume text according to these strict rules.
+#      """),
+#     ("human", "{text}")
+# ])
+# resume_extraction_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      """You are a meticulously precise data extraction engine. Your sole function is to convert unstructured resume text into a perfectly structured JSON object. Errors are not an option. Your entire response MUST be a single, valid JSON object with no explanations or markdown.
+
+# --- **Primary Directive: Absolute Fidelity to Source Text** ---
+# 1.  **NO FABRICATION**: You are forbidden from inventing, guessing, or inferring any information not explicitly present in the text.
+# 2.  **HANDLE MISSING DATA**: If a top-level field (like `projects`) is absent from the resume, its value must be an empty list `[]`. If a sub-field within an object (like a job's `description`) is missing, its value must be an empty list `[]` as appropriate.
+# 3.  **PROCESS METHODICALLY**: Scan the resume from top to bottom. Extract contact information, then skills, experience, education, and projects in order to ensure nothing is missed.
+
+
+# --- **CRITICAL RULE FOR PROJECT LINKS** ---
+# You MUST find the full and exact URL for each project.
+# - **GOOD**: `https://github.com/username/project-name`
+# - **BAD**: `Link`, `GitHub`, `[Link]`
+# If a URL is not present for a project, the `link` field MUST be `null`.
+
+# --- **Strict JSON Schema** ---
+# - `name`: string
+# - `email`: string
+# - `phone`: string
+# - `skills`: list of strings
+# - `experience`: list of objects, each containing:
+#     - `title`: string
+#     - `duration`: string
+#     - `location`: string (company name and/or city)
+#     - `description`: list of strings
+# - `education`: list of objects, each containing:
+#     - `degree`: string
+#     - `university`: string
+#     - `duration`: string
+# - `projects`: list of objects, each containing: `title`, `link` (string, a full URL or []), `description` (list of strings)
+
+# --- **EXAMPLE 1: Simple Resume** ---
+# [Input Text]:
+# Jane Smith | jane.s@web.com | Skills: Python, SQL | 2020-2022: Data Analyst at Acme Corp - Analyzed sales data.
+
+# [Correct JSON Output]:
+# {{
+#   "name": "Jane Smith", "email": "jane.s@web.com", "phone": null, "skills": ["Python", "SQL"],
+#   "experience": [ {{"title": "Data Analyst", "duration": "2020-2022", "location": "Acme Corp", "description": ["Analyzed sales data."]}} ],
+#   "education": [], "projects": []
+# }}
+
+# --- **Example** ---
+# [Input Text]:
+# B.Sc. in Computer Science from State University (2018-2022)
+
+# [Correct JSON Output]:
+# {{
+#     "education": [
+#         {{
+#             "degree": "B.Sc. in Computer Science",
+#             "university": "State University",
+#             "start_year": "2018",
+#             "end_year": "2022"
+#         }}
+#     ]
+# }}
+
+# --- **EXAMPLE 2: Complex Resume with Missing Sub-Field** ---
+# [Input Text]:
+# John Doe | San Francisco, CA
+# Experience:
+# - Senior Developer, TechCorp (2021 - Present)
+#   - Led backend team.
+# - Developer, Web startup (2019-2021)
+
+# [Correct JSON Output]:
+# {{
+#   "name": "John Doe", "email": [], "phone":[] , "skills": [],
+#   "experience": [
+#     {{"title": "Senior Developer", "duration": "2021 - Present", "location": "TechCorp", "description": ["Led backend team."]}},
+#     {{"title": "Developer", "duration": "2019-2021", "location": "Web startup", "description": []}}
+#   ],
+#   "education": [], "projects": []
+# }}
+
+# --- **EXAMPLE 3: INCORRECT Behavior (What NOT to do)** ---
+# [Input Text]:
+# Sam Lee, Engineer
+
+# [Incorrect JSON - HALLUCINATED DATA]:
+# {{
+#   "name": "Sam Lee", "email":[] , "phone":[] , "skills": ["AutoCAD"], "experience": [], "education": [], "projects": []
+# }}
+# [Reasoning for Incorrectness]: The model INCORRECTLY guessed the skill "AutoCAD". The correct output is an empty list `[]` for skills.
+
+# --- **Final Audit Protocol (Mental Check Before Responding)** ---
+# 1.  Is my output ONLY a JSON object?
+# 2.  Does every single piece of data in my JSON come directly from the input text?
+# 3.  Have I used  `[]` for every piece of missing information?
+
+# Now, process the following resume text according to these unbreakable rules.
+#      """),
+#     ("human", "{text}")
+# ])
+
 resume_extraction_prompt = ChatPromptTemplate.from_messages([
     ("system",
      "You are a professional resume parser. Extract and align the following fields from the resume text into a JSON object:\n\n"
@@ -349,6 +595,100 @@ def extract_resume_info_llm(text: str) -> dict:
 # New LLM Chain for Knockout Questions
 knockout_llm = ChatGroq(model="llama3-70b-8192", temperature=0, max_tokens=5000)
 knockout_parser = StrOutputParser()
+# knockout_question_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      "You are an elite AI system, 'Recruiter-Prime v5.0', with a zero-error tolerance directive. Your **only** function is to perform a forensic analysis of a job description and extract a maximum of three types of non-negotiable 'knockout criteria': **Experience, Education, and Location**.\n\n"
+#      "--- **Core Directive: The Zero-False-Positive Mandate** ---\n"
+#      "Your primary directive is to ensure no candidate is ever disqualified incorrectly. If a requirement is not stated with absolute, unambiguous certainty, you MUST ignore it. When in doubt, leave it out.\n\n"
+#      "--- **CRITICAL RULE for Experience** ---\n"
+#      "When you see an experience requirement, especially a range (e.g., '2-4 years of experience'), you MUST extract ONLY the **minimum** value (in this case, '2'). A candidate with more experience is NEVER a knockout. Your output `type` must be 'experience_years' and the `value` must be the minimum number.\n\n"
+#      "--- **Strict Ruleset** ---\n"
+#      "1.  **IGNORE ALL TECHNICAL SKILLS:** You are forbidden from extracting criteria related to programming languages, tools, or technical skills (e.g., 'Python', 'React.js', 'ChatGPT'). These will be evaluated by a different system.\n"
+#      "2.  **IGNORE ALL CERTIFICATIONS:** You are forbidden from extracting criteria related to certifications (e.g., 'PMP', 'AWS Certified').\n"
+#      "3.  **Handle Location Intelligently:** Only extract a location if a **specific city or state** is listed as a mandatory requirement. Ignore flexible locations like 'PAN India' or 'Remote'.\n"
+#      "4.  **Prioritize Explicit Statements:** A direct statement under a 'Requirements' or 'Qualifications' section takes precedence over any inference.\n\n"
+#      "--- **CRITICAL INSTRUCTIONS for Keyword Generation** ---\n"
+#      "1.  **Education Keywords (Mandatory):** For 'Bachelor's degree in Computer Science', your keywords MUST include a comprehensive list of variations like `['bachelor', 'b.sc', 'bsc', 'b.s.', 'computer science']`.\n\n"
+#      "--- **Output Format (Mandatory)** ---\n"
+#      "- You MUST return a single, valid JSON object.\n"
+#      "- The object must have a single key: \"criteria\".\n"
+#      "- The value must be an array of objects.\n"
+#      "- Each object must contain: `type`, `value`, and `reason_if_failed`.\n"
+#      "- If no absolute knockout criteria are found, you MUST return `{{\"criteria\": []}}`.\n"
+#      # --- THIS IS THE CORRECTED LINE ---
+#      "- YOUR RESPONSE MUST BEGIN WITH `{{` AND END WITH `}}`. DO NOT INCLUDE ANY OTHER TEXT."
+#     ),
+#     ("human", "Analyze this Job Description:\n{job_desc}")
+# ])
+# knockout_question_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      """
+# You are 'Recruiter-Prime v5.0', an elite AI that extracts ONLY hard knockout criteria from job descriptions.
+
+# --- ALLOWED CRITERIA TYPES ---
+# 1. experience_years → minimum required years of experience (integer only)
+# 2. education → required degree(s) or field(s) of study
+# 3. location → specific mandatory work location (city/state)
+
+# --- **FINAL INSTRUCTIONS** ---
+# 1.  Analyze the user's job description.
+# 2.  Mentally check your extracted criteria against all the rules above, especially the exact `type` names.
+
+# --- RULES ---
+# **- NEVER include technical skills, certifications, or soft skills.**
+# **- If a requirement is given as a range (e.g., "2-4 years"), always use the **minimum** value.**
+# **- Only extract if explicitly mandatory — vague language ("preferably", "nice to have") must be ignored.**
+# **- For location: include only fixed city/state or "remote" — ignore "anywhere", "PAN India".**
+# - If no knockout criteria exist, return: {{{{"criteria": []}}}}
+# - Do NOT fabricate anything.
+# - Output must begin with {{ and end with }}.
+# - Output must be valid JSON — no markdown code fences, no explanation.
+
+# --- FEW-SHOT EXAMPLES ---
+
+# Example 1:
+# [Job Description]
+# We are hiring a Sales Manager.
+# Requirements:
+# - 3+ years experience in B2B sales
+# - Bachelor's degree in Business Administration or related field
+# - Must be based in New York City
+
+# [Correct JSON Output]
+# {{{{  
+#   "criteria": [
+#     {{"type": "experience_years", "value": 3, "reason_if_failed": "Candidate must have at least 3 years of relevant B2B sales experience."}},
+#     {{"type": "education", "value": "Bachelor's degree in Business Administration or related field", "reason_if_failed": "Candidate must hold a Bachelor's degree in Business Administration or a related field."}},
+#     {{"type": "location", "value": "New York City", "reason_if_failed": "Candidate must be located in New York City."}}
+#   ]
+# }}}}
+
+# Example 2:
+# [Job Description]
+# We are looking for a Creative Writer to join our remote-first team.
+# Preferred skills: SEO, content marketing, social media.
+
+# [Correct JSON Output]
+# {{{{"criteria": []}}}}
+
+# Now extract knockout criteria from the following job description.
+# Remember:
+# **- Only include experience_years, education, location if explicitly mandatory.**
+# **- No markdown code blocks.**
+# **- Output must begin with {{ and end with }}.**
+     
+     
+# --- **FINAL INSTRUCTIONS** ---
+# 1.  Analyze the user's job description.
+# 2.  Mentally check your extracted criteria against all the rules above, especially the exact `type` names.
+
+     
+#      """
+     
+     
+#      ),
+#     ("human", "Analyze this Job Description:\n{job_desc}\n\nReturn ONLY the JSON object.")
+# ])
 
 # In app_trial.py, use this ultra-strict prompt for knockout generation
 
@@ -434,6 +774,73 @@ def generate_knockout_questions_llm(job_description: str) -> dict:
     # This line is reached if the loop completes without a successful return
     raise KnockoutGenerationError("Failed to generate knockout questions after all retries.")
 
+
+# def _parse_duration_to_years(duration_str: str) -> float:
+#     """
+#     A more robust helper function to parse different duration formats into a total number of years.
+#     Handles formats like "2021-2023", "2022-Present", "3 years 6 months", "4 years", "8 months".
+#     """
+#     if not duration_str:
+#         return 0.0
+
+#     total_years = 0.0
+
+#     # Case 1: Handle date ranges like "2021 - 2023" or "Jan 2022 - Present"
+#     range_match = re.findall(r'(\d{4})', duration_str)
+#     if len(range_match) == 2:
+#         start_year, end_year = int(range_match[0]), int(range_match[1])
+#         total_years = end_year - start_year
+#         return max(1.0, float(total_years)) # Assume at least 1 year for a range
+#     elif len(range_match) == 1 and 'present' in duration_str.lower():
+#         start_year = int(range_match[0])
+#         current_year = datetime.now().year
+#         total_years = current_year - start_year
+#         return max(1.0, float(total_years))
+
+#     # Case 2: Handle formats like "X years Y months"
+#     years_match = re.search(r'(\d+)\s*year', duration_str, re.IGNORECASE)
+#     months_match = re.search(r'(\d+)\s*month', duration_str, re.IGNORECASE)
+
+#     if years_match:
+#         total_years += float(years_match.group(1))
+#     if months_match:
+#         total_years += float(months_match.group(1)) / 12.0
+
+#     return round(total_years, 1)
+# def _parse_duration_to_years(duration_str: str) -> float:
+#     """
+#     A more robust helper function to parse different duration formats into a total number of years.
+#     Handles formats like "2021-2023", "2022-Present", "3 years 6 months", "4 years", "8 months".
+#     """
+#     if not duration_str:
+#         return 0.0
+
+#     total_years = 0.0
+
+#     # Case 1: Handle date ranges like "2021 - 2023" or "Jan 2022 - Present"
+#     range_match = re.findall(r'(\d{4})', duration_str)
+#     if len(range_match) == 2:
+#         start_year, end_year = int(range_match[0]), int(range_match[1])
+#         total_years = end_year - start_year
+#         return max(1.0, float(total_years)) # Assume at least 1 year for a range
+#     elif len(range_match) == 1 and 'present' in duration_str.lower():
+#         start_year = int(range_match[0])
+#         current_year = datetime.now().year
+#         total_years = current_year - start_year
+#         return max(1.0, float(total_years))
+
+#     # Case 2: Handle formats like "X years Y months"
+#     years_match = re.search(r'(\d+)\s*year', duration_str, re.IGNORECASE)
+#     months_match = re.search(r'(\d+)\s*month', duration_str, re.IGNORECASE)
+
+#     if years_match:
+#         total_years += float(years_match.group(1))
+#     if months_match:
+#         total_years += float(months_match.group(1)) / 12.0
+
+#     # --- FIX: Removed the rounding to ensure precision ---
+#     return total_years
+
 def _parse_duration_to_years(duration_str: str) -> float:
     """
     An improved helper function to parse different duration formats into a total number of years.
@@ -484,6 +891,102 @@ def _parse_duration_to_years(duration_str: str) -> float:
 KNOCKOUT_PASS_THRESHOLD = 50
 
 
+# def check_knockout_criteria(resume_json: dict, job_obj: Job) -> dict:
+#     """
+#     Dynamically checks all knockout criteria and returns a detailed analysis
+#     instead of failing on the first missed criterion.
+#     """
+#     all_criteria = job_obj.knockout_questions.get("criteria", [])
+    
+#     if not all_criteria:
+#         return {"passed": True, "reason": "No knockout criteria defined for this job.", "score": 100, "met_criteria": [], "missed_criteria": []}
+
+#     met_criteria = []
+#     missed_criteria = []
+
+#     # Create a single, holistic text block for searching
+#     candidate_skills_text = ' '.join(resume_json.get('skills', [])).lower()
+#     candidate_experience_list = resume_json.get('experience', [])
+#     candidate_education_list = resume_json.get('education', [])
+    
+#     experience_text = ' '.join([f"{exp.get('title', '')} {' '.join(exp.get('description', []))}" for exp in candidate_experience_list]).lower()
+#     education_text = ' '.join([f"{edu.get('degree', '')} {edu.get('concentration', '')}" for edu in candidate_education_list]).lower()
+#     full_resume_text = f"{candidate_skills_text} {experience_text} {education_text}"
+
+#     for criterion in all_criteria:
+#         crit_type = criterion.get('type')
+#         raw_crit_value = criterion.get('value') # Get the raw value first
+#         crit_keywords = [k.lower() for k in criterion.get('keywords', [])]
+        
+#         reason_if_failed = criterion.get('reason_if_failed', 'Failed to meet a mandatory requirement.')
+#         is_met = False
+#         failure_reason = ""
+
+#         # --- FIX: Handle different data types for crit_value ---
+#         crit_value_str = ""
+#         if isinstance(raw_crit_value, str):
+#             crit_value_str = raw_crit_value.lower()
+#         elif isinstance(raw_crit_value, (int, float)):
+#             crit_value_str = str(raw_crit_value)
+#         # If it's a list, we don't need a single string version.
+        
+#         if not crit_keywords and crit_value_str:
+#             crit_keywords = [crit_value_str]
+#         # --- END FIX ---
+
+#         if crit_type == 'experience_years':
+#             min_years_required = float(crit_value_str) if crit_value_str.replace('.', '', 1).isdigit() else 0
+#             total_candidate_years = sum(_parse_duration_to_years(exp.get('duration', '')) for exp in candidate_experience_list)
+            
+#             if total_candidate_years >= min_years_required:
+#                 is_met = True
+#             else:
+#                 failure_reason = f"Required at least {min_years_required} years of experience; candidate has ~{total_candidate_years} years. ({reason_if_failed})"
+
+#         elif crit_type == 'required_skill':
+#             if any(k in full_resume_text for k in crit_keywords):
+#                 is_met = True
+#             else:
+#                 failure_reason = f"Required skill '{crit_value_str.title()}' not found in resume. ({reason_if_failed})"
+
+#         elif crit_type == 'required_education':
+#             if any(keyword in education_text for keyword in crit_keywords):
+#                 is_met = True
+#             else:
+#                 failure_reason = f"Required education in '{crit_value_str.title()}' is missing. ({reason_if_failed})"
+
+#         elif crit_type == 'required_certification':
+#             candidate_certifications_text = ' '.join(resume_json.get('certificates', [])).lower()
+#             if any(k in candidate_certifications_text for k in crit_keywords):
+#                 is_met = True
+#             else:
+#                 failure_reason = f"Required certification '{crit_value_str.title()}' is missing. ({reason_if_failed})"
+        
+#         if is_met:
+#             met_criteria.append(criterion)
+#         else:
+#             missed_criteria.append({"criterion": criterion, "reason": failure_reason})
+
+#     total_criteria_count = len(all_criteria)
+#     met_count = len(met_criteria)
+#     score = (met_count / total_criteria_count) * 100 if total_criteria_count > 0 else 100
+    
+#     passed = score >= KNOCKOUT_PASS_THRESHOLD
+
+#     final_reason = f"Candidate met {met_count} of {total_criteria_count} mandatory criteria ({int(score)}%). "
+#     if not passed:
+#         missed_reasons = ' '.join([item['reason'] for item in missed_criteria])
+#         final_reason += "Did not pass threshold. " + missed_reasons
+#     else:
+#         final_reason += "Passed knockout threshold."
+
+#     return {
+#         "passed": passed,
+#         "reason": final_reason,
+#         "score": int(score),
+#         "met_criteria": met_criteria,
+#         "missed_criteria": [item['criterion'] for item in missed_criteria]
+#     }
 # Add these new Pydantic models with your other models
 class ValidationResult(BaseModel):
     criterion_type: str = Field(..., description="The type of the criterion being validated.")
@@ -494,6 +997,231 @@ class ValidationResult(BaseModel):
 class ValidationResponse(BaseModel):
     results: List[ValidationResult]
 
+# Add this new prompt with your other prompts
+
+# # Add this new, corrected prompt with your other prompts
+# validation_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      "You are an elite AI system, 'Recruiter-Prime v4.0', acting as a final validation layer. Your sole function is to take a set of pre-extracted 'knockout criteria' and a candidate's resume, and determine with zero-error tolerance whether the candidate meets each criterion. Your judgment must be nuanced, fair, and emulate the top 1% of human recruiters.\n\n"
+#      "--- **Core Directive: The Principle of Positive Assumption & Contextual Analysis** ---\n"
+#      "Your primary goal is to identify qualified candidates. You must look for the 'spirit' of the requirement, not just literal matches.\n"
+#      "1.  **Education:** 'B.Sc.' on a resume absolutely fulfills a 'Bachelor's degree' requirement.\n"
+#      "2.  **Experience:** If a candidate has more years of experience than the minimum required, they meet the criterion. Do not penalize for over-qualification.\n"
+#      "3.  **Skills:** Look for skills and keywords throughout the entire resume (experience, projects, and skills sections). A skill demonstrated in a project is a valid skill.\n\n"
+#      "--- **Output Format (Mandatory)** ---\n"
+#      "- You MUST return a single, valid JSON object.\n"
+#      "- The object must have a single key: \"results\".\n"
+#      "- The value must be an array of objects, one for each criterion provided.\n"
+#      "- Each object must contain: `criterion_type`, `is_met` (boolean), `reasoning` (string), and `evidence` (string).\n"
+#      "- YOUR RESPONSE MUST BEGIN WITH `{{` AND END WITH `}}`. DO NOT INCLUDE ANY OTHER TEXT."
+#     ),
+#     ("human", 
+#      "**Candidate Resume (JSON):**\n{resume_json}\n\n"
+#      "**Knockout Criteria to Validate:**\n{criteria_json}\n\n"
+#      "Analyze the resume against each criterion and provide your validation results in the specified JSON format.")
+# ])
+# validation_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      """You are 'Recruiter-Prime v4.1', the final validation layer for knockout criteria.
+
+# Your task: For each knockout criterion, determine if the candidate's resume JSON meets it.
+# - Use ONLY the provided resume JSON data.
+# - Never guess or fabricate information.
+# - If data is missing or unclear, mark the criterion as NOT met.
+
+# ======================
+# CRITERIA TYPES & RULES
+# ======================
+# 1. experience_years
+#    - Use explicit dates or total experience in the resume JSON.
+#    - Candidate meets criterion if total professional experience >= required years.
+#    - Otherwise, mark as not met.
+#    - Sum experience across roles if needed.
+
+# 2. education
+#    - Accept equivalent degrees (e.g., "B.Sc." == "Bachelor's").
+#    - Degree and field must match or exceed the required criterion.
+#    - Missing or unrelated education means criterion is not met.
+
+# 3. location
+#    - Candidate must explicitly list the required city/state or "remote" if applicable.
+#    - Missing or different location means criterion is not met.
+
+# ======================
+# OUTPUT FORMAT
+# ======================
+# Return ONLY valid JSON with the exact structure below:
+# {{
+#   "results": [
+#     {{
+#       "criterion_type": "<experience_years|education|location>",
+#       "is_met": true|false,
+#       "reasoning": "<brief reason>",
+#       "evidence": "<exact text snippet from resume JSON>"
+#     }}
+#   ]
+# }}
+
+# - Response MUST start with '{{' and end with '}}'.
+# - No markdown, no extra explanations outside JSON.
+
+# ======================
+# FEW-SHOT EXAMPLES
+# ======================
+
+# Example 1 - Experience met
+# Resume JSON:
+# {{
+#   "experience": [
+#     {{"duration": "2019-2023", "title": "Software Engineer"}}
+#   ]
+# }}
+# Criteria:
+# {{
+#   "criteria": [
+#     {{"type": "experience_years", "value": 3}}
+#   ]
+# }}
+# Output:
+# {{
+#   "results": [
+#     {{
+#       "criterion_type": "experience_years",
+#       "is_met": true,
+#       "reasoning": "4 years >= 3 required",
+#       "evidence": "duration: 2019-2023"
+#     }}
+#   ]
+# }}
+
+# Example 2 - Education met
+# Resume JSON:
+# {{
+#   "education": [
+#     {{"degree": "B.Sc. in Computer Science"}}
+#   ]
+# }}
+# Criteria:
+# {{
+#   "criteria": [
+#     {{"type": "education", "value": "Bachelor's degree in Computer Science"}}
+#   ]
+# }}
+# Output:
+# {{
+#   "results": [
+#     {{
+#       "criterion_type": "education",
+#       "is_met": true,
+#       "reasoning": "B.Sc equals Bachelor's in Computer Science",
+#       "evidence": "degree: B.Sc. in Computer Science"
+#     }}
+#   ]
+# }}
+
+# Example 3 - Location not met
+# Resume JSON:
+# {{
+#   "location": "San Francisco"
+# }}
+# Criteria:
+# {{
+#   "criteria": [
+#     {{"type": "location", "value": "New York City"}}
+#   ]
+# }}
+# Output:
+# {{
+#   "results": [
+#     {{
+#       "criterion_type": "location",
+#       "is_met": false,
+#       "reasoning": "Candidate location is San Francisco, required is New York City",
+#       "evidence": "location: San Francisco"
+#     }}
+#   ]
+# }}
+# """),
+#     ("human", 
+#      "**Candidate Resume (JSON):**\n{resume_json}\n\n"
+#      "**Knockout Criteria to Validate:**\n{criteria_json}\n\n"
+#      "Check each criterion and return the JSON result array.")
+# ])
+# validation_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      """You are 'Recruiter-Prime v5.0', a hyper-precise validation engine. Your sole function is to determine if a candidate's resume meets a set of mandatory criteria based on pre-processed JSON data. Your entire response MUST be a single, valid JSON object.
+
+# --- **Core Directive: Logic, Not Calculation** ---
+# Your only job is to perform logical comparisons based on the data provided. You are forbidden from performing calculations like counting years from date ranges.
+
+# ======================
+# **CRITERIA TYPES & ANALYSIS PROTOCOLS**
+# ======================
+# 1.  **experience_years**
+#     - **CRITICAL**: A field named `computed_total_experience_years` has been pre-calculated and added to the resume JSON.
+#     - You **MUST** use this pre-calculated field for your comparison. Do NOT look at `duration` strings.
+#     - The criterion is met if `computed_total_experience_years` is greater than or equal to the required `value`.
+
+# 2.  **education**
+#     - Perform a semantic match. Equivalencies like "B.Sc.", "B.A.", and "Bachelor of Science" are considered a match for a "Bachelor's" requirement.
+
+# 3.  **location**
+#     - Perform a direct string comparison. The candidate's location text must contain the required location.
+
+# ======================
+# **OUTPUT FORMAT (Strict)**
+# ======================
+# Return ONLY a valid JSON object starting with `{` and ending with `}`. No markdown, no explanations.
+# {{
+#   "results": [
+#     {{
+#       "criterion_type": "<type>",
+#       "is_met": boolean,
+#       "reasoning": "<brief, direct reason for the decision>",
+#       "evidence": "<exact snippet from resume JSON that justifies the decision>"
+#     }}
+#   ]
+# }}
+
+# ======================
+# **UPDATED EXAMPLE (Reflecting New Protocol)**
+# ======================
+# Resume JSON:
+# {{
+#   "experience": [
+#     {{"duration": "2019-2023", "title": "Software Engineer"}}
+#   ],
+#   "computed_total_experience_years": 4.0
+# }}
+# Criteria:
+# {{
+#   "criteria": [
+#     {{"type": "experience_years", "value": 3}}
+#   ]
+# }}
+# Output:
+# {{
+#   "results": [
+#     {{
+#       "criterion_type": "experience_years",
+#       "is_met": true,
+#       "reasoning": "Candidate's 4.0 pre-calculated years meets the 3 year requirement.",
+#       "evidence": "computed_total_experience_years: 4.0"
+#     }}
+#   ]
+# }}
+
+# --- **Final Audit Protocol (Mental Check)** ---
+# 1. Did I use the `computed_total_experience_years` for the experience check?
+# 2. Is my output ONLY a JSON object?
+
+# Now, process the request according to these unbreakable rules.
+# """),
+#     ("human", 
+#      "**Candidate Resume (JSON):**\n{resume_json}\n\n"
+#      "**Knockout Criteria to Validate:**\n{criteria_json}\n\n"
+#      "Return the JSON result array.")
+# ])
 validation_prompt = ChatPromptTemplate.from_messages([
     ("system",
      """You are 'Recruiter-Prime v4.1', the final validation layer for knockout criteria.
@@ -717,6 +1445,112 @@ def _check_location(criterion: dict, resume_json: dict) -> bool:
         # Check top-level contact info as well
         return required_location in f"{resume_json.get('name', '')} {resume_json.get('phone', '')}".lower()
     except Exception: return False
+# def check_knockout_criteria_python(resume_json: dict, job_obj: Job) -> dict:
+#     """
+#     Final, 100% reliable validation logic that uses pure Python.
+#     This replaces the unreliable LLM-based validation permanently.
+#     """
+#     all_criteria = job_obj.knockout_questions.get("criteria", [])
+#     if not all_criteria:
+#         return {"passed": True, "score": 100, "met_criteria": [], "missed_criteria": [], "reason": "No knockout criteria defined."}
+
+#     met_criteria = []
+#     missed_criteria = []
+
+#     # # Pre-calculate expensive operations once
+#     total_candidate_years = sum(
+#     _parse_duration_to_years(exp.get('duration', '')) 
+#     for exp in resume_json.get('experience', [])
+# )
+#     resume_json['computed_total_experience_years'] = round(total_candidate_years, 1)
+#     # total_candidate_years = sum(_parse_duration_to_years(exp.get('duration', '')) for exp in resume_json.get('experience', []))
+#     searchable_text = json.dumps(resume_json).lower()
+
+#     # Check each criterion with deterministic logic
+#     for criterion in all_criteria:
+#         crit_type = criterion.get('type')
+#         is_met = False
+#         try:
+#             if crit_type == 'experience_years':
+#                 if total_candidate_years >= float(criterion.get('value', 999)):
+#                     is_met = True
+#             elif crit_type == 'Education':
+#                 required_keywords = [k.lower() for k in criterion.get('keywords', [])]
+#                 if not required_keywords and isinstance(criterion.get('value'), str):
+#                      required_keywords = [kw.strip() for kw in criterion['value'].lower().split()]
+#                 if any(keyword in searchable_text for keyword in required_keywords):
+#                     is_met = True
+#             elif crit_type == 'Location':
+#                 required_location = str(criterion.get('value', 'a_very_unlikely_string')).lower()
+#                 if any(part.strip() in searchable_text for part in required_location.split(',')):
+#                     is_met = True
+#         except Exception:
+#             is_met = False
+
+#         if is_met:
+#             met_criteria.append(criterion)
+#         else:
+#             missed_criteria.append(criterion)
+
+#     # Calculate final result
+#     total_criteria_count = len(all_criteria)
+#     met_count = len(met_criteria)
+#     score = (met_count / total_criteria_count) * 100 if total_criteria_count > 0 else 100
+#     passed = score >= KNOCKOUT_PASS_THRESHOLD
+#     final_reason = f"Candidate met {met_count} of {total_criteria_count} mandatory criteria ({int(score)}%)."
+
+#     return {
+#         "passed": passed,
+#         "score": int(score),
+#         "met_criteria": met_criteria,
+#         "missed_criteria": missed_criteria,
+#         "reason": final_reason
+#     }
+# --- DEFINE THE JOB MODEL HERE ---
+###########################################################
+# def check_knockout_criteria_python(resume_json: dict, job_obj: dict) -> dict:
+#     """
+#     Final, 100% reliable validation logic that uses pure Python.
+#     This version uses correct dictionary access.
+#     """
+#     # --- FIX: Use .get() for safe dictionary access ---
+#     knockout_data = job_obj.get("knockout_questions_json", {})
+#     # It's also possible knockout_questions_json is a string that needs to be parsed
+#     if isinstance(knockout_data, str):
+#         try:
+#             knockout_data = json.loads(knockout_data)
+#         except json.JSONDecodeError:
+#             knockout_data = {}
+
+#     all_criteria = knockout_data.get("criteria", [])
+#     # --- END FIX ---
+    
+#     if not all_criteria:
+#         return {"passed": True, "score": 100, "met_criteria": [], "missed_criteria": [], "reason": "No knockout criteria defined."}
+
+#     met_criteria = []
+#     missed_criteria = []
+
+#     # Pre-calculate expensive operations once
+#     total_candidate_years = sum(_parse_duration_to_years(exp.get('duration', '')) for exp in resume_json.get('experience', []))
+    
+#     # ... (rest of your function logic remains the same) ...
+#     # ... just ensure any other access to job_obj uses .get() ...
+
+#     # Calculate final result
+#     total_criteria_count = len(all_criteria)
+#     met_count = len(met_criteria)
+#     score = (met_count / total_criteria_count) * 100 if total_criteria_count > 0 else 100
+#     passed = score >= 50 # Assuming KNOCKOUT_PASS_THRESHOLD is 50
+#     final_reason = f"Candidate met {met_count} of {total_criteria_count} mandatory criteria ({int(score)}%)."
+
+#     return {
+#         "passed": passed,
+#         "score": int(score),
+#         "met_criteria": met_criteria,
+#         "missed_criteria": missed_criteria,
+#         "reason": final_reason
+#     }
 
 #########################################################################
 
@@ -783,10 +1617,191 @@ def check_knockout_criteria_python(resume_json: dict, job_obj: dict) -> dict:
         "reason": final_reason
     }
 
+# def check_knockout_criteria_python(resume_json: dict, job_obj: Job) -> dict:
+#     """
+#     Final, improved validation logic that uses pure Python for 100% reliability.
+#     This version correctly handles all variations of Education criteria.
+#     """
+#     all_criteria = job_obj.knockout_questions.get("criteria", [])
+#     if not all_criteria:
+#         return {"passed": True, "score": 100, "met_criteria": [], "missed_criteria": [], "reason": "No knockout criteria defined."}
+
+#     met_criteria = []
+#     missed_criteria = []
+
+#     # --- Pre-process resume data for easy searching ---
+#     total_candidate_years = sum(_parse_duration_to_years(exp.get('duration', '')) for exp in resume_json.get('experience', []))
+#     searchable_text = json.dumps(resume_json).lower()
+
+#     # --- Check each criterion with deterministic logic ---
+#     for criterion in all_criteria:
+#         crit_type = criterion.get('type')
+#         is_met = False
+
+#         try:
+#             if crit_type == 'experience_years':
+#                 min_years_required = float(criterion.get('value', 999))
+#                 if total_candidate_years >= min_years_required:
+#                     is_met = True
+
+#             elif crit_type == 'Education':
+#                 # --- THIS IS THE IMPROVED LOGIC ---
+#                 # First, try to use the 'keywords' list if it exists.
+#                 required_keywords = [k.lower() for k in criterion.get('keywords', [])]
+                
+#                 # If no keywords, fall back to using the 'value' field.
+#                 if not required_keywords and isinstance(criterion.get('value'), str):
+#                      required_keywords = [kw.strip() for kw in criterion['value'].lower().split()]
+                
+#                 if any(keyword in searchable_text for keyword in required_keywords):
+#                     is_met = True
+#                 # --- END OF IMPROVED LOGIC ---
+
+#             elif crit_type == 'Location':
+#                 required_location = str(criterion.get('value', 'a_very_unlikely_string')).lower()
+#                 if any(part.strip() in searchable_text for part in required_location.split(',')):
+#                     is_met = True
+
+#         except (ValueError, TypeError) as e:
+#             print(f"Warning: Could not process criterion {criterion}. Error: {e}")
+#             is_met = False
+
+#         if is_met:
+#             met_criteria.append(criterion)
+#         else:
+#             missed_criteria.append(criterion)
+
+#     # --- Calculate final result ---
+#     total_criteria_count = len(all_criteria)
+#     met_count = len(met_criteria)
+#     score = (met_count / total_criteria_count) * 100 if total_criteria_count > 0 else 100
+#     passed = score >= KNOCKOUT_PASS_THRESHOLD
+
+#     final_reason = f"Candidate met {met_count} of {total_criteria_count} mandatory criteria ({int(score)}%)."
+
+#     return {
+#         "passed": passed,
+#         "score": int(score),
+#         "met_criteria": met_criteria,
+#         "missed_criteria": missed_criteria,
+#         "reason": final_reason
+#     }
+# Candidate Evaluation Chain
+# def check_knockout_criteria_python(resume_json: dict, job_obj: Job) -> dict:
+#     """
+#     Final, 100% reliable validation logic that uses pure Python.
+#     This replaces the unreliable LLM-based validation permanently.
+#     """
+#     all_criteria = job_obj.knockout_questions.get("criteria", [])
+#     if not all_criteria:
+#         return {"passed": True, "score": 100, "met_criteria": [], "missed_criteria": [], "reason": "No knockout criteria defined."}
+
+#     met_criteria = []
+#     missed_criteria = []
+
+#     # Pre-calculate expensive operations once
+#     total_candidate_years = sum(_parse_duration_to_years(exp.get('duration', '')) for exp in resume_json.get('experience', []))
+#     searchable_text = json.dumps(resume_json).lower()
+
+#     # A mapping of criterion types to their validation functions
+#     for criterion in all_criteria:
+#         crit_type = criterion.get('type')
+#         is_met = False
+#         try:
+#             if crit_type == 'experience_years':
+#                 if total_candidate_years >= float(criterion.get('value', 999)):
+#                     is_met = True
+#             elif crit_type == 'Education':
+#                 required_keywords = [k.lower() for k in criterion.get('keywords', [])]
+#                 if not required_keywords and isinstance(criterion.get('value'), str):
+#                      required_keywords = [kw.strip() for kw in criterion['value'].lower().split()]
+#                 if any(keyword in searchable_text for keyword in required_keywords):
+#                     is_met = True
+#             elif crit_type == 'Location':
+#                 required_location = str(criterion.get('value', 'a_very_unlikely_string')).lower()
+#                 if any(part.strip() in searchable_text for part in required_location.split(',')):
+#                     is_met = True
+#         except Exception:
+#             is_met = False
+
+#         if is_met:
+#             met_criteria.append(criterion)
+#         else:
+#             missed_criteria.append(criterion)
+
+#     # Calculate final result
+#     total_criteria_count = len(all_criteria)
+#     met_count = len(met_criteria)
+#     score = (met_count / total_criteria_count) * 100 if total_criteria_count > 0 else 100
+#     passed = score >= KNOCKOUT_PASS_THRESHOLD
+#     final_reason = f"Candidate met {met_count} of {total_criteria_count} mandatory criteria ({int(score)}%)."
+
+#     return {
+#         "passed": passed,
+#         "score": int(score),
+#         "met_criteria": met_criteria,
+#         "missed_criteria": missed_criteria,
+#         "reason": final_reason
+#     }
 # --- Main validation function (Orchestrator) ---
 MATCH_THRESHOLD = 70
 evaluation_llm = ChatGroq(model="llama3-70b-8192", temperature=0)
+# matching_prompt = ChatPromptTemplate.from_messages([
+#     ("system",
+#      "**Role:** You are an expert AI recruitment evaluator with deep insight into hiring decisions. Your task is to intelligently score how well a candidate fits a job, based on structured resume data (JSON) and a detailed job description.\n\n"
+#      "**Instructions:** Return only an integer score between 0 and 100. Do NOT include any words, labels, or formatting — only the numeric score.\n\n"
+#      "**Important Validation Rule (Non-Match Handling):**\n"
+#      "- If the candidate resume is **malformed**, or **does not contain relevant information for evaluation** (e.g.fake/unrelated content, or obviously non-resume text), return **0 immediately**.\n"
+#      "- Also return **0 immediately** if the content is **irrelevant**, **nonsensical**, or clearly **not a resume**.\n"
+#      "- Do **not** proceed with the score breakdown in such cases.\n\n"
+#      "**Evaluation Criteria:**\n\n"
+#      "🔹 **1. Skills Match (35 points):**\n"
+#      "- Compare candidate skills with required and preferred skills.\n"
+#      "- Give full credit for strong overlaps, especially in technical/domain-critical areas.\n"
+#      "- Related or adjacent skills should be weighed fairly.\n"
+#      "- Missing key skills = deduction, but balance it if other strengths compensate.\n\n"
+#      "🔹 **2. Experience Match (25 points):**\n"
+#      "- Compare the candidate’s work history to job responsibilities and expectations.\n"
+#      "- Compare the candidate’s total years of experience (precomputed and included in the resume JSON) with the required years stated in the job description.\n"
+#     "- If the candidate falls short in required years, deduct points **seriously** — the closer to the gap, the heavier the penalty.\n"
+#     "- Evaluate job titles, domain, and impact to ensure experience is relevant.\n"
+#     "- Extra years beyond required may slightly boost the score only if they show clear value.\n"
+#     "- Do not ignore year mismatch even if titles or domains align.\n"
+#      "- Evaluate job titles, domain, impact, and **whether the total experience meets the required years**.\n"
+#      "- Account for meaningful experience, even if not from identical roles.\n\n"
+#      "- **Strictly compare total years of experience against the job's required experience. If the candidate falls short, deduct points significantly.**\n"
+#      "- Do not overlook shortfalls in required experience, even if titles or domains are relevant.\n"
+#      "- Extra years beyond required can be rewarded only if clearly beneficial.\n\n"
+#      "🔹 **3. Education Match (10 points):**\n"
+#      "-- Check if the candidate has clearly mentioned academic qualifications that meet or exceed the job’s required degree (e.g., B.Tech, M.Sc, etc.).\n"
+#      "- Do not penalize for overqualification unless stated.\n\n"
+#      "- Check if the candidate meets or exceeds the required academic qualifications.\n"
+#      "- Prefer complete records with both start and end years. Incomplete or ambiguous timelines should reduce the score.\n"
+#      "- Give partial credit for closely related degrees or for diploma programs, if they match the job domain.\n"
+#      "🔹 **4. Project Relevance (20 points):**\n"
+#      "- Evaluate the candidate’s listed projects based on relevance, problem-solving, depth, and complexity.\n"
+#      "- Pay attention to insights and impact if available.\n"
+#      "- Give higher marks for real-world application aligned with job needs.\n\n"
+#      "🔹 **5. Bonus Fit (10 points):**\n"
+#      "- Include certifications, achievements, soft skills, or values that match company culture.\n"
+#      "- Reward strong alignment, but don’t force points if it's not there.\n\n"
+#      "**Scoring Philosophy:**\n"
+#      "- Think like a seasoned recruiter — practical, fair, and perceptive.\n"
+#      "- Evaluate holistically. Compensate minor gaps with standout strengths.\n"
+#      "- Do not reward fluff. Real alignment matters more than keywords.\n"
+#      "- Do not infer hidden strengths. Use only explicit information.\n"
+#         "- Do not make assumptions about the candidate’s potential or future growth.\n"
+#      "- Do NOT return explanations. Return only a clean integer score between 0–100."),
+#     ("human", 
+#      "**Candidate Resume (structured JSON):**\n{resume}\n\n"
+#      "**Job Description:**\n{job_desc}\n\n"
+#      "📊 Score this candidate based on the criteria above. Return only the numeric score.")
+# ])
+# # "- A score of 50+ is passable. 65+ is a strong match. 75+ is exceptional. 85+ is rare and outstanding.\n"
+# In your app_trial.py file, replace the matching_prompt
 
+# In your app_trial.py file, replace the matching_prompt
+# In your app_trial.py, replace the matching_prompt
 
 matching_prompt = ChatPromptTemplate.from_messages([
     ("system",

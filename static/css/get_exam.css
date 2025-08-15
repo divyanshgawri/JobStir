@@ -1,278 +1,199 @@
-/* --- Root Variables (consistent with other CSS files) --- */
-:root {
-    --primary-blue: #3B82F6;
-    --secondary-gray: #6B7280;
-    --dark-text: #1F2937;
-    --light-text: #4B5563;
-    --bg-light: #F9FAFB;
-    --bg-white: #FFFFFF;
-    --border-color: #E5E7EB;
-    --success-green: #10B981;
-    --error-red: #EF4444;
-    --warning-orange: #F59E0B;
-    --font-inter: 'Inter', sans-serif;
-}
-
-/* --- General Body and HTML structure (consistent with style.css/index.css) --- */
-html, body {
+/* ===== Base Setup ===== */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: var(--font-inter);
-    color: var(--dark-text);
+}
+
+html, body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafb;
+    color: #111827;
     line-height: 1.6;
-    background-color: var(--bg-light);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 1.5rem;
 }
 
-/* --- Top Navigation Bar (Consistent with other pages) --- */
+/* ===== Header ===== */
 .top-nav {
-    background-color: var(--bg-white);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 15px 0;
-    border-bottom: 1px solid var(--border-color);
+    background-color: #1e3a8a;
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-.top-nav .nav-content {
+.nav-content {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
 }
 
-.top-nav .logo {
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--primary-blue);
-    letter-spacing: -0.5px;
-}
-
-.top-nav .main-nav {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.top-nav .auth-links a {
-    color: var(--dark-text);
+.logo a {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
     text-decoration: none;
+}
+
+.main-nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1.5rem;
     font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
+    transition: opacity 0.2s;
 }
 
-.top-nav .auth-links a:hover {
-    background-color: var(--bg-light);
-    color: var(--primary-blue);
+.main-nav a:hover {
+    opacity: 0.85;
 }
 
-/* --- Page Specific Styles --- */
-.main-content {
-    flex-grow: 1; /* Allows main content to expand */
-    padding: 40px 0;
+.auth-links a {
+    margin-left: 1rem;
 }
 
+/* ===== Page Title ===== */
 .page-title {
-    font-size: 36px;
-    font-weight: 800;
-    color: var(--dark-text);
-    text-align: center;
-    margin-bottom: 10px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 0.3rem;
 }
 
 .subtitle {
-    font-size: 18px;
-    color: var(--light-text);
-    text-align: center;
-    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
 }
 
-.exam-form-container {
-    margin-top: 30px;
-}
-
+/* ===== Card Container ===== */
 .data-card {
-    background-color: var(--bg-white);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 30px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 30px;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 }
 
-.question-card {
-    border: 1px solid var(--border-color);
+/* ===== Questions ===== */
+.question-item {
+    margin-bottom: 2rem;
+    padding: 1rem;
     border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: var(--bg-light);
+    background: #f3f4f6;
+    transition: background 0.2s;
 }
 
-.question-number {
-    font-size: 16px;
+.question-item:hover {
+    background: #e5e7eb;
+}
+
+.question-label {
     font-weight: 600;
-    color: var(--primary-blue);
-    margin-bottom: 10px;
+    color: #1f2937;
+    display: block;
+    margin-bottom: 0.3rem;
 }
 
 .question-text {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--dark-text);
-    margin-bottom: 15px;
+    margin-bottom: 0.8rem;
+    color: #374151;
 }
 
 .answer-textarea {
-    width: calc(100% - 22px); /* Full width minus padding and border */
-    padding: 11px;
-    border: 1px solid var(--border-color);
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
     border-radius: 6px;
-    font-family: var(--font-inter);
-    font-size: 16px;
-    color: var(--dark-text);
-    resize: vertical; /* Allow vertical resizing */
-    min-height: 100px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .answer-textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
     outline: none;
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-.form-actions {
-    margin-top: 30px;
-    text-align: center;
-}
-
-/* --- Buttons (Consistent with other pages) --- */
+/* ===== Buttons ===== */
 .btn-primary {
-    background-color: var(--primary-blue);
-    color: var(--bg-white);
-    padding: 12px 25px;
+    background-color: #2563eb;
+    color: white;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
     font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
     text-decoration: none;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    display: inline-block;
-    text-align: center;
 }
 
 .btn-primary:hover {
-    background-color: #2563EB;
+    background-color: #1d4ed8;
     transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
 }
 
 .btn-primary:active {
-    background-color: #1D4ED8;
     transform: translateY(0);
+    box-shadow: none;
 }
 
-/* --- Flash Messages (Consistent with other pages) --- */
-.flash-messages-container {
-    margin-bottom: 25px;
-    padding: 0 20px;
+.btn-spinner {
+    margin-left: 0.5rem;
 }
 
-.flashes {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.flash-message {
-    padding: 15px 20px;
-    margin-bottom: 15px;
+/* ===== Message Box ===== */
+.message-box {
+    padding: 1rem;
     border-radius: 8px;
-    font-size: 16px;
+    margin-bottom: 1rem;
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: fadeOut 0.5s forwards 5s;
 }
 
-.flash-message.success {
-    background-color: #D1FAE5;
-    color: var(--success-green);
-    border: 1px solid var(--success-green);
+.message-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
 }
 
-.flash-message.error {
-    background-color: #FEE2E2;
-    color: var(--error-red);
-    border: 1px solid var(--error-red);
+.message-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
 }
 
-.flash-message.info {
-    background-color: #DBEAFE;
-    color: var(--primary-blue);
-    border: 1px solid var(--primary-blue);
+.hidden {
+    display: none;
 }
 
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; display: none; }
-}
-
-/* --- Footer Bar (Consistent with other pages) --- */
+/* ===== Footer ===== */
 .footer-bar {
-    background-color: var(--dark-text);
-    color: var(--bg-white);
+    background-color: #1f2937;
+    color: white;
+    padding: 1.2rem 0;
     text-align: center;
-    padding: 20px 0;
-    margin-top: auto;
-    font-size: 14px;
+    margin-top: 3rem;
 }
 
-/* --- Responsive Adjustments --- */
-@media (max-width: 768px) {
-    .page-title {
-        font-size: 30px;
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+    .nav-content {
+        flex-direction: column;
+        gap: 0.8rem;
     }
-    .subtitle {
-        font-size: 16px;
-    }
-    .data-card {
-        padding: 20px;
-    }
-    .question-text {
-        font-size: 16px;
-    }
-    .answer-textarea {
-        font-size: 15px;
-    }
-}
 
-@media (max-width: 480px) {
-    .container {
-        padding: 0 15px;
-    }
-    .top-nav .nav-content {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .top-nav .main-nav {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .page-title {
-        font-size: 24px;
-    }
-    .data-card {
-        box-shadow: none;
-        border: none;
-        border-radius: 0;
+    .main-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }

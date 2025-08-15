@@ -26,3 +26,6 @@ uuid
 sentence-transformers
 torch
 tf-keras
+supabase
+email_validator
+locust
