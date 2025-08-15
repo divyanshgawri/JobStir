@@ -374,6 +374,7 @@ input[type="file"]::file-selector-button:hover {
             border-radius: 0.5rem; /* rounded-lg */
             border: 1px solid #E5E7EB; /* Warm Gray border */
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.03); /* Subtle inner shadow */
+            white-space: pre-wrap; /* Preserves line breaks if any */
         }
         .job-detail-description-box h3 {
             font-size: 1.125rem; /* text-lg */
@@ -382,6 +383,7 @@ input[type="file"]::file-selector-button:hover {
             margin-bottom: 0.75rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px dashed #D1D5DB; /* Subtle dashed border */
+            
         }
         .job-detail-description {
             font-size: 0.95rem; /* text-base */

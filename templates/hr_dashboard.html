@@ -152,23 +152,7 @@
             "applicationsByJob": {{ apps_by_job | tojson | safe }}
         }
     </script>
-     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                const dataElement = document.getElementById('dashboard-data');
-                const data = JSON.parse(dataElement.textContent);
-
-                console.log("--- HR DASHBOARD DATA RECEIVED ---");
-                console.log("Jobs:", data.jobs);
-                console.log("Applications by Job ID:", data.applicationsByJob);
-                console.log("---------------------------------");
-            } catch (e) {
-                console.error("Failed to parse dashboard data:", e);
-            }
-
-            // Your other JavaScript for collapsible sections, etc., can go here
-        });
-    </script>   
+     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.collapsible-header').forEach(header => {
