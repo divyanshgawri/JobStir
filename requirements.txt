@@ -29,3 +29,4 @@ tf-keras
 supabase
 email_validator
 locust
+langchain_community

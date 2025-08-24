@@ -36,6 +36,8 @@ from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 import secrets
 from supabase import create_client
+import warnings
+warnings.filterwarnings("ignore")
 
 # Load environment variables
 load_dotenv()
@@ -319,12 +321,6 @@ def extract_resume_info_llm(text: str) -> dict:
             
             logging.info("Successfully extracted and validated resume data.")
             
-            # # For debugging, save to a file with a unique name to avoid overwrites
-            # debug_save_path = f"extracted_resume_{uuid4()}.json"
-            # with open(debug_save_path, 'w', encoding='utf-8') as f:
-            #     json.dump(extracted_data, f, indent=4, ensure_ascii=False)
-            # logging.info(f"Debug data saved to {debug_save_path}")
-
             return extracted_data
             
         except RateLimitError as e:
@@ -871,62 +867,7 @@ def parse_score(raw: str) -> int:
         return int(match.group(0)) if match else 0
     except (ValueError, TypeError):
         return 0
-# def evaluate_candidate_llm(resume_json: dict, job_description: str) -> dict:
-#     """Evaluates candidate eligibility using the LLM chain."""
-#     max_retries = 3
-#     initial_retry_delay = 5
-#     for attempt in range(max_retries):
-#         try:
-#             result_raw = evaluation_chain.invoke({"resume": json.dumps(resume_json, indent=2), "job_desc": job_description})
-#             score = parse_score(result_raw)
-#             decision = "Eligible" if score >= MATCH_THRESHOLD else "Not Eligible"
-#             return {"score": score, "decision": decision, "reason": f"Match score: {score}% (Threshold: {MATCH_THRESHOLD}%)"}
-#         except RateLimitError as e:
-#             print(f"Rate limit hit during evaluation (attempt {attempt + 1}/{max_retries}): {e}")
-#             sleep_time = initial_retry_delay * (2 ** attempt)
-#             match = re.search(r'Please try again in (\d+\.?\d*)s', str(e))
-#             if match:
-#                 try: sleep_time = max(sleep_time, float(match.group(1)))
-#                 except ValueError: pass
-#             if attempt < max_retries - 1: time.sleep(sleep_time)
-#             else: return {"score": 0, "decision": "Not Eligible", "reason": "Rate limit consistently hit."}
-#         except Exception as e:
-#             print(f"An unexpected error occurred during evaluation: {e}")
-#             return {"score": 0, "decision": "Not Eligible", "reason": f"Error during evaluation: {str(e)}"}
 
-# # The function now accepts job_requirements as a parameter
-# def evaluate_candidate_llm(resume_json: dict, job_requirements: dict) -> dict:
-#     """Evaluates candidate eligibility using an LLM and validates with quantitative logic."""
-#     max_retries = 3
-#     initial_retry_delay = 5
-#     job_description = job_requirements.get('description', '') # Extract description from the job data
-
-#     for attempt in range(max_retries):
-#         try:
-#             result_raw = evaluation_chain.invoke({
-#                 "resume": json.dumps(resume_json, indent=2), 
-#                 "job_desc": job_description
-#             })
-            
-#             initial_score = parse_score(result_raw)
-#             final_score, reason = apply_quantitative_logic(initial_score, resume_json, job_requirements)
-            
-#             # Use the MATCH_THRESHOLD constant for the decision
-#             decision = "Recommended" if final_score >= MATCH_THRESHOLD else "Not Recommended"
-
-#             return {"score": final_score, "decision": decision, "reason": reason}
-#         except RateLimitError as e:
-#                 print(f"Rate limit hit during evaluation (attempt {attempt + 1}/{max_retries}): {e}")
-#                 sleep_time = initial_retry_delay * (2 ** attempt)
-#                 match = re.search(r'Please try again in (\d+\.?\d*)s', str(e))
-#                 if match:
-#                     try: sleep_time = max(sleep_time, float(match.group(1)))
-#                     except ValueError: pass
-#                 if attempt < max_retries - 1: time.sleep(sleep_time)
-#                 else: return {"score": 0, "decision": "Not Recommended", "reason": "Rate limit consistently hit."}
-#         except Exception as e:
-#             print(f"An unexpected error occurred during evaluation: {e}")
-#             return {"score": 0, "decision": "Not Recommended", "reason": f"Error during evaluation: {str(e)}"}
 def evaluate_candidate_llm(resume_json: dict, job_requirements: dict) -> dict:
     """Evaluates candidate eligibility using an LLM and validates with quantitative logic."""
     max_retries = 3
@@ -963,33 +904,7 @@ def evaluate_candidate_llm(resume_json: dict, job_requirements: dict) -> dict:
             # This is where your error message was printed from
             print(f"An unexpected error occurred during evaluation: {e}")
             return {"score": 0, "decision": "Not Recommended", "reason": f"Error during evaluation: {str(e)}"}
-# detailed_feedback_prompt = ChatPromptTemplate.from_messages([
-#     ("system",
-#      "You are an experienced AI recruitment assistant.\n\n"
-#      "Your task is to provide **concise, constructive, and professional feedback** to a candidate who was **not selected** for a job, based on their structured resume (JSON), the job description, and their evaluation score.\n\n"
-#      "**Guidelines:**\n"
-#      "1. **Explain clearly** the main reasons the candidate was not selected.\n"
-#      "   - Focus on specific gaps in required **skills**, **experience**, **education**, or **project relevance**.\n"
-#      "   - Avoid generic or vague statements.\n"
-#      "   - If the candidate’s total experience does not meet the job's required years, mention it politely.\n\n"
-#      "2. **Suggest 2–3 actionable improvements**:\n"
-#      "   - Recommend technologies or skills they should learn.\n"
-#      "   - Suggest ways to build relevant experience (e.g., projects, certifications).\n"
-#      "   - Tailor advice to the type of roles they're targeting.\n\n"
-#      "**Formatting:**\n"
-#      "- Write a short, readable paragraph (6-7 sentences).\n"
-#      "- Maintain a **respectful and supportive tone** — this is to help the candidate improve.\n"
-#      "*Do not mention to the candidate make it normally like to the point*"
-#      "- **Do NOT** mention or include the numeric score.\n\n"
-#      "**Example Output:**\n"
-#      "'The candidate shows potential but lacks direct experience in cloud infrastructure, which was a core requirement for the role. Their project work is relevant but doesn’t demonstrate depth in DevOps tools or large-scale deployments. To strengthen their profile, they should consider contributing to open-source cloud projects, gaining certification in AWS or Azure, and highlighting measurable outcomes in future roles.'"),
-    
-#     ("human", 
-#      "Candidate Resume (JSON):\n{resume}\n\n"
-#      "Job Description:\n{job_desc}\n\n"
-#      "Candidate Score: {score}\n\n"
-#      "Please provide a brief but informative reason for non-selection, and suggest 2–3 specific improvements:")
-# ])
+
 
 detailed_feedback_prompt = ChatPromptTemplate.from_messages([
     ("system",
@@ -1125,140 +1040,6 @@ def generate_selection_reason(resume_json: dict, job_description: str, score: in
             else: return "Could not generate detailed selection reason due to API rate limits."
         except Exception as e: return f"Could not generate detailed selection reason due to an internal error: {str(e)}"
 
-# # Exam Generation Chain
-# exam_generation_prompt = ChatPromptTemplate.from_messages([
-#     ("system",
-#      "You are an exam generator. Create a 3-question technical exam based on the provided job description. "
-#      "Each question should test relevant skills and knowledge for the role. "
-#      "For each question, also provide a concise, ideal short answer (1-2 sentences). "
-#      "Output a JSON object with a single key 'questions', which is an array of question objects. "
-#      "Each question object must have an 'id' (a unique string), a 'question' (string), AND an 'ideal_answer' (string). "
-#      "Do NOT include any other text or formatting outside the JSON markdown block. "
-#      "Ensure no trailing commas in arrays or objects."),
-#     ("human", "Job Description:\n{job_desc}\n\nGenerate exam questions.")
-# ])
-# exam_generation_prompt = ChatPromptTemplate.from_messages([
-#     ("system",
-#      "**Generate exactly 3 high-quality, role-relevant **technical questions** to assess core skills, tools, and concepts typically required for this job title — regardless of specific phrases in the job description.**"
-#     "**Interpret the job description **to infer the role’s technical demands** (e.g., programming, systems design, data analysis, DevOps, ML, etc.)  **"
-#     " ** STRICT ADHERENCE RULE ** : Design questions that test **relevant real-world skills**, tools, algorithms, problem-solving, or best practices associated with such roles."
-#      "- Focus on fundamental knowledge and practical skills in the relevant domain ."
-#      "- Avoid simply rewording or copying from the job description."
-#      "- Do not include company-specific, domain-specific, or soft-skill-related questions."
-#     "For each question, provide:"
-#     "- A unique id (e.g., q, q2, q3)"
-#     "- The question (as a clear, standalone string)"
-#     "- An ideal_answer (a concise, 3-4 sentence model answer)"
-#     "**Output a valid JSON object with a single top-level key questions mapped to an array of question objects.  **"
-#     "**Do NOT include any commentary, markdown, or trailing commas.**"
-
-     
-#      ),
-#      ("human", "Job Description:\n{job_desc}\n\nGenerate exam questions.")
-# ])
-
-# exam_llm = ChatGroq(model="llama3-8b-8192", temperature=0.5)
-# exam_generation_chain = exam_generation_prompt | exam_llm | parser
-# def generate_exam_llm(job_description: str) -> Optional[List[dict]]:
-#     """Generates exam questions (and ideal answers) using the LLM chain."""
-#     max_retries = 3
-#     initial_retry_delay = 5
-#     for attempt in range(max_retries):
-#         try:
-#             raw_json_str = exam_generation_chain.invoke({"job_desc": job_description})
-            
-#             # --- MODIFIED: More aggressive JSON cleaning ---
-#             json_content = raw_json_str.strip()
-            
-#             # Remove markdown code fences if present (```json ... ```)
-#             json_content = re.sub(r'^```(?:json)?\s*\n', '', json_content, flags=re.MULTILINE)
-#             json_content = re.sub(r'\n```$', '', json_content, flags=re.MULTILINE)
-            
-#             # Remove common LLM chat artifacts like "```" at start/end, leading/trailing whitespace
-#             json_content = json_content.strip().strip('`')
-
-#             # Attempt to repair common JSON errors from LLMs
-#             # 1. Remove comments (// style)
-#             json_content = re.sub(r"//.*?\n", "\n", json_content)
-#             # 2. Remove trailing commas before a closing bracket or brace
-#             json_content = re.sub(r",\s*([\]}])", r"\1", json_content)
-#             # 3. Handle cases where strings might not be properly quoted inside arrays or objects (basic attempt)
-#             # This is complex and might break valid JSON, so use carefully.
-#             # For this error "Expecting ',' delimiter", it's more likely a missing comma or an extra char.
-#             # The above comma removal should be sufficient for the reported error.
-
-#             print(f"DEBUG: Raw JSON string from LLM: {raw_json_str[:500]}...") # Print a longer snippet
-#             print(f"DEBUG: Cleaned JSON string before loads: {json_content[:500]}...")
-#             # --- END MODIFIED ---
-
-#             parsed_dict = json.loads(json_content)
-#             validated_exam = Exam(**parsed_dict) 
-            
-#             return [q.model_dump() for q in validated_exam.questions]
-#         except RateLimitError as e:
-#             print(f"Rate limit hit during exam generation (attempt {attempt + 1}/{max_retries}): {e}")
-#             sleep_time = initial_retry_delay * (2 ** attempt)
-#             match = re.search(r'Please try again in (\d+\.?\d*)s', str(e))
-#             if match:
-#                 try: sleep_time = max(sleep_time, float(match.group(1)))
-#                 except ValueError: pass
-#             if attempt < max_retries - 1: time.sleep(sleep_time)
-#             else: return None
-#         except PydanticValidationError as e:
-#             print(f"ERROR: Exam generation (Pydantic Validation Error): {e}")
-#             print(f"RAW LLM Output causing Pydantic Error: {raw_json_str}")
-#             print(f"Cleaned JSON for Pydantic Error: {json_content}")
-#             return None
-#         except json.JSONDecodeError as e:
-#             print(f"ERROR: Exam generation (JSON Decode Error): {e}")
-#             print(f"RAW LLM Output causing JSON Error: {raw_json_str}")
-#             print(f"Malformed JSON content was: {json_content}") # Print the full malformed content
-#             return None
-#         except Exception as e:
-#             print(f"ERROR: Exam generation (Unexpected Error): {e}")
-#             print(f"RAW LLM Output causing unexpected Error: {raw_json_str}")
-#             print(f"Cleaned JSON for unexpected Error: {json_content}")
-#             return None# Answer Evaluation Chain
-
-# exam_generation_prompt = ChatPromptTemplate.from_messages([
-#     ("system",
-#      """You are an AI replica of a **Principal Engineer and Hiring Manager**. Your task is to generate **exactly 3 technical exam questions** that are highly relevant to the provided job description.
-
-# --- **Core Directive: Assess Competency Levels** ---
-# Your questions must be designed to test a candidate on three levels:
-# 1.  **Core Knowledge (Question 1)**: Test a fundamental concept or definition (e.g., "What is the difference between an abstract class and an interface?").
-# 2.  **Practical Application (Question 2)**: Ask how to use a key tool or solve a common problem (e.g., "Describe how you would set up a CI/CD pipeline for a new microservice.").
-# 3.  **Problem-Solving (Question 3)**: Present a brief, hypothetical scenario that requires the candidate to analyze a problem and propose a solution (e.g., "You have a slow database query. What are the first three steps you would take to diagnose and fix it?").
-
-# **CRITICAL CONSTRAINTS:**
-# - You MUST generate **exactly 3** questions.
-# - Each question MUST have a unique `id`, the `question` text, and a concise `ideal_answer`.
-# - The output MUST be a single, valid JSON object starting with `{{` and ending with `}}`. Do not include markdown, comments, or any other text.
-# - Do NOT ask about soft skills or specific company details.
-
-# --- **Example Output (for a Frontend Developer role)** ---
-# {{
-#   "questions": 
-#     {{
-#       "id": "q1_knowledge",
-#       "question": "What is the difference between `let`, `const`, and `var` in JavaScript?",
-#       "ideal_answer": "`var` is function-scoped and hoisted, while `let` and `const` are block-scoped. `let` can be reassigned, but `const` cannot. `let` and `const` are generally preferred to avoid scope-related bugs."
-#     }},
-#     {{
-#       "id": "q2_application",
-#       "question": "You need to fetch data from a REST API when a React component mounts. Which hook would you use and why?",
-#       "ideal_answer": "I would use the `useEffect` hook with an empty dependency array (`[]`). This ensures the fetch operation runs only once after the component has mounted, preventing infinite loops and unnecessary network requests."
-#     }},
-#     {{
-#       "id": "q3_problem_solving",
-#       "question": "A user reports that a web page is loading very slowly. What are the first 3 things you would investigate?",
-#       "ideal_answer": "First, I would check the browser's Network tab to identify large assets like images or scripts that are blocking rendering. Second, I would analyze the JavaScript bundle size to see if it can be reduced via code splitting. Third, I would examine the API response times to ensure the bottleneck isn't on the backend."
-#     }}
-  
-# }}
-#      """),
-#      ("human", "Job Description:\n{job_desc}\n\nGenerate the 3 exam questions in the specified JSON format.")
-# ])
 #######################################################
 
 def get_evaluation_with_reason(resume_json: dict, job_requirements: dict) -> dict:
@@ -1390,159 +1171,6 @@ def generate_exam_llm(job_description: str) -> Optional[List[dict]]:
                 return None # Return None after all retries fail
     return None
 
-# answer_evaluation_prompt = ChatPromptTemplate.from_messages([
-#     ("system",
-#      "**You are an exam grader. Evaluate the candidate's answer to a specific question based on the original question, the \n{job_desc}, AND the provided ideal answer. **"
-#      "** Assess as a subject matter expert would — with deep understanding of the technical domain, real-world expectations, and role-specific requirements. Grade responses by considering their relevance, correctness, clarity, reasoning, and completeness. **"
-#      "Reward technically sound reasoning and penalize vague or incorrect answers, even if they appear well-written. Be fair, constructive, and calibrated to the practical skills required for success in this role."
-#      "**If the candidate's response demonstrates sound logic and role-aligned knowledge in a different but valid way, credit it appropriately. **"
-#      "**VERY VERY IMPORTANT**:**Do not overly depend on the ideal answer — treat it as a guideline for quality, not a strict template.**"
-#      " #VERY VERY IMPORTANT RULE#: Check for signs of plagiarism or copy-paste behavior, and penalize any unoriginal, templated, or generic responses. If plagiarism is detected, deduct marks significantly and clearly state the reason in your feedback. Original thinking and role-relevant articulation are mandatory — copied answers, even if technically correct, reflect poor understanding and must not be rewarded. "
-#      "**STRICT ADHERENCE RULE**: You must not make any assumptions, interpretations, or guesses beyond what is explicitly stated in the candidate's response. Evaluate only the information provided — no inferred knowledge, no hypothetical benefit of the doubt. Anchor your judgment in real-world, role-specific expectations, and assess accuracy strictly as it applies to practical, job-relevant standards. Any deviation from this rule compromises grading integrity and must be avoided."
-#      "Provide a score from 0 to 10 (integer only) and a brief, constructive feedback (string). "
-#      "Output a JSON object with 'score' (integer) and 'feedback' (string). "
-#      "Example: ```json\n{{\"score\": 8, \"feedback\": \"Good understanding of concepts.\"}}\n```"),
-#     ("human", "Job Description:\n{job_desc}\nQuestion:\n{question}\nIdeal Answer:\n{ideal_answer}\nCandidate Answer:\n{answer}")
-# ])
-# answer_evaluation_prompt = ChatPromptTemplate.from_messages([
-#     ("system",
-#      """You are an AI Exam Proctor and Subject Matter Expert. Your task is to grade a candidate's answer based on correctness, depth, and clarity, referencing the provided ideal answer as a guide.
-
-# --- **Grading Rubric (10-Point Scale)** ---
-# 1.  **Correctness & Completeness (0-5 points)**: How technically accurate is the answer? Does it address all parts of the question?
-# 2.  **Depth & Reasoning (0-3 points)**: Does the candidate explain the 'why' behind their answer? Do they demonstrate a deep understanding or just surface-level knowledge?
-# 3.  **Clarity & Conciseness (0-2 points)**: Is the answer easy to understand and to the point?
-
-# **CRITICAL RULES:**
-# - **Plagiarism Check**: If the answer is a generic, copy-pasted response, assign a score of 1 and note it in the feedback.
-# - **Alternative Correct Answers**: If the candidate provides a valid answer that is different from the ideal one, grade it based on its own merits according to the rubric.
-# - **Output Format**: Your entire response MUST be a single, valid JSON object with `score` (integer) and `feedback` (string). Do not include markdown or any other text.
-
-# --- **Example Output** ---
-# {{
-#   "score": 8,
-#   "feedback": "Excellent answer. The core concepts are all correct (5/5), and the reasoning shows a deep understanding of the topic (3/3). The explanation could be slightly more concise (0/2)."
-# }}
-# """),
-#     ("human", 
-#      "Job Description:\n{job_desc}\n\n"
-#      "Question:\n{question}\n\n"
-#      "Ideal Answer:\n{ideal_answer}\n\n"
-#      "Candidate's Answer:\n{answer}\n\n"
-#      "Based on the rubric, provide the score and feedback in the specified JSON format.")
-# ])
-# answer_evaluation_prompt = ChatPromptTemplate.from_messages([
-#     ("system",
-#      """You are an AI Exam Proctor and a fair, discerning Subject Matter Expert. Your task is to grade a candidate's answer based on correctness, depth, and clarity, using the provided ideal answer as a guide.
-
-# --- **Plagiarism Detection Protocol** ---
-# First, analyze the writing style. If the answer is overly polished, generic, or sounds like a direct quote from a blog or textbook without providing deeper insight, it is likely plagiarized. **If you detect plagiarism, you MUST assign a score of 1** and state that the answer appeared to be unoriginal in the feedback.
-
-# --- **Grading Rubric (10-Point Scale)** ---
-# Apply this rubric ONLY if the answer passes the plagiarism check.
-
-# 1.  **Correctness & Completeness (0-5 points)**:
-#     - **5/5**: All parts of the question are answered correctly.
-#     - **3-4/5**: The main idea is correct, but minor details are missing or slightly inaccurate (e.g., confusing examples).
-#     - **1-2/5**: Contains some correct information but has significant gaps or errors.
-#     - **0/5**: Completely incorrect.
-
-# 2.  **Depth & Reasoning (0-3 points)**:
-#     - **3/3**: Explains the 'why' and demonstrates a deep, practical understanding.
-#     - **1-2/3**: Shows some understanding but doesn't explain the reasoning well.
-#     - **0/3**: Shows no understanding beyond surface-level keywords.
-
-# 3.  **Clarity & Conciseness (0-2 points)**:
-#     - **2/2**: Well-written, clear, and to the point.
-#     - **1/2**: The answer is mostly correct but is poorly written, hard to understand, or long-winded.
-#     - **0/2**: Vague, rambling, or nonsensical.
-
-# **CRITICAL RULES:**
-# - If an answer is different from the ideal one but still technically correct, grade it fairly based on its own merits.
-# - Your entire response MUST be a single, valid JSON object with `score` (integer) and `feedback` (string). Do not include markdown or any other text.
-
-# --- **Example Output** ---
-# {{
-#   "score": 8,
-#   "feedback": "Excellent answer. The core concepts are correct (5/5), and the reasoning shows deep understanding (3/3). The explanation could be slightly more concise (0/2)."
-# }}
-# """),
-#     ("human",
-#      "Job Description:\n{job_desc}\n\n"
-#      "Question:\n{question}\n\n"
-#      "Ideal Answer:\n{ideal_answer}\n\n"
-#      "Candidate's Answer:\n{answer}\n\n"
-#      "Based on the plagiarism check and grading rubric, provide the score and feedback in the specified JSON format.")
-# ])
-# answer_evaluation_prompt = ChatPromptTemplate.from_messages([
-#     ("system",
-#      """
-# You are an AI Exam Proctor and elite Subject Matter Expert, evaluating candidate answers with the accuracy and fairness of the top 1% of human graders.
-
-# =====================
-# PLAGIARISM DETECTION
-# =====================
-# Step 1: Compare the candidate's answer with the ideal answer for suspicious similarity.
-# - If more than ~80% of the phrasing/structure matches the ideal answer exactly → consider it copied.
-# - If the style is generic, overly polished, or contains textbook/blog phrasing without depth, mark as plagiarized.
-# - If plagiarized → score = 1 and feedback MUST clearly state "Answer appears plagiarized or unoriginal."
-# - Do NOT award higher scores to plagiarized answers even if correct.
-
-
-# =====================
-# STEP 2 — SCORING RUBRIC (APPLY ONLY IF NOT PLAGIARIZED)
-# =====================
-# Final score = Correctness (0–5) + Depth (0–3) + Clarity (0–2). Cap at 10.
-
-# CORRECTNESS (0–5):
-# 5 = Fully correct; all parts answered; no factual errors.
-# 4 = Mostly correct; 1–2 small inaccuracies or missing minor details.
-# 3 = Main idea correct; multiple missing details or small errors.
-# 2 = Partially correct; significant misunderstandings.
-# 1 = Minimal correctness; only one element is right.
-# 0 = Fully incorrect.
-
-# DEPTH & REASONING (0–3):
-# 3 = Explains "why/how" clearly; uses examples or applied reasoning.
-# 2 = Some reasoning, but lacks depth or examples.
-# 1 = Minimal reasoning; surface-level definitions.
-# 0 = No reasoning; irrelevant or off-topic.
-
-# CLARITY & CONCISENESS (0–2):
-# 2 = Clear, well-structured, concise.
-# 1 = Understandable but wordy, repetitive, or slightly unclear.
-# 0 = Hard to follow, vague, or incoherent.
-
-# =====================
-# OUTPUT FORMAT (STRICT)
-# =====================
-# Return ONLY:
-# {{ 
-#   "score": <integer>, 
-#   "feedback": "<string>" 
-# }}
-# - Must start with `{{` and end with `}}`.
-# - No markdown, no explanations outside JSON.
-# - Feedback must be concise, direct, and actionable.
-
-# =====================
-# EXAMPLES
-# =====================
-# Example (Plagiarism):
-# Output: {{ "score": 1, "feedback": "Answer appears plagiarized or unoriginal. Please provide your own explanation." }}
-
-# Example (Correct but verbose):
-# Output: {{ "score": 8, "feedback": "Strong correctness (5/5) and depth (3/3), but could be more concise." }}
-
-# Now grade the candidate's answer.
-#      """),
-#     ("human",
-#      "Job Description:\n{job_desc}\n\n"
-#      "Question:\n{question}\n\n"
-#      "Ideal Answer:\n{ideal_answer}\n\n"
-#      "Candidate's Answer:\n{answer}\n\n"
-#      "Return only the JSON object as per the rules above.")
-# ])
 answer_evaluation_prompt = ChatPromptTemplate.from_messages([
     ("system",
      """
@@ -1617,35 +1245,6 @@ Now analyse and grade accordingly.
      "Return only the JSON object as per the rules above.")
 ])
 
-# answer_evaluation_llm = ChatGroq(model="llama3-70b-8192", temperature=0)
-# answer_evaluation_chain = answer_evaluation_prompt | answer_evaluation_llm | parser
-
-# def evaluate_answer_llm(job_description: str, question: str, ideal_answer: str, answer: str) -> dict:
-#     """Evaluates a single answer using the LLM chain."""
-#     max_retries = 3
-#     initial_retry_delay = 5
-#     for attempt in range(max_retries):
-#         try:
-#             raw_json_str = answer_evaluation_chain.invoke({
-#                 "job_desc": job_description, "question": question, "ideal_answer": ideal_answer, "answer": answer
-#             })
-#             cleaned_json_str = re.sub(r'^```(?:json)?\n|```$', '', raw_json_str.strip(), flags=re.MULTILINE)
-#             parsed_dict = json.loads(cleaned_json_str)
-#             score = parsed_dict.get('score', 0)
-#             feedback = parsed_dict.get('feedback', 'No specific feedback provided.')
-#             return {"score": int(score), "feedback": str(feedback)}
-#         except RateLimitError as e:
-#             print(f"Rate limit hit during answer evaluation (attempt {attempt + 1}/{max_retries}): {e}")
-#             sleep_time = initial_retry_delay * (2 ** attempt)
-#             match = re.search(r'Please try again in (\d+\.?\d*)s', str(e))
-#             if match:
-#                 try: sleep_time = max(sleep_time, float(match.group(1)))
-#                 except ValueError: pass
-#             if attempt < max_retries - 1: time.sleep(sleep_time)
-#             else: return {"score": 0, "feedback": "Evaluation failed due to persistent rate limits."}
-#         except (json.JSONDecodeError, KeyError, ValueError, Exception) as e:
-#             print(f"Error evaluating answer: {e}, Raw: {raw_json_str}")
-#             return {"score": 0, "feedback": "Evaluation failed due to malformed LLM response or internal error."}
 
 answer_evaluation_llm = ChatGroq(model="llama3-70b-8192", temperature=0)
 answer_evaluation_chain = answer_evaluation_prompt | answer_evaluation_llm | parser
@@ -1713,76 +1312,6 @@ project_insights_prompt = ChatPromptTemplate.from_messages([
 ])
 project_insights_llm = ChatGroq(model="llama3-8b-8192", temperature=0.3)
 project_insights_chain = project_insights_prompt | project_insights_llm | parser
-
-# def generate_project_insights(readme_content: str) -> Optional[dict]:
-#     """Generates structured insights from a project README using the LLM chain."""
-#     max_retries = 3
-#     initial_retry_delay = 5
-#     for attempt in range(max_retries):
-#         try:
-#             raw_json_str = project_insights_chain.invoke({"readme_content": readme_content})
-#             json_content = re.sub(r'^```(?:json)?\s*\n|\s*```$', '', raw_json_str.strip(), flags=re.MULTILINE).strip()
-#             parsed_dict = json.loads(json_content)
-#             validated_insights = ProjectInsights(**parsed_dict)
-#             return validated_insights.model_dump(exclude_none=True)
-#         except RateLimitError as e:
-#             print(f"Rate limit hit during project insights generation (attempt {attempt + 1}/{max_retries}): {e}")
-#             sleep_time = initial_retry_delay * (2 ** attempt)
-#             match = re.search(r'Please try again in (\d+\.?\d*)s', str(e))
-#             if match:
-#                 try: sleep_time = max(sleep_time, float(match.group(1)))
-#                 except ValueError: pass
-#             if attempt < max_retries - 1: time.sleep(sleep_time)
-#             else: return None
-#         except (json.JSONDecodeError, ValidationError, Exception) as e:
-#             print(f"Error generating structured project insights: {e}, Raw: {raw_json_str}")
-#             return None
-
-# def generate_project_insights(readme_content: str) -> Optional[dict]:
-#     """Generates structured insights from a project README using the LLM chain."""
-#     max_retries = 3
-#     initial_retry_delay = 5
-#     for attempt in range(max_retries):
-#         try:
-#             raw_json_str = project_insights_chain.invoke({"readme_content": readme_content})
-            
-#             # --- Aggressive JSON cleaning (as in previous steps) ---
-#             json_content = raw_json_str.strip()
-#             json_content = re.sub(r'^```(?:json)?\s*\n', '', json_content, flags=re.MULTILINE)
-#             json_content = re.sub(r'\n```$', '', json_content, flags=re.MULTILINE)
-#             json_content = json_content.strip().strip('`')
-#             json_content = re.sub(r",\s*([\]}])", r"\1", json_content) # Remove trailing commas
-#             # --- End cleaning ---
-
-#             parsed_dict = json.loads(json_content)
-            
-#             # Use PydanticValidationError specifically for model validation
-#             validated_insights = ProjectInsights(**parsed_dict)
-            
-#             return validated_insights.model_dump(exclude_none=True)
-#         except RateLimitError as e:
-#             print(f"ERROR: Rate limit hit during project insights generation (attempt {attempt + 1}/{max_retries}): {e}")
-#             sleep_time = initial_retry_delay * (2 ** attempt)
-#             match = re.search(r'Please try again in (\d+\.?\d*)s', str(e))
-#             if match:
-#                 try: sleep_time = max(sleep_time, float(match.group(1)))
-#                 except ValueError: pass
-#             if attempt < max_retries - 1: time.sleep(sleep_time)
-#             else: return None
-#         except PydanticValidationError as e: # <--- CORRECTED: Explicitly catch Pydantic's ValidationError
-#             print(f"ERROR: Project insights (Pydantic Validation Error): {e}")
-#             print(f"RAW LLM Output causing Pydantic Error: {raw_json_str}")
-#             print(f"Cleaned JSON for Pydantic Error: {json_content}")
-#             return None
-#         except json.JSONDecodeError as e: # <--- Explicitly catch JSON decoding errors
-#             print(f"ERROR: Project insights (JSON Decode Error): {e}")
-#             print(f"RAW LLM Output causing JSON Error: {raw_json_str}")
-#             print(f"Malformed JSON content was: {json_content}")
-#             return None
-#         except Exception as e: # <--- Catch any other unexpected errors
-#             print(f"ERROR: Project insights (Unexpected Error): {e}")
-#             print(f"RAW LLM Output causing unexpected Error: {raw_json_str}")
-#             return None
 
 def generate_project_insights(readme_content: str) -> Optional[dict]:
     """Generates structured insights from a project README using the LLM chain."""
@@ -1879,60 +1408,164 @@ def fetch_github_readme(repo_url: str) -> Optional[str]:
         print(f"ERROR: An unexpected error occurred during README fetch for {repo_url}: {e}")
         return None
 
+# evaluation_prompt_template = [
+#     {
+#       "role": "system",
+#         "content": """
+# **Role: ##You are a seasoned, discerning AI recruitment expert with a deep understanding of human potential, career trajectories, and market dynamics. Your task is to provide a comprehensive, nuanced assessment of a candidate's fit for a specific job role, blending strict adherence to job requirements with an expert's eye for transferable skills, growth potential, and the overall narrative of the resume. Beyond simple keyword matching, you must analyze *why* certain scores are given, what a human recruiter would observe, and pinpoint both strengths and potential areas of concern (red flags). Your final output must reflect a holistic, expert-level judgment, not just a mechanistic score.##**
+
+# **STRICT ADHERENCE RULE:** "If there is *any doubt* about direct alignment, or if only very few *broadly* relevant items match, **assign 0 points for that category immediately.** Only assign partial scores if there is clear, direct, but incomplete alignment with *specific* requirements. Do not assign max points unless there's **near-perfect, direct alignment**."
+
+# **Step 1: Job Description Analysis (MANDATORY)**
+# Before scoring the resume, extract the following from the job description:
+# 1. **Required Skills** – Must-have technical and soft skills.
+# 2. **Preferred Skills** – Nice-to-have skills.
+# 3. **Key Responsibilities** – Core experience expected.
+# 4. **Required Education** – Degrees, fields, or certifications.
+# 5. **Relevant Projects/Technologies** – Specific domains, stacks, or problem types.
+
+# If the JD is malformed, irrelevant, or nonsensical, assign 0 for all scores immediately.
+
+# ---
+
+# **Step 2: Candidate Evaluation**
+# Compare the candidate resume **strictly against the extracted JD elements**.
+
+# **Important Validation Rule (Non-Match Handling):**
+# - If the candidate resume is malformed, or does not contain relevant information for evaluation (e.g. fake/unrelated content, or obviously non-resume text), return 0 immediately.
+# - Also return 0 immediately if the content is irrelevant, nonsensical, or clearly not a resume.
+# - Do not proceed with the score breakdown in such cases.
+
+# **Evaluation Criteria:(very important to consider these points of Evaluation Criteria)**
+# **1. Skills Match (35 points):**
+# **- VERY VERY IMPORTANT: Compare candidate skills with REQUIRED AND PREFERRED skills ONLY. Strictly disregard anything not mentioned in the job description for direct scoring.**
+# **- VERY IMPORTANT: Score based ONLY on skills EXPLICITLY REQUIRED/PREFERRED in the job description. If a skill is not listed in the JD, it gets 0 points for direct match. HOWEVER, in your reasoning, you *may note* highly valuable transferable skills (e.g., strong Python fundamentals for a JavaScript role) but these do NOT contribute to points unless explicitly asked for in the JD.**
+# **- SCORING METHOD: Score 30-35 for NEAR-PERFECT, DIRECT overlap with *most* required/preferred skills. Score 15-29 for significant, direct overlap with *some* required/preferred skills. Score 1-14 for minimal, *direct* overlap with *very few* specific required/preferred skills. **Assign 0 points if no EXPLICITLY relevant skills are found.**
+# **- STRICT: Evaluate both quality and quantity. If a candidate provides non-meaningful skills or general skills not listed in the JD, these contribute 0 points.**
+# **##BE EXTREMELY STRICT WHILE SCORING THIS SECTION. ONLY EXACT MATCHES GET POINTS.##**
+
+# **2. Experience Match (25 points):**
+# **- Compare the candidate’s work history to job responsibilities and expectations.**
+# **- VERY VERY IMPORTANT: Experience in a DIFFERENT FIELD or experience that is NOT DIRECTLY APPLICABLE to the job description = **0 points**. This includes 'overqualified' experience that lacks direct relevance. However, your reasoning *should highlight* any highly relevant transferable experiences (e.g., project management in an unrelated field if the JD emphasizes organization).**
+# **- Score based STRICTLY on relevance, depth, and duration of experience *as it pertains directly to the JD's requirements*.**
+# **- Strictly use the "experience" field. If it's missing, assign 0 for experience_score.**
+# **- Strictly compare years of experience; deduct heavily if less than required. If duration is very short and relevance is low, lean towards 0 points.**
+# **- Consider the *impact* and *accomplishments* over just duration. Are the descriptions result-oriented?**
+# **##BE EXTREMELY STRICT WHILE SCORING THIS SECTION.##**
+
+# **3. Education Match (20 points):**
+# **- Check if the candidate meets or exceeds the REQUIRED academic qualifications outlined in the JD. If specific degree or field is required, others get 0 points. However, acknowledge strong academic performance or highly analytical fields even if not a direct match, but do not score them.**
+# **- Prefer complete records. Incomplete timelines = partial credit.**
+# **- If education is missing, assign 0 for education_score.**
+# **- Also consider GPA if provided; low cumulative_gpa = 0 points. If good, provide good points, but only if the *field of study is directly relevant*. Note any strong academic institutions or honors.**
+# **##BE EXTREMELY STRICT WHILE SCORING THIS SECTION.##**
+
+# **4. Project Relevance (20 points):**
+# **- Evaluate projects based on their DIRECT RELEVANCE, complexity, and impact *to the specific requirements of the job description*.**
+# **- Prefer real-world applications ALIGNED PRECISELY with job needs.**
+# **- STRICTLY: If a project is not directly aligned with the job description's technical stack or problem domain, it receives **0 points**, even if impressive in another field. You *may note* innovative projects that demonstrate problem-solving even if the domain is different, but they score 0 points.**
+# **- STRICTLY: If only one project is provided, evaluate it strictly on direct impact and alignment. Do not give full points for quantity alone.**
+# **- Assess whether projects show independent initiative, problem-solving abilities, and practical application of skills.**
+# **##BE EXTREMELY STRICT WHILE SCORING THIS SECTION.##**
+
+# **Scoring Philosophy:**
+# - Use only explicit info for *scoring*. Don’t infer hidden strengths for *points*.
+# - Return only a clean integer score between 0–100.
+# - **Human Touch:** While scoring is strict, your reasoning should delve deeper, offering insights a human recruiter would consider beyond the score: transferable skills, growth indicators, and potential red flags.
+
+# **VERY VERY IMPORTANT : If a required section is missing, assign 0 for that part of the score.**
+# **VERY VERY IMPORTANT : If a section (e.g. experience or any other section) is missing, score it as 0 — no assumptions allowed for any section.**
+
+# - If valid, evaluate using the rubric below and return the **score breakdown in this exact JSON format**:
+# ```json
+# {
+#   "skills_score": 0,
+#   "experience_score": 0,
+#   "education_score": 0,
+#   "project_score": 0,
+#   "total_score": 0,
+#   "reasoning": {
+#     "skills_reasoning": "<Explain why this score was given. Crucially, if 0 points were given, explain *why* (e.g., lack of direct match to required skills). If there are valuable *transferable* skills not scored, explicitly mention their relevance and **discuss if they indicate a strong aptitude or learning agility relevant to the role, even if the exact skill isn't present.** Identify any gaps.>",
+#     "experience_reasoning": "<Explain why this score was given, focusing on direct relevance to the JD. If experience is in a different field, explicitly state it received 0 points due to lack of direct relevance. Note specific accomplishments and their quantifiable impact. Critically, **discuss how the experience highlights problem-solving abilities, independent initiative, adaptability, or other soft skills** crucial for a professional role, regardless of direct domain match. Identify any red flags like short tenures, career gaps, or vague descriptions.>",
+#     "education_reasoning": "<Explain why this score was given, focusing on the *direct alignment* of the degree, major, and GPA with the job description's specific requirements. If the field of study is not directly relevant to the JD, explicitly state that it received 0 points for direct match. **However, in your expert capacity, comment on the quality of the institution, the analytical rigor implied by the degree (e.g., strong statistical or mathematical foundations), or any notable academic achievements (honors, high GPA if provided) that demonstrate a candidate's intellectual capacity and learning ability, even if not a direct vocational fit for THIS role.** Also, note any mismatch in required degree level or incomplete timelines.>",
+#     "project_reasoning": "<Explain why this score was given, focusing on direct technical relevance to the JD's stack/domain. If projects are in an unrelated field, explicitly state 0 points given for direct relevance. **However, thoroughly comment on the candidate's independent initiative, depth of understanding, innovation, and the complexity of the problems solved**, even if the domain differs. Discuss the quality of execution seen in projects, if details allow. Identify if links are missing, non-functional, or if project descriptions are vague.>",
+#     "overall_assessment": "<As a recruiter expert, provide a concise, strategic holistic summary. **Analyze the candidate's general career trajectory and identify their core strengths and areas for development as they relate to the hiring market.** What is the overall 'feel' of the resume? **Based on their background, what kind of roles (even outside this specific JD) might they be an excellent fit for?** Is there high potential and a strong growth mindset despite current gaps? Summarize any critical red flags (e.g., consistent vague descriptions, frequent short tenures, major gaps without explanation, or professionalism issues). Finally, **provide specific, actionable recommendations for a human recruiter regarding next steps for THIS role (e.g., immediate reject, strong potential for interview despite score if X/Y is true, consider for junior role, or recommend for a different but related open position within the company).**>"
+#   }
+# }
+# ** Use Job Description:**\n{job_desc}\n\n for the analysis if the description is not relevant or contains gibberish words. The total analysis should be based on this with compare to **Candidate Resume (structured JSON):**\n{resume}\n\n
+# ```"""
+#     }
+# ]
+
 evaluation_prompt_template = [
     {
-      "role": "system",
+        "role": "system",
         "content": """
-**Role: ##You are a seasoned, discerning AI recruitment expert with a deep understanding of human potential, career trajectories, and market dynamics. Your task is to provide a comprehensive, nuanced assessment of a candidate's fit for a specific job role, blending strict adherence to job requirements with an expert's eye for transferable skills, growth potential, and the overall narrative of the resume. Beyond simple keyword matching, you must analyze *why* certain scores are given, what a human recruiter would observe, and pinpoint both strengths and potential areas of concern (red flags). Your final output must reflect a holistic, expert-level judgment, not just a mechanistic score.##**
+**Role:** You are a seasoned AI recruitment expert with deep knowledge of talent evaluation, career trajectories, and market dynamics. Your task is to provide a **holistic, nuanced assessment** of a candidate's fit for a job, combining strict adherence to the JD with insight into transferable skills, growth potential, and overall resume narrative.
 
-**STRICT ADHERENCE RULE:** "If there is *any doubt* about direct alignment, or if only very few *broadly* relevant items match, **assign 0 points for that category immediately.** Only assign partial scores if there is clear, direct, but incomplete alignment with *specific* requirements. Do not assign max points unless there's **near-perfect, direct alignment**."
+**STRICT ADHERENCE RULE:**  
+- If there is any doubt about direct alignment, or if very few *specific* items match, **assign 0 points** for that category.  
+- Partial points are only allowed for clear, direct but incomplete alignment.  
+- Do not assign max points unless there is near-perfect, direct alignment with JD requirements.
 
-**Important Validation Rule (Non-Match Handling):**
-- If the candidate resume is malformed, or does not contain relevant information for evaluation (e.g. fake/unrelated content, or obviously non-resume text), return 0 immediately.
-- Also return 0 immediately if the content is irrelevant, nonsensical, or clearly not a resume.
-- Do not proceed with the score breakdown in such cases.
+**Use Job Description:**\n{job_desc}\n\n
+- Always base the analysis on this Job Description.
+- If the JD is irrelevant, malformed, or contains gibberish, assign 0 points for all categories.
+- Compare the JD strictly against **Candidate Resume (structured JSON):**\n{resume}\n\n
+very important -**If the Job Description does NOT clearly list required skills, responsibilities, education, or projects, treat it as invalid and assign 0 points for that particular category. **
+**Do NOT try to guess or assume content from vague or minimal text. Only analyze if explicit JD elements are present.**
+---
+**Step 1: Job Description Analysis (MANDATORY)**  
+Extract the following explicit requirements from the JD:  
+1. Required Skills – must-have technical/soft skills  
+2. Preferred Skills – nice-to-have skills  
+3. Key Responsibilities – core duties  
+4. Required Education – degree, field, certifications  
+5. Relevant Projects/Technologies – domains, tech stacks, problem types  
 
-**Evaluation Criteria:(very important to consider these points of Evaluation Criteria)**
-**1. Skills Match (35 points):**
-**- VERY VERY IMPORTANT: Compare candidate skills with REQUIRED AND PREFERRED skills ONLY. Strictly disregard anything not mentioned in the job description for direct scoring.**
-**- VERY IMPORTANT: Score based ONLY on skills EXPLICITLY REQUIRED/PREFERRED in the job description. If a skill is not listed in the JD, it gets 0 points for direct match. HOWEVER, in your reasoning, you *may note* highly valuable transferable skills (e.g., strong Python fundamentals for a JavaScript role) but these do NOT contribute to points unless explicitly asked for in the JD.**
-**- SCORING METHOD: Score 30-35 for NEAR-PERFECT, DIRECT overlap with *most* required/preferred skills. Score 15-29 for significant, direct overlap with *some* required/preferred skills. Score 1-14 for minimal, *direct* overlap with *very few* specific required/preferred skills. **Assign 0 points if no EXPLICITLY relevant skills are found.**
-**- STRICT: Evaluate both quality and quantity. If a candidate provides non-meaningful skills or general skills not listed in the JD, these contribute 0 points.**
-**##BE EXTREMELY STRICT WHILE SCORING THIS SECTION. ONLY EXACT MATCHES GET POINTS.##**
+**If the JD is malformed, irrelevant, or nonsensical, assign 0 points for all categories immediately.**
 
-**2. Experience Match (25 points):**
-**- Compare the candidate’s work history to job responsibilities and expectations.**
-**- VERY VERY IMPORTANT: Experience in a DIFFERENT FIELD or experience that is NOT DIRECTLY APPLICABLE to the job description = **0 points**. This includes 'overqualified' experience that lacks direct relevance. However, your reasoning *should highlight* any highly relevant transferable experiences (e.g., project management in an unrelated field if the JD emphasizes organization).**
-**- Score based STRICTLY on relevance, depth, and duration of experience *as it pertains directly to the JD's requirements*.**
-**- Strictly use the "experience" field. If it's missing, assign 0 for experience_score.**
-**- Strictly compare years of experience; deduct heavily if less than required. If duration is very short and relevance is low, lean towards 0 points.**
-**- Consider the *impact* and *accomplishments* over just duration. Are the descriptions result-oriented?**
-**##BE EXTREMELY STRICT WHILE SCORING THIS SECTION.##**
+---
 
-**3. Education Match (20 points):**
-**- Check if the candidate meets or exceeds the REQUIRED academic qualifications outlined in the JD. If specific degree or field is required, others get 0 points. However, acknowledge strong academic performance or highly analytical fields even if not a direct match, but do not score them.**
-**- Prefer complete records. Incomplete timelines = partial credit.**
-**- If education is missing, assign 0 for education_score.**
-**- Also consider GPA if provided; low cumulative_gpa = 0 points. If good, provide good points, but only if the *field of study is directly relevant*. Note any strong academic institutions or honors.**
-**##BE EXTREMELY STRICT WHILE SCORING THIS SECTION.##**
+**Step 2: Candidate Evaluation**  
+Compare the candidate resume **strictly against the extracted JD elements**.
 
-**4. Project Relevance (20 points):**
-**- Evaluate projects based on their DIRECT RELEVANCE, complexity, and impact *to the specific requirements of the job description*.**
-**- Prefer real-world applications ALIGNED PRECISELY with job needs.**
-**- STRICTLY: If a project is not directly aligned with the job description's technical stack or problem domain, it receives **0 points**, even if impressive in another field. You *may note* innovative projects that demonstrate problem-solving even if the domain is different, but they score 0 points.**
-**- STRICTLY: If only one project is provided, evaluate it strictly on direct impact and alignment. Do not give full points for quantity alone.**
-**- Assess whether projects show independent initiative, problem-solving abilities, and practical application of skills.**
-**##BE EXTREMELY STRICT WHILE SCORING THIS SECTION.##**
+**Important Validation:**  
+- If the resume is malformed, unrelated, or nonsensical, assign 0 points for all categories immediately.  
+- Only explicit matches with JD requirements contribute to scores; transferable skills may be noted in reasoning but do **not** contribute points.
 
-**Scoring Philosophy:**
-- Use only explicit info for *scoring*. Don’t infer hidden strengths for *points*.
-- Return only a clean integer score between 0–100.
-- **Human Touch:** While scoring is strict, your reasoning should delve deeper, offering insights a human recruiter would consider beyond the score: transferable skills, growth indicators, and potential red flags.
+**Evaluation Criteria:**  
 
-**VERY VERY IMPORTANT : If a required section is missing, assign 0 for that part of the score.**
-**VERY VERY IMPORTANT : If a section (e.g. experience or any other section) is missing, score it as 0 — no assumptions allowed for any section.**
+**1. Skills Match (35 points)**  
+- Compare candidate skills with **required and preferred skills only**.  
+- Strictly 0 points for skills not listed in the JD.  
+- Partial points only for partial matches.  
+- Score 30–35: near-perfect alignment; 15–29: some alignment; 1–14: minimal alignment; 0: no direct match.
 
-- If valid, evaluate using the rubric below and return the **score breakdown in this exact JSON format**:
+**2. Experience Match (25 points)**  
+- Compare work history to JD responsibilities.  
+- Unrelated or overqualified experience = 0 points.  
+- Consider relevance, depth, duration, impact, accomplishments.  
+- Note transferable experience in reasoning, but 0 points if not directly relevant.
+
+**3. Education Match (20 points)**  
+- Match degree, field, or certification with JD requirements.  
+- Incomplete or unrelated education = 0 points.  
+- Acknowledge strong academic performance in reasoning without awarding points if not aligned.
+
+**4. Project Relevance (20 points)**  
+- Score projects **only for direct technical relevance** to the JD’s stack/domain.  
+- Projects outside domain = 0 points (note innovation or problem-solving in reasoning).  
+- Assess independent initiative, complexity, and execution quality.
+
+---
+
+**Scoring Philosophy:**  
+- Use **only explicit information** for scoring.  
+- Missing sections = 0 points.  
+- Provide reasoning that explains scores, transferable skills, red flags, and actionable recruiter recommendations.  
+
+**Output JSON Format:**  
 ```json
 {
   "skills_score": 0,
@@ -1941,17 +1574,17 @@ evaluation_prompt_template = [
   "project_score": 0,
   "total_score": 0,
   "reasoning": {
-    "skills_reasoning": "<Explain why this score was given. Crucially, if 0 points were given, explain *why* (e.g., lack of direct match to required skills). If there are valuable *transferable* skills not scored, explicitly mention their relevance and **discuss if they indicate a strong aptitude or learning agility relevant to the role, even if the exact skill isn't present.** Identify any gaps.>",
-    "experience_reasoning": "<Explain why this score was given, focusing on direct relevance to the JD. If experience is in a different field, explicitly state it received 0 points due to lack of direct relevance. Note specific accomplishments and their quantifiable impact. Critically, **discuss how the experience highlights problem-solving abilities, independent initiative, adaptability, or other soft skills** crucial for a professional role, regardless of direct domain match. Identify any red flags like short tenures, career gaps, or vague descriptions.>",
-    "education_reasoning": "<Explain why this score was given, focusing on the *direct alignment* of the degree, major, and GPA with the job description's specific requirements. If the field of study is not directly relevant to the JD, explicitly state that it received 0 points for direct match. **However, in your expert capacity, comment on the quality of the institution, the analytical rigor implied by the degree (e.g., strong statistical or mathematical foundations), or any notable academic achievements (honors, high GPA if provided) that demonstrate a candidate's intellectual capacity and learning ability, even if not a direct vocational fit for THIS role.** Also, note any mismatch in required degree level or incomplete timelines.>",
-    "project_reasoning": "<Explain why this score was given, focusing on direct technical relevance to the JD's stack/domain. If projects are in an unrelated field, explicitly state 0 points given for direct relevance. **However, thoroughly comment on the candidate's independent initiative, depth of understanding, innovation, and the complexity of the problems solved**, even if the domain differs. Discuss the quality of execution seen in projects, if details allow. Identify if links are missing, non-functional, or if project descriptions are vague.>",
-    "overall_assessment": "<As a recruiter expert, provide a concise, strategic holistic summary. **Analyze the candidate's general career trajectory and identify their core strengths and areas for development as they relate to the hiring market.** What is the overall 'feel' of the resume? **Based on their background, what kind of roles (even outside this specific JD) might they be an excellent fit for?** Is there high potential and a strong growth mindset despite current gaps? Summarize any critical red flags (e.g., consistent vague descriptions, frequent short tenures, major gaps without explanation, or professionalism issues). Finally, **provide specific, actionable recommendations for a human recruiter regarding next steps for THIS role (e.g., immediate reject, strong potential for interview despite score if X/Y is true, consider for junior role, or recommend for a different but related open position within the company).**>"
+    "skills_reasoning": "<Explain exact rationale for score; highlight transferable skills without scoring them; identify gaps>",
+    "experience_reasoning": "<Explain direct relevance; highlight accomplishments, red flags, transferable skills>",
+    "education_reasoning": "<Explain direct match; note academic rigor or strong performance without awarding points if not aligned>",
+    "project_reasoning": "<Explain direct technical relevance; highlight problem-solving, initiative, innovation; note gaps>",
+    "overall_assessment": "<Holistic summary: career trajectory, strengths, gaps, growth potential, recruiter recommendations>"
   }
 }
-```"""
-    }
-]
 
+
+"""
+}]
 
 
 # --- Main Function for Resume Breakdown ---
@@ -2026,38 +1659,6 @@ def index():
 
     return render_template('index.html', user_logged_in=user_logged_in, is_hr=is_hr, jobs_data=all_jobs_from_db)
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         try:
-#             # Authenticate with Supabase
-#             res = supabase.auth.sign_in_with_password({
-#                 "email": form.email.data, # Assuming LoginForm uses email
-#                 "password": form.password.data
-#             })
-            
-#             # Store the essential session and user info in Flask's session
-#             session['user_session'] = res.session.model_dump()
-#             session['user_info'] = {
-#                 'id': str(res.user.id),
-#                 'email': res.user.email,
-#                 'is_hr': res.user.user_metadata.get('is_hr', False)
-#             }
-            
-#             flash('Logged in successfully!', 'success')
-            
-#             # Redirect based on role
-#             if session['user_info']['is_hr']:
-#                 return redirect(url_for('hr_dashboard')) # Assuming you have an hr_dashboard route
-#             else:
-#                 return redirect(url_for('index'))
-
-#         except Exception as e:
-#             flash('Invalid email or password.', 'danger')
-            
-#     return render_template('login.html', form=form)
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -2104,33 +1705,32 @@ def login():
 @app.route("/about")
 def about():
     return render_template("about.html")
-
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
 
-# @app.route("/submit_contact", methods=["POST"])
-# def submit_contact():
-#     name = request.form.get("name")
-#     email = request.form.get("email")
-#     message = request.form.get("message")
-#     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-#     try:
-#         # Assuming contact_form_worksheet is initialized by initialize_google_sheets
-#         if contact_form_worksheet is not None:
-#             contact_form_worksheet.append_row([name, email, message, timestamp])
-#             flash("✅ Your query has been submitted successfully!", "success")
-#         else:
-#             flash("❌ Google Sheets not initialized. Contact submission failed.", "error")
-#             print("ERROR: contact_form_worksheet not initialized.")
-#         return redirect(url_for('contact'))
-#     except Exception as e:
-#         print(f"❌ ERROR submitting contact form: {e}")
-#         flash(f"❌ Something went wrong. Please try again later: {e}", "error")
-#         return redirect(url_for('contact'))
+@app.route("/submit_contact", methods=["POST"])
+def submit_contact():
+    try:
+        name = request.form.get("name")
+        email = request.form.get("email")
+        message = request.form.get("message")
 
-# --- New Route for Magic Moment Page (MODIFIED for session tracking) ---
+        data = {"name": name, "email": email, "message": message}
+        response = supabase.table("contacts").insert(data).execute()
+
+        if response.data:
+            flash("✅ Thank you! Your message has been submitted.", "success")
+        else:
+            flash("❌ Something went wrong. Please try again.", "error")
+
+    except Exception as e:
+        flash(f"⚠️ Error: {str(e)}", "error")
+
+    return redirect(url_for("contact"))
+
+
 @app.route('/magic_moment')
 @login_required # Ensure only logged-in users can access this page
 def magic_moment():
@@ -2156,50 +1756,6 @@ def magic_moment():
     # Render the magic moment page for the first time
     return render_template('magic_moment.html')
 
-# @app.route('/signup', methods=['GET', 'POST'])
-# def signup():
-#     form = RegisterForm()
-#     if form.validate_on_submit():
-#         try:
-#             hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            
-#             is_hr_user = form.is_hr.data # This will be True if checked, False otherwise
-            
-#             new_user = User(
-#                 username=form.username.data, 
-#                 password=hashed_password, 
-#                 google_id=None, 
-#                 is_hr=is_hr_user
-#             )
-            
-#             db.session.add(new_user)
-#             db.session.commit()
-            
-#             login_user(new_user)
-#             flash('Registration successful! You are now logged in.', 'success')
-            
-#             next_page = request.args.get('next')
-#             if next_page:
-#                 return redirect(next_page)
-#             elif 'pending_analysis_id' in session:
-#                 return redirect(url_for('evaluate_resume'))
-#             elif new_user.is_hr:
-#                 # return redirect(url_for('index'))
-#                 return redirect(url_for('magic_moment'))
-#             else:
-#                 # return redirect(url_for('index')) # Default for regular users
-#                 return redirect(url_for('magic_moment'))
-            
-                
-#         except ValidationError as e: # WTForms validation error
-#             flash(str(e), 'error')
-#             db.session.rollback() # Rollback in case of DB error
-#         except Exception as e: # Catch other potential errors
-#             flash(f'An unexpected error occurred during registration: {e}', 'error')
-#             db.session.rollback()
-            
-#     return render_template('signup.html', form=form)
-# --- Flask Routes (MODIFIED SIGNUP ROUTE for magic moment session tracking) ---
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
@@ -2231,40 +1787,6 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
-# @app.route('/hr_job_upload', methods=['GET', 'POST'])
-# @hr_required
-# def hr_job_upload():
-#     if request.method == 'POST':
-#         company_name = request.form['company_name']
-#         job_title = request.form['job_title']
-#         job_description = request.form['job_description']
-
-#         job_id = str(uuid.uuid4())
-#         date_posted = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-#         new_job = Job(
-#         id=job_id,
-#         company_name=company_name,
-#         job_title=job_title,
-#         job_description=job_description,
-#         date_posted=date_posted,
-#         hr_user_id=current_user.id   # Track which HR uploaded
-# )
-        
-#         try:
-#             db.session.add(new_job)
-#             db.session.commit()
-        
-#             flash('Job uploaded successfully!', 'success')
-#             return redirect(url_for('hr_dashboard'))
-#         except Exception as e:
-#             db.session.rollback()
-#             flash(f'An error occurred uploading the job: {e}', 'error')
-#             return render_template('hr_job_upload.html')
-#     return render_template('hr_job_upload.html')
-
-# In your hr_job_upload route (around line 1504)
-# In your app.py file, locate this route and replace it with the following:
 @app.route('/hr_job_upload', methods=['GET', 'POST'])
 @login_required # The new login_required will run first
 @hr_required    # Then the new hr_required will run
@@ -2300,439 +1822,6 @@ def hr_job_upload():
 
     return render_template('hr_job_upload.html')
 
-
-
-# @app.route('/candidate_apply', methods=['GET', 'POST'])
-# @login_required
-# def candidate_apply():
-#     # Fetch all available jobs from the database
-#     all_jobs_from_db = Job.query.all()
-#     available_jobs = [
-#         {
-#             "id": job.id,
-#             "title": job.job_title,
-#             "company_name": job.company_name,
-#             "description": job.job_description
-#         }
-#         for job in all_jobs_from_db
-#     ]
-
-#     if request.method == 'POST':
-#         job_id_to_apply = request.form.get('job_id')
-#         candidate_user_id = str(current_user.id) # Use current_user.id for the logged-in user
-        
-#         # Initialize variables with default/empty values
-#         filepath = None
-#         extracted_info = {}
-#         eligibility_result = {"decision": "Undetermined", "score": 0, "reason": "Processing did not complete."}
-#         exam_questions = None
-
-#         selected_job = Job.query.get(job_id_to_apply)
-#         if not selected_job:
-#             return jsonify({"error": "Invalid Job ID selected."}), 400
-
-#         resume_file = request.files.get('resume')
-#         if not resume_file or resume_file.filename == '':
-#             return jsonify({"error": "No resume file selected."}), 400
-
-#         if not allowed_file(resume_file.filename):
-#             return jsonify({"error": "Invalid file type. Only PDF files are allowed."}), 400
-
-#         filepath = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4()) + "_" + resume_file.filename)
-#         try:
-#             resume_file.save(filepath)
-#         except Exception as e:
-#             return jsonify({"error": f"Failed to save resume file: {e}"}), 500
-
-#         resume_text = extract_text_from_pdf(filepath)
-#         if not resume_text:
-#             os.remove(filepath)
-#             return jsonify({"error": "Failed to extract text from resume. Please ensure it's a valid PDF."}), 400
-
-#         extracted_info = extract_resume_info_llm(resume_text)
-#         if "error" in extracted_info:
-#             os.remove(filepath)
-#             return jsonify({"error": f"Failed to extract resume info: {extracted_info['error']}"}), 500
-
-#         job_description = selected_job.job_description
-        
-#         processed_projects = []
-#         if 'projects' in extracted_info and extracted_info['projects']:
-#             for project in extracted_info['projects']:
-#                 if project.get('link') and 'github.com' in project['link']:
-#                     readme_content = fetch_github_readme(project['link'])
-#                     if readme_content:
-#                         insights = generate_project_insights(readme_content)
-#                         if insights:
-#                             project['insights'] = insights
-#                 processed_projects.append(project)
-#         extracted_info['projects'] = processed_projects
-
-#         eligibility_result = evaluate_candidate_llm(extracted_info, job_description)
-
-#         if eligibility_result.get("decision") == "Not Eligible":
-#             eligibility_result["reason"] = generate_detailed_feedback(
-#                 extracted_info, job_description, eligibility_result.get("score", 0)
-#             )
-#         elif eligibility_result.get("decision") == "Eligible":
-#             eligibility_result["reason"] = generate_selection_reason(
-#                 extracted_info, job_description, eligibility_result.get("score", 0)
-#             )
-
-#         if eligibility_result.get("decision") == "Eligible":
-#             exam_questions = generate_exam_llm(job_description)
-#             if exam_questions is None:
-#                 if "Exam generation failed" not in eligibility_result["reason"]:
-#                     eligibility_result["reason"] += " (Note: Exam generation failed, please contact HR.)"
-#                 eligibility_result["decision"] = "Eligible (Exam Gen Failed)"
-        
-#         # --- Create new_application object and save to DB ---
-#         new_application = CandidateApplication(
-#             job_id=selected_job.id, # Link to the Job via foreign key
-#             candidate_user_id=candidate_user_id, # Use Flask-Login user ID
-#             submission_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-#             eligibility_status=eligibility_result.get("decision"),
-#             match_score=eligibility_result.get("score", 0),
-#             eligibility_reason=eligibility_result.get("reason", "N/A"),
-#             extracted_info=extracted_info, # Uses the @property setter
-#             exam_questions=exam_questions, # Uses the @property setter
-#             exam_taken=False, # Initially false, updated by submit_exam
-#             exam_score=None,
-#             exam_feedback=[],
-#             submitted_answers=[],
-#             resume_filepath=filepath # Store resume file path
-#         )
-
-#         try:
-#             db.session.add(new_application)
-#             db.session.commit()
-
-#             # --- Email Sending Logic for Eligible Candidates (Correctly placed) ---
-#             if new_application.eligibility_status == "Eligible" and new_application.exam_taken is False:
-#                 candidate_email = new_application.extracted_info.get('email')
-#                 candidate_name = new_application.extracted_info.get('name', 'Candidate')
-                
-#                 if candidate_email:
-#                     send_exam_invitation_email(
-#                         recipient_email=candidate_email,
-#                         candidate_name=candidate_name,
-#                         job_title=selected_job.job_title,
-#                         job_id=selected_job.id,
-#                         application_id=new_application.id
-#                     )
-#                 else:
-#                     print(f"WARNING: No email found for candidate {new_application.id}. Cannot send exam invite.")
-#             # --- End Email Sending Logic ---
-
-#             # Optionally, upload to Google Sheet if that integration is active
-#             # if candidates_worksheet is not None: # Check if Google Sheets is initialized
-#             #     upload_success = upload_candidate_to_master_sheet(new_application.id, new_application, selected_job.id)
-#             #     if not upload_success:
-#             #         print(f"WARNING: Failed to upload candidate application {new_application.id} to Google Sheet.")
-#             # else:
-#             #     print("WARNING: Google Sheets candidates_worksheet not initialized. Skipping upload to sheet.")
-            
-#             flash('Application submitted successfully!', 'success')
-#             return jsonify({"message": "Application submitted successfully!", "application_id": new_application.id}), 200
-#         except Exception as e:
-#             db.session.rollback()
-#             return jsonify({"error": f"Failed to save application: {e}"}), 500
-    
-#     return render_template('candidate_apply.html', available_jobs=available_jobs)
-# In your candidate_apply route (around line 1759)
-# In your candidate_apply route (around line 1759)
-# @app.route('/candidate_apply', methods=['GET', 'POST'])
-# @login_required
-# def candidate_apply():
-#     # ... (rest of the GET request handling) ...
-#     selected_job_id = request.args.get('job_id')
-#     selected_job_details = None
-#     available_jobs = [] 
-#     if selected_job_id:
-#         selected_job_details = Job.query.get(selected_job_id)
-#         if not selected_job_details:
-#             flash('The job you are looking for was not found.', 'warning')
-#             selected_job_id = None
-
-#     if not selected_job_details:
-#         all_jobs_from_db = Job.query.order_by(Job.date_posted.desc()).all()
-#         available_jobs = [
-#             {"id": job.id, "title": job.job_title, "company_name": job.company_name, "description": job.job_description}
-#             for job in all_jobs_from_db
-#         ]
-
-#     if request.method == 'POST':
-#         job_id_to_apply = request.form.get('job_id')
-#         candidate_user_id = str(current_user.id)
-#         filepath = None
-#         extracted_info = {}
-#         eligibility_result = {"decision": "Undetermined", "score": 0, "reason": "Processing did not complete."}
-#         exam_questions = None
-
-#         selected_job = Job.query.get(job_id_to_apply)
-#         if not selected_job:
-#             return jsonify({"error": "Invalid Job ID selected."}), 400
-
-#         # --- NEW: "APPLY AGAIN" LOGIC ---
-#         # Before processing the new application, check if one already exists for this user and job.
-#         # If it does, we will delete it to make way for the new one.
-#         existing_application = CandidateApplication.query.filter_by(
-#             candidate_user_id=candidate_user_id,
-#             job_id=job_id_to_apply
-#         ).first()
-
-#         if existing_application:
-#             print(f"DEBUG: User {candidate_user_id} is applying again for job {job_id_to_apply}. Replacing old application {existing_application.id}.")
-#             db.session.delete(existing_application)
-#             # The change is staged and will be committed only if the new application is successful.
-#         # --- END OF "APPLY AGAIN" LOGIC ---
-
-#         resume_file = request.files.get('resume')
-#         if not resume_file or resume_file.filename == "":
-#             return jsonify({"error": "No resume file selected."}), 400
-
-#         if not allowed_file(resume_file.filename):
-#             return jsonify({"error": "Invalid file type. Only PDF files are allowed."}), 400
-
-#         filepath = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4()) + "_" + resume_file.filename)
-#         try:
-#             resume_file.save(filepath)
-#         except Exception as e:
-#             return jsonify({"error": f"Failed to save resume file: {e}"}), 500
-
-#         resume_text = extract_text_from_pdf(filepath)
-#         if not resume_text:
-#             os.remove(filepath)
-#             return jsonify({"error": "Failed to extract text from resume. Please ensure it's a valid PDF."}), 400
-
-#         extracted_info = extract_resume_info_llm(resume_text)
-#         if "error" in extracted_info:
-#             os.remove(filepath)
-#             return jsonify({"error": f"Failed to extract resume info: {extracted_info['error']}"}), 500
-        
-#         # --- KNOCKOUT QUESTION CHECK ---
-#         knockout_check = check_knockout_criteria(extracted_info, selected_job)
-#         if not knockout_check["passed"]:
-#             eligibility_result["decision"] = "Not Eligible"
-#             eligibility_result["reason"] = f"Failed knockout criteria: {knockout_check['reason']}"
-#             eligibility_result["score"] = 0
-#             if os.path.exists(filepath):
-#                 os.remove(filepath)
-#         else:
-#             # Continue with LLM evaluation ONLY if knockout passed
-#             job_description = selected_job.job_description
-#             processed_projects = []
-#             if 'projects' in extracted_info and extracted_info['projects']:
-#                 for project in extracted_info['projects']:
-#                     if project.get('link') and 'github.com' in project['link']:
-#                         readme_content = fetch_github_readme(project['link'])
-#                         if readme_content:
-#                             insights = generate_project_insights(readme_content)
-#                             if insights:
-#                                 project['insights'] = insights
-#                         processed_projects.append(project)
-#                 extracted_info['projects'] = processed_projects
-
-#             eligibility_result = evaluate_candidate_llm(extracted_info, job_description)
-
-#             if eligibility_result.get("decision") == "Not Eligible":
-#                 eligibility_result["reason"] = generate_detailed_feedback(
-#                     extracted_info, job_description, eligibility_result.get("score", 0)
-#                 )
-#             elif eligibility_result.get("decision") == "Eligible":
-#                 eligibility_result["reason"] = generate_selection_reason(
-#                     extracted_info, job_description, eligibility_result.get("score", 0)
-#                 )
-
-#             if eligibility_result.get("decision") == "Eligible":
-#                 exam_questions = generate_exam_llm(job_description)
-#                 if exam_questions is None:
-#                     if "Exam generation failed" not in eligibility_result["reason"]:
-#                         eligibility_result["reason"] += " (Note: Exam generation failed, please contact HR.)"
-#                     eligibility_result["decision"] = "Eligible (Exam Gen Failed)"
-            
-#             if os.path.exists(filepath):
-#                 os.remove(filepath)
-#         # --- END KNOCKOUT QUESTION CHECK ---
-
-#         new_application = CandidateApplication(
-#             job_id=selected_job.id,
-#             candidate_user_id=candidate_user_id,
-#             submission_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-#             eligibility_status=eligibility_result.get("decision"),
-#             match_score=eligibility_result.get("score", 0),
-#             eligibility_reason=eligibility_result.get("reason", "N/A"),
-#             extracted_info=extracted_info,
-#             exam_questions=exam_questions,
-#             exam_taken=False,
-#             exam_score=None,
-#             exam_feedback=[],
-#             submitted_answers=[],
-#             resume_filepath=None
-#         )
-
-#         try:
-#             db.session.add(new_application)
-#             db.session.commit()
-            
-#             # Add a flash message if an old application was replaced
-#             if existing_application:
-#                 flash('Your previous application has been replaced with the new one.', 'info')
-#             else:
-#                 flash('Application submitted successfully!', 'success')
-
-#             return jsonify({"message": "Application submitted successfully!", "application_id": new_application.id}), 200
-#         except Exception as e:
-#             db.session.rollback()
-#             return jsonify({"error": f"Failed to save application: {e}"}), 500
-
-#     return render_template('candidate_apply.html', available_jobs=available_jobs, selected_job=selected_job_details)
-
-# 2. Next, replace your entire 'candidate_apply' function with this new, merged version.
-# @app.route('/candidate_apply', methods=['GET', 'POST'])
-# @login_required
-# def candidate_apply():
-#     # The GET request handling remains the same
-#     selected_job_id = request.args.get('job_id')
-#     selected_job_details = None
-#     available_jobs = [] 
-#     if selected_job_id:
-#         selected_job_details = Job.query.get(selected_job_id)
-#         if not selected_job_details:
-#             flash('The job you are looking for was not found.', 'warning')
-#             selected_job_id = None
-
-#     if not selected_job_details:
-#         all_jobs_from_db = Job.query.order_by(Job.date_posted.desc()).all()
-#         available_jobs = [
-#             {"id": job.id, "title": job.job_title, "company_name": job.company_name, "description": job.job_description}
-#             for job in all_jobs_from_db
-#         ]
-
-#     if request.method == 'POST':
-#         job_id_to_apply = request.form.get('job_id')
-#         candidate_user_id = str(current_user.id)
-#         filepath = None
-        
-#         selected_job = Job.query.get(job_id_to_apply)
-#         if not selected_job:
-#             return jsonify({"error": "Invalid Job ID selected."}), 400
-
-#         # --- "APPLY AGAIN" LOGIC ---
-#         existing_application = CandidateApplication.query.filter_by(
-#             candidate_user_id=candidate_user_id,
-#             job_id=job_id_to_apply
-#         ).first()
-
-#         if existing_application:
-#             print(f"DEBUG: User {candidate_user_id} is applying again for job {job_id_to_apply}. Replacing old application {existing_application.id}.")
-#             db.session.delete(existing_application)
-#         # --- END OF "APPLY AGAIN" LOGIC ---
-
-#         # Resume file handling and text extraction remains the same
-#         resume_file = request.files.get('resume')
-#         if not resume_file or resume_file.filename == "":
-#             return jsonify({"error": "No resume file selected."}), 400
-
-#         if not allowed_file(resume_file.filename):
-#             return jsonify({"error": "Invalid file type. Only PDF files are allowed."}), 400
-
-#         filepath = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4()) + "_" + resume_file.filename)
-#         try:
-#             resume_file.save(filepath)
-#         except Exception as e:
-#             return jsonify({"error": f"Failed to save resume file: {e}"}), 500
-            
-#         resume_text = extract_text_from_pdf(filepath)
-#         if not resume_text:
-#             os.remove(filepath)
-#             return jsonify({"error": "Failed to extract text from resume. Please ensure it's a valid PDF."}), 400
-
-#         extracted_info = extract_resume_info_llm(resume_text)
-#         if "error" in extracted_info:
-#             os.remove(filepath)
-#             return jsonify({"error": f"Failed to extract resume info: {extracted_info['error']}"}), 500
-        
-#         # --- MODIFIED LOGIC: ALWAYS RUN BOTH CHECKS ---
-        
-#         # 1. Perform the knockout analysis and store the result. The process no longer stops here.
-#         knockout_analysis_result = check_knockout_criteria(extracted_info, selected_job)
-        
-#         # 2. Always proceed to the main, more detailed LLM evaluation.
-#         job_description = selected_job.job_description
-#         processed_projects = []
-#         if 'projects' in extracted_info and extracted_info['projects']:
-#             for project in extracted_info['projects']:
-#                 if project.get('link') and 'github.com' in project['link']:
-#                     readme_content = fetch_github_readme(project['link'])
-#                     if readme_content:
-#                         insights = generate_project_insights(readme_content)
-#                         if insights:
-#                             project['insights'] = insights
-#                     processed_projects.append(project)
-#             extracted_info['projects'] = processed_projects
-
-#         eligibility_result = evaluate_candidate_llm(extracted_info, job_description)
-
-#         # 3. Generate feedback based on the main evaluation score.
-#         if eligibility_result.get("decision") == "Not Eligible":
-#             eligibility_result["reason"] = generate_detailed_feedback(
-#                 extracted_info, job_description, eligibility_result.get("score", 0)
-#             )
-#         elif eligibility_result.get("decision") == "Eligible":
-#             eligibility_result["reason"] = generate_selection_reason(
-#                 extracted_info, job_description, eligibility_result.get("score", 0)
-#             )
-
-#         # 4. Generate exam questions if the main evaluation deems them eligible.
-#         exam_questions = None
-#         if eligibility_result.get("decision") == "Eligible":
-#             exam_questions = generate_exam_llm(job_description)
-#             if exam_questions is None:
-#                 if "Exam generation failed" not in eligibility_result["reason"]:
-#                     eligibility_result["reason"] += " (Note: Exam generation failed, please contact HR.)"
-#                 eligibility_result["decision"] = "Eligible (Exam Gen Failed)"
-        
-#         if os.path.exists(filepath):
-#             os.remove(filepath)
-        
-#         # --- END OF MODIFIED LOGIC ---
-
-#         # Create the new application, now including the knockout analysis result.
-#         new_application = CandidateApplication(
-#             job_id=selected_job.id,
-#             candidate_user_id=candidate_user_id,
-#             submission_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-#             eligibility_status=eligibility_result.get("decision"),
-#             match_score=eligibility_result.get("score", 0),
-#             eligibility_reason=eligibility_result.get("reason", "N/A"),
-#             extracted_info=extracted_info,
-#             exam_questions=exam_questions,
-#             knockout_analysis=knockout_analysis_result, # Save the new analysis data
-#             exam_taken=False,
-#             exam_score=None,
-#             exam_feedback=[],
-#             submitted_answers=[],
-#             resume_filepath=None
-#         )
-
-#         try:
-#             db.session.add(new_application)
-#             db.session.commit()
-            
-#             # Add a flash message if an old application was replaced
-#             if existing_application:
-#                 flash('Your previous application has been replaced with the new one.', 'info')
-#             else:
-#                 flash('Application submitted successfully!', 'success')
-
-#             return jsonify({"message": "Application submitted successfully!", "application_id": new_application.id}), 200
-#         except Exception as e:
-#             db.session.rollback()
-#             return jsonify({"error": f"Failed to save application: {e}"}), 500
-
-#     return render_template('candidate_apply.html', available_jobs=available_jobs, selected_job=selected_job_details)
-# 2. Replace your entire 'candidate_apply' function with this new version.
 @app.route('/candidate_apply', methods=['GET', 'POST'])
 @login_required # Use your new Supabase-aware decorator
 def candidate_apply():
@@ -2923,45 +2012,6 @@ def approve_candidate(application_id):
 
     return redirect(url_for('hr_dashboard'))
 
-# # The function now accepts the 'decision' status as a parameter
-# def send_exam_invitation_email(
-#     recipient_email: str, 
-#     candidate_name: str, 
-#     job_title: str, 
-#     job_id: str, 
-#     application_id: str,
-#     decision: str # Add the decision status here
-# ):
-#     """Sends an email to the candidate inviting them to take the exam."""
-#     if not app.config.get('MAIL_USERNAME'):
-#         # Log a critical error and stop if email isn't configured
-#         logging.error("Email credentials are not set. Cannot send emails.")
-#         raise ConnectionError("Email service is not configured on the server.")
-
-#     try:
-#         exam_url = url_for('get_exam', job_id=job_id, candidate_id=application_id, _external=True)
-#         logging.info(f"Generated exam URL: {exam_url}")
-
-#         msg = Message(
-#             subject=f"Job Application Update: Action Required for {job_title}",
-#             recipients=[recipient_email],
-#             html=f"""
-#             <p>Dear {candidate_name},</p>
-#             <p>Thank you for your application for the <strong>{job_title}</strong> position.</p>
-#             <p>We are pleased to inform you that your status is: <strong>{decision}</strong>. You are invited to the next stage of our recruitment process!</p>
-#             <p>To proceed, please complete a short online assessment. This exam will help us evaluate your skills further.</p>
-#             <p><a href="{exam_url}" style="display: inline-block; padding: 10px 20px; background-color: #3B82F6; color: white; text-decoration: none; border-radius: 5px;">Take Your Exam Now</a></p>
-#             <p>Please ensure you complete the exam at your earliest convenience.</p>
-#             <p>Best regards,</p>
-#             <p>The JobStir Recruitment Team</p>
-#             """
-#         )
-#         mail.send(msg)
-#         logging.info(f"Exam invitation email sent to {recipient_email} for application {application_id}.")
-#         return True
-#     except Exception as e:
-#         logging.error(f"Failed to send exam invitation email to {recipient_email}: {e}", exc_info=True)
-#         return False
 def send_exam_invitation_email(
     recipient_email: str, 
     candidate_name: str, 
@@ -3012,200 +2062,6 @@ def send_exam_invitation_email(
     except Exception as e:
         logging.error(f"Failed to send email to {recipient_email}: {e}", exc_info=True)
         return False
-
-
-# @app.route('/hr_dashboard')
-# @hr_required
-# def hr_dashboard():
-#     all_jobs_from_db = Job.query.order_by(Job.date_posted.desc()).all()
-    
-#     dashboard_jobs = []
-#     for job_obj in all_jobs_from_db:
-#         job_applications = job_obj.applications
-        
-#         job_data = {
-#             'id': job_obj.id,
-#             'company_name': job_obj.company_name,
-#             'job_title': job_obj.job_title,
-#             'job_description': job_obj.job_description,
-#             'date_posted': job_obj.date_posted,
-#             'candidates_list': []
-#         }
-        
-#         for app_obj in job_applications:
-#             candidate_data = {
-#                 'application_id': app_obj.id,
-#                 'candidate_user_id': app_obj.candidate_user_id,
-#                 'submission_date': app_obj.submission_date,
-#                 'eligibility_status': app_obj.eligibility_status,
-#                 'match_score': app_obj.match_score,
-#                 'eligibility_reason': app_obj.eligibility_reason,
-#                 'extracted_info': app_obj.extracted_info,
-#                 'exam_taken': app_obj.exam_taken,
-#                 'exam_score': app_obj.exam_score,
-#                 'exam_questions': app_obj.exam_questions,
-#                 'exam_feedback': app_obj.exam_feedback,
-#                 'submitted_answers': app_obj.submitted_answers,
-#                 'resume_filepath': app_obj.resume_filepath
-#             }
-#             job_data['candidates_list'].append(candidate_data)
-        
-#         dashboard_jobs.append(job_data)
-    
-#     return render_template('hr_dashboard.html', jobs=dashboard_jobs)
-# In app.py
-
-# Replace your existing hr_dashboard function with this corrected version.
-# @app.route('/hr_dashboard')
-# @hr_required
-# def hr_dashboard():
-#     try:
-#         hr_jobs = Job.query.filter_by(hr_user_id=current_user.id)\
-#             .order_by(Job.date_posted.desc())\
-#             .all()
-            
-#         dashboard_jobs = []
-#         total_candidates = 0
-#         pending_reviews = 0
-
-#         for job_obj in hr_jobs:
-#             job_applications = CandidateApplication.query.filter_by(job_id=job_obj.id).all()
-#             total_applications = len(job_applications)
-#             eligible_candidates = sum(1 for app in job_applications if app.eligibility_status == 'Eligible')
-#             completed_exams = sum(1 for app in job_applications if app.exam_taken)
-            
-#             job_data = {
-#                 'id': job_obj.id,
-#                 'company_name': job_obj.company_name,
-#                 'job_title': job_obj.job_title,
-#                 'job_description': job_obj.job_description,
-#                 'date_posted': job_obj.date_posted,
-#                 'total_applications': total_applications,
-#                 'eligible_candidates': eligible_candidates,
-#                 'completed_exams': completed_exams,
-#                 'candidates_list': [],
-#                 'status': 'Active',
-#                 'sharable_link': url_for('candidate_apply', job_id=job_obj.id, _external=True),
-#                 # --- FIX: Wrap the dictionary in the AttrDict helper class ---
-#                 'knockout_questions': AttrDict(job_obj.knockout_questions)
-#             }
-
-#             for app_obj in job_applications:
-#                 total_candidates += 1
-#                 if app_obj.exam_taken and app_obj.eligibility_status == 'Eligible' and app_obj.eligibility_status != 'Approved':
-#                     pending_reviews += 1
-
-#                 candidate_data = {
-#                     'id': app_obj.id,
-#                     'candidate_user_id': app_obj.candidate_user_id,
-#                     'submission_date': app_obj.submission_date,
-#                     'eligibility_status': app_obj.eligibility_status,
-#                     'match_score': app_obj.match_score,
-#                     'eligibility_reason': app_obj.eligibility_reason,
-#                     'extracted_info': app_obj.extracted_info,
-#                     'exam_taken': app_obj.exam_taken,
-#                     'exam_score': app_obj.exam_score,
-#                     'exam_questions': app_obj.exam_questions,
-#                     'exam_feedback': app_obj.exam_feedback,
-#                     'submitted_answers': app_obj.submitted_answers,
-#                     'resume_filepath': app_obj.resume_filepath,
-#                     # --- FIX: Also wrap this dictionary for consistency ---
-#                     'knockout_analysis': AttrDict(app_obj.knockout_analysis),
-#                     'needs_review': (
-#                         app_obj.exam_taken and
-#                         app_obj.eligibility_status == 'Eligible' and
-#                         app_obj.eligibility_status != 'Approved'
-#                     )
-#                 }
-#                 job_data['candidates_list'].append(candidate_data)
-            
-#             job_data['candidates_list'].sort(key=lambda x: datetime.strptime(x['submission_date'], "%Y-%m-%d %H:%M:%S"), reverse=True)
-#             dashboard_jobs.append(job_data)
-
-#         dashboard_summary = {
-#             'total_jobs': len(hr_jobs),
-#             'total_candidates': total_candidates,
-#             'pending_reviews': pending_reviews,
-#             'last_updated': datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-#         }
-        
-#         return render_template(
-#             'hr_dashboard.html',
-#             jobs=dashboard_jobs,
-#             summary=dashboard_summary,
-#             current_user=current_user
-#         )
-        
-#     except Exception as e:
-#         print(f"ERROR in hr_dashboard: {str(e)}")
-#         flash('An error occurred while loading the dashboard.', 'error')
-#         db.session.rollback()
-#         return render_template('hr_dashboard.html', jobs=[], summary={}, error=str(e))
-
-###################################################################################
-# @app.route('/hr_dashboard')
-# @hr_required # Assumes your new Supabase-aware decorator
-# def hr_dashboard():
-#     try:
-#         hr_user_id = session['user_info']['id']
-
-#         # 1. Fetch all jobs for the current HR user
-#         jobs_response = supabase.table('jobs').select('*').eq('hr_user_id', hr_user_id).order('date_posted', desc=True).execute()
-#         hr_jobs = jobs_response.data
-        
-#         if not hr_jobs:
-#             # If there are no jobs, render the page with empty data
-#             return render_template('hr_dashboard.html', jobs=[], summary={}, apps_by_job={})
-
-#         job_ids = [job['id'] for job in hr_jobs]
-
-#         # 2. Fetch all applications related to those jobs in a single query
-#         apps_response = supabase.table('candidate_applications').select('*').in_('job_id', job_ids).execute()
-#         all_applications = apps_response.data
-
-#         # 3. Group applications by their job_id for easy lookup
-#         apps_by_job = {}
-#         for app in all_applications:
-#             job_id = app.get('job_id')
-#             if job_id not in apps_by_job:
-#                 apps_by_job[job_id] = []
-#             apps_by_job[job_id].append(app)
-
-#         # 4. Process the data in Python for summary stats
-#         total_candidates = len(all_applications)
-#         pending_reviews = 0
-        
-#         for job in hr_jobs:
-#             job_applications = apps_by_job.get(job['id'], [])
-            
-#             # Add new attributes directly to the job dictionary for the template
-#             job['total_applications'] = len(job_applications)
-#             job['recommended_candidates'] = sum(1 for app in job_applications if "Recommended" in app.get('eligibility_status', ''))
-#             job['completed_exams'] = sum(1 for app in job_applications if app.get('exam_taken'))
-#             job['sharable_link'] = url_for('candidate_apply', job_id=job['id'], _external=True)
-
-#             for app in job_applications:
-#                 if app.get('exam_taken') and app.get('eligibility_status') != 'Approved':
-#                     pending_reviews += 1
-        
-#         dashboard_summary = {
-#             'total_jobs': len(hr_jobs),
-#             'total_candidates': total_candidates,
-#             'pending_reviews': pending_reviews
-#         }
-
-#         # 5. Render the template with all the necessary data
-#         return render_template(
-#             'hr_dashboard.html', 
-#             jobs=hr_jobs, 
-#             summary=dashboard_summary,
-#             apps_by_job=apps_by_job
-#         )
-
-#     except Exception as e:
-#         logging.error(f"Error in hr_dashboard: {e}", exc_info=True)
-#         flash('An error occurred while loading the dashboard.', 'error')
-#         return render_template('hr_dashboard.html', jobs=[], summary={}, apps_by_job={})
 
 ####################################################################
 
@@ -3289,75 +2145,6 @@ def hr_dashboard():
         logging.error(f"Error in hr_dashboard: {e}", exc_info=True)
         flash('An error occurred while loading the dashboard.', 'error')
         return render_template('hr_dashboard.html', jobs=[], summary={}, apps_by_job={})
-# @app.route('/hr_dashboard')
-# @hr_required # Assumes your new Supabase-aware decorator
-# def hr_dashboard():
-#     try:
-#         hr_user_id = session['user_info']['id']
-
-#         # 1. Fetch all jobs for the current HR user
-#         jobs_response = supabase.table('jobs').select('*').eq('hr_user_id', hr_user_id).order('date_posted', desc=True).execute()
-#         hr_jobs = jobs_response.data
-        
-#         if not hr_jobs:
-#             # If there are no jobs, render the page with empty data
-#             return render_template('hr_dashboard.html', jobs=[], summary={})
-
-#         job_ids = [job['id'] for job in hr_jobs]
-
-#         # 2. Fetch all applications related to those jobs in a single query
-#         apps_response = supabase.table('candidate_applications').select('*').in_('job_id', job_ids).execute()
-#         all_applications = apps_response.data
-
-#         # 3. Group applications by their job_id for easy lookup
-#         apps_by_job = {}
-#         for app in all_applications:
-#             if app['job_id'] not in apps_by_job:
-#                 apps_by_job[app['job_id']] = []
-#             apps_by_job[app['job_id']].append(app)
-
-#         # 4. Process the data in Python
-#         total_candidates = len(all_applications)
-#         pending_reviews = 0
-        
-#         for job in hr_jobs:
-#             job_applications = apps_by_job.get(job['id'], [])
-            
-#             # Add new attributes directly to the job dictionary
-#             job['total_applications'] = len(job_applications)
-#             job['recommended_candidates'] = sum(1 for app in job_applications if "Recommended" in app.get('eligibility_status', ''))
-#             job['completed_exams'] = sum(1 for app in job_applications if app.get('exam_taken'))
-#             job['sharable_link'] = url_for('candidate_apply', job_id=job['id'], _external=True)
-
-#             for app in job_applications:
-#                 if app.get('exam_taken') and app.get('eligibility_status') != 'Approved':
-#                     pending_reviews += 1
-        
-#         dashboard_summary = {
-#             'total_jobs': len(hr_jobs),
-#             'total_candidates': total_candidates,
-#             'pending_reviews': pending_reviews,
-#             'last_updated': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-#         }
-#         # --- 🐛 DEBUGGING STATEMENTS ADDED HERE 🐛 ---
-#         # print("\n--- HR DASHBOARD DEBUG ---")
-#         # print("Summary Data:", json.dumps(dashboard_summary, indent=2))
-#         # print("Total Jobs Found:", len(hr_jobs))
-#         # print("Total Applications Found:", len(all_applications))
-#         # print("Applications Grouped by Job ID:", json.dumps(apps_by_job, indent=2, default=str))
-#         # print("--- END DEBUG ---\n")
-#         # --- END DEBUGGING STATEMONTS ---
-#         return render_template(
-#     'hr_dashboard.html', 
-#     jobs=hr_jobs, 
-#     summary=dashboard_summary,
-#     apps_by_job=apps_by_job  # <-- ADD THIS
-# )
-
-#     except Exception as e:
-#         logging.error(f"Error in hr_dashboard: {e}", exc_info=True)
-#         flash('An error occurred while loading the dashboard.', 'error')
-#         return render_template('hr_dashboard.html', jobs=[], summary={})
 
 @app.route('/client_portal')
 @login_required # Use the new Supabase-aware decorator
@@ -3408,37 +2195,6 @@ def client_portal():
         logging.error(f"Error in client_portal: {e}", exc_info=True)
         flash('An error occurred while loading your applications.', 'error')
         return render_template('client_portal.html', applications=[])
-
-# @app.route('/get_exam/<job_id>/<candidate_id>', methods=['GET'])
-# @login_required
-# def get_exam(job_id, candidate_id):
-#     candidate_user_id = str(current_user.id)
-    
-#     job_obj = Job.query.get(job_id)
-#     if not job_obj:
-#         return jsonify({"error": "Job not found."}), 404
-    
-#     candidate_app_obj = CandidateApplication.query.get(candidate_id)
-
-#     if not candidate_app_obj or str(candidate_app_obj.candidate_user_id) != candidate_user_id:
-#         return jsonify({"error": "Application not found or unauthorized."}), 404
-
-#     if candidate_app_obj.eligibility_status != 'Eligible':
-#         return jsonify({"error": "Candidate is not eligible to take the exam."}), 403
-
-#     if candidate_app_obj.exam_taken:
-#         return jsonify({"error": "Exam already taken."}), 400
-
-#     exam_questions = candidate_app_obj.exam_questions
-#     if not exam_questions:
-#         exam_questions = generate_exam_llm(job_obj.job_description)
-#         if exam_questions:
-#             candidate_app_obj.exam_questions = exam_questions
-#             db.session.commit()
-#         else:
-#             return jsonify({"error": "Failed to generate exam questions."}), 500
-
-#     return jsonify({"exam_questions": exam_questions}), 200
 
 @app.route('/get_exam', methods=['GET'])
 @login_required # Use your new Supabase-aware decorator
@@ -3508,73 +2264,7 @@ def get_exam():
         logging.error(f"Error in get_exam: {e}", exc_info=True)
         flash('An unexpected error occurred while loading the exam.', 'error')
         return redirect(url_for('client_portal'))
-# @app.route('/submit_exam/<job_id>/<candidate_id>', methods=['POST'])
-# @login_required
-# def submit_exam(job_id, candidate_id):
-#     candidate_user_id = str(current_user.id)
-    
-#     job_obj = Job.query.get(job_id)
-#     if not job_obj:
-#         return jsonify({"error": "Job not found."}), 404
-    
-#     candidate_app_obj = CandidateApplication.query.get(candidate_id)
 
-#     if not candidate_app_obj or str(candidate_app_obj.candidate_user_id) != candidate_user_id:
-#         return jsonify({"error": "Application not found or unauthorized."}), 404
-
-#     if candidate_app_obj.eligibility_status != 'Eligible':
-#         return jsonify({"error": "Candidate is not eligible to take the exam."}), 403
-
-#     if candidate_app_obj.exam_taken:
-#         return jsonify({"error": "Exam already taken."}), 400
-
-#     submitted_answers = request.json.get('answers')
-#     if not submitted_answers:
-#         return jsonify({"error": "No answers submitted."}), 400
-
-#     job_description = job_obj.job_description
-#     exam_questions = candidate_app_obj.exam_questions
-    
-#     total_score = 0
-#     detailed_feedback = []
-    
-#     for submitted_ans in submitted_answers:
-#         q_id = submitted_ans.get('question_id')
-#         ans_text = submitted_ans.get('answer')
-
-#         original_question_obj = next((q for q in exam_questions if q['id'] == q_id), None)
-        
-#         if original_question_obj and ans_text:
-#             original_question_text = original_question_obj['question']
-#             ideal_answer_text = original_question_obj.get('ideal_answer', '')
-            
-#             evaluation = evaluate_answer_llm(job_description, original_question_text, ideal_answer_text, ans_text)
-#             total_score += evaluation['score']
-#             detailed_feedback.append({
-#                 "question_id": q_id,
-#                 "question": original_question_text,
-#                 "answer": ans_text,
-#                 "score": evaluation['score'],
-#                 "feedback": evaluation['feedback']
-#             })
-#         else:
-#             detailed_feedback.append({
-#                 "question_id": q_id,
-#                 "question": original_question_obj['question'] if original_question_obj else "Question not found",
-#                 "answer": ans_text if ans_text else "No answer provided",
-#                 "score": 0,
-#                 "feedback": "Invalid question ID or missing answer."
-#             })
-
-#     candidate_app_obj.exam_taken = True
-#     candidate_app_obj.exam_score = total_score
-#     candidate_app_obj.exam_feedback = detailed_feedback
-#     candidate_app_obj.submitted_answers = submitted_answers
-    
-#     db.session.commit()
-#     return jsonify({"message": "Exam submitted and graded successfully!", "score": total_score, "feedback": detailed_feedback}), 200
-
-# In your app.py
 @app.route('/submit_exam/<job_id>/<application_id>', methods=['POST'])
 @login_required # Use your new Supabase-aware decorator
 def submit_exam(job_id, application_id):
@@ -3712,88 +2402,6 @@ def project_insights(job_id, application_id, project_index):
         logging.error(f"Error in project_insights: {e}", exc_info=True)
         flash('An unexpected error occurred while loading project insights.', 'error')
         return redirect(url_for('hr_dashboard'))
-# @app.route('/evaluate_resume', methods=['GET', 'POST'])
-# def evaluate_resume():
-#     uploaded_data = {
-#         "resume_text": "",
-#         "job_description": "",
-#         "parsed_resume": ""
-#     }
-#     evaluation_result = None
-
-#     if request.method == 'POST':
-#         if 'resume' not in request.files:
-#             flash('No resume file part', 'error')
-#             return redirect(request.url)
-        
-#         resume_file = request.files['resume']
-#         job_description = request.form['job_description']
-
-#         uploaded_data["job_description"] = job_description
-
-#         if resume_file.filename == '':
-#             flash('No selected resume file', 'error')
-#             return render_template('evaluate_resume.html', uploaded_data=uploaded_data, evaluation_result=evaluation_result, current_user=current_user)
-
-#         if not job_description:
-#             flash('Job description cannot be empty', 'error')
-#             return render_template('evaluate_resume.html', uploaded_data=uploaded_data, evaluation_result=evaluation_result, current_user=current_user)
-
-#         if resume_file and allowed_file(resume_file.filename):
-#             unique_filename = str(uuid.uuid4()) + "_" + resume_file.filename
-#             filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-#             resume_file.save(filepath)
-
-#             resume_text = extract_text_from_pdf(filepath)
-#             uploaded_data["resume_text"] = resume_text 
-#             if not resume_text:
-#                 flash('Could not extract text from the resume PDF. Please ensure it is a readable PDF.', 'error')
-#                 os.remove(filepath)
-#                 return render_template('evaluate_resume.html', uploaded_data=uploaded_data, evaluation_result=evaluation_result, current_user=current_user)
-
-#             extracted_resume_json = extract_resume_info_llm(resume_text)
-#             if "error" in extracted_resume_json:
-#                 flash(f'Error parsing resume: {extracted_resume_json["error"]}', 'error')
-#                 os.remove(filepath) 
-#                 return render_template('evaluate_resume.html', uploaded_data=uploaded_data, evaluation_result=evaluation_result, current_user=current_user)
-
-#             uploaded_data["parsed_resume"] = json.dumps(extracted_resume_json, indent=2)
-
-#             evaluation_result = get_resume_score_with_breakdown(extracted_resume_json, job_description)
-#             os.remove(filepath)
-
-#             if "error" in evaluation_result:
-#                 flash(f'Error evaluating resume: {evaluation_result["error"]}', 'error')
-#                 return render_template('evaluate_resume.html', uploaded_data=uploaded_data, evaluation_result=evaluation_result, current_user=current_user)
-            
-#             analysis_id = str(uuid.uuid4())
-#             temp_analysis_cache[analysis_id] = {
-#                 'uploaded_data': uploaded_data,
-#                 'evaluation_result': evaluation_result
-#             }
-#             session['pending_analysis_id'] = analysis_id 
-
-#             flash('Resume analyzed successfully!', 'success')
-            
-#             if not current_user.is_authenticated:
-#                 flash('Please Login or Sign Up to view full details.', 'info')
-#                 return redirect(url_for('login', next=request.url))
-#             else:
-#                 temp_analysis_cache.pop(analysis_id, None)
-#                 session.pop('pending_analysis_id', None)
-#                 return render_template('evaluate_resume.html', evaluation_result=evaluation_result, uploaded_data=uploaded_data, current_user=current_user)
-#         else:
-#             flash('Invalid file type. Only PDF files are allowed for resume uploads.', 'error')
-#             return render_template('evaluate_resume.html', uploaded_data=uploaded_data, evaluation_result=evaluation_result, current_user=current_user)
-
-#     pending_analysis_id = session.pop('pending_analysis_id', None)
-#     if pending_analysis_id and pending_analysis_id in temp_analysis_cache:
-#         cached_data = temp_analysis_cache.pop(pending_analysis_id)
-#         uploaded_data = cached_data['uploaded_data']
-#         evaluation_result = cached_data['evaluation_result']
-#         flash('Welcome back! Here are your previous analysis results.', 'info')
-
-#     return render_template('evaluate_resume.html', uploaded_data=uploaded_data, evaluation_result=evaluation_result, current_user=current_user)
 
 def make_current_user():
     user_info = session.get('user_info')
@@ -3854,6 +2462,33 @@ def evaluate_resume():
             evaluation_result = get_resume_score_with_breakdown(extracted_resume_json, job_description)
             if "error" in evaluation_result:
                 raise RuntimeError(f"Error evaluating resume: {evaluation_result['error']}")
+            # --- 5. (NEW) SAVE EVALUATION TO SUPABASE ---
+            if evaluation_result:
+                try:
+                    # Prepare the data payload for insertion
+                    data_to_insert = {  
+                        "total_score": evaluation_result.get('total_score'),
+                        "skills_score": evaluation_result.get('skills_score'),
+                        "experience_score": evaluation_result.get('experience_score'),
+                        "education_score": evaluation_result.get('education_score'),
+                        "project_score": evaluation_result.get('project_score'),
+                        "reasoning": evaluation_result.get('reasoning'),
+                        "job_description": job_description,
+                        "parsed_resume": extracted_resume_json,
+                        "candidate_name": extracted_resume_json.get('name', 'N/A')
+                    }
+
+                    # If the user is logged in, associate the evaluation with their ID
+                    if 'user_info' in session and session['user_info'].get('id'):
+                        data_to_insert['user_id'] = session['user_info']['id']
+
+                # Execute the insert query to your 'evaluations' table
+  # Execute the insert query
+                    supabase.table('evaluations').insert(data_to_insert).execute()
+                    
+                except Exception as db_error:
+                    # Log the database error but don't block the user from seeing results
+                    logging.error(f"Could not save evaluation to Supabase: {db_error}")
 
             # --- 5. Get job recommendations ---
             jobs_response = supabase.table('jobs').select(
@@ -3916,49 +2551,6 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() == 'pdf'  
 
-# @oauth_authorized.connect_via(google_bp)
-# def google_logged_in(blueprint, token):
-#     if not token:
-#         flash("Failed to log in with Google.", "error")
-#         return redirect(url_for('login'))
-
-#     resp = blueprint.session.get("/oauth2/v2/userinfo")
-#     if not resp.ok:
-#         flash("Failed to fetch Google user info.", "error")
-#         return redirect(url_for('login'))
-
-#     google_user_info = resp.json()
-#     google_id = google_user_info["id"]
-#     email = google_user_info["email"]
-#     name = google_user_info.get("name", email.split('@')[0])
-
-#     user = User.query.filter_by(google_id=google_id).first()
-#     if not user:
-#         user = User.query.filter_by(username=email).first()
-#         if not user:
-#             new_user = User(username=email, google_id=google_id, password=None, is_hr=False)
-#             db.session.add(new_user)
-#             db.session.commit()
-#             login_user(new_user)
-#             flash(f"Account created for {name} via Google!", "success")
-#         else:
-#             user.google_id = google_id
-#             db.session.commit()
-#             login_user(user)
-#             flash(f"Google account linked to existing user {name}!", "success")
-#     else:
-#         login_user(user)
-#         flash(f"Logged in as {name} via Google!", "success")
-    
-#     next_page = request.args.get('next')
-#     if next_page:
-#         return redirect(next_page)
-#     elif 'pending_analysis_id' in session:
-#         return redirect(url_for('evaluate_resume'))
-#     elif user.is_hr:
-#         return redirect(url_for('hr_dashboard'))
-    
-#     return redirect(url_for('index'))
 from markupsafe import Markup
 # Create and register nl2br filter
 def nl2br(value):
@@ -3976,7 +2568,12 @@ def not_found_error(error):
 def internal_error(error):
     
     return render_template('500.html'), 500
-
+@app.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+@app.route('/terms-of-service')
+def terms_of_service():
+    return render_template('terms_of_service.html')
 # --- Main execution block ---
 if __name__ == '__main__':    
     app.run(debug=True, host='0.0.0.0', port=8000)

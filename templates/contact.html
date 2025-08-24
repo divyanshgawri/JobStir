@@ -10,6 +10,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Favicon link -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 color=%22white%22>JB</text></svg>" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4H5RPBG76"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-X4H5RPBG76');
+</script>
 </head>
 <body class="flex flex-col items-center py-16 px-4 sm:px-6 lg:px-8">
     <div class="page-wrapper">
@@ -36,13 +44,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <div class="contact-info-card">
                     <h3 class="text-xl font-semibold text-gray-900 mb-3">General Inquiries</h3>
-                    <p class="text-gray-700">Email: <a href="jobstirai@gmail.com" class="text-blue-600 hover:underline">JobStir.tech</a></p>
-                    <p class="text-gray-700">Phone: +91 12345 67890</p>
+                    <p class="text-gray-700">Email: jobstir@gmail.com</a></p>
+                    <p class="text-gray-700">Phone: +91 7973229080</p>
                 </div>
                 <div class="contact-info-card">
                     <h3 class="text-xl font-semibold text-gray-900 mb-3">Technical Support</h3>
-                    <p class="text-gray-700">Email: <a href="jobstirai@gmail.com" class="text-blue-600 hover:underline">@JobStir.tech</a></p>
-                    <p class="text-gray-700">Phone: +1 (555) 987-6543</p>
+                    <p class="text-gray-700">Email: jobstir@gmail.com</a></p>
+                    <p class="text-gray-700">Phone: +91 7973229080</p>
                 </div>
             </div>
 
@@ -60,6 +68,18 @@
             <!-- Placeholder for a future contact form -->
             <div class="mt-12 p-8 bg-gray-50 rounded-2xl border border-gray-200 text-gray-800 max-w-2xl mx-auto shadow-lg animate-fade-in">
     <h1 class="text-3xl font-bold mb-6 text-slate-800 text-center">Get in Touch</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, msg in messages %}
+      <div class="p-4 mb-4 rounded-lg 
+                  {% if category == 'success' %} bg-green-100 text-green-800 
+                  {% elif category == 'error' %} bg-red-100 text-red-800 
+                  {% endif %}">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
     <form action="/submit_contact" method="POST" class="space-y-6">
         <div>

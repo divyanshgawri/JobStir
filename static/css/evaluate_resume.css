@@ -1,660 +1,687 @@
-/* General Body and HTML structure based on existing styles */
-:root {
-    /* Color Palette derived from index.css and common practices */
-    --primary-blue: #3B82F6; /* A common blue in your existing CSS */
-    --secondary-gray: #6B7280; /* Used for subtle text/borders */
-    --dark-text: #1F2937; /* For headings and main content */
-    --light-text: #4B5563; /* For subheadings and paragraphs */
-    --bg-light: #F9FAFB; /* Light background for sections/cards */
-    --bg-white: #FFFFFF; /* Pure white for main content areas */
-    --border-color: #E5E7EB; /* Light border color */
-    --success-green: #10B981; /* For flash messages */
-    --error-red: #EF4444;   /* For flash messages */
-    --warning-orange: #F59E0B; /* For flash messages */
+/* ==========================================================================
+   1. Global Styles & Variables
+   ========================================================================== */
 
-    /* Font Family */
-    --font-inter: 'Inter', sans-serif;
-    --font-roboto-mono: 'Roboto Mono', monospace; /* For code/pre tags */
+:root {
+    --primary-blue: #3B82F6;
+    --primary-blue-dark: #2563EB;
+    --dark-text: #111827; /* Darker than original for better contrast */
+    --light-text: #4B5563;
+    --bg-light: #F9FAFB;
+    --bg-white: #FFFFFF;
+    --border-color: #E5E7EB;
+    --success-green: #10B981;
+    --error-red: #EF4444;
+    --warning-yellow: #F59E0B;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --border-radius: 8px;
 }
 
-html, body {
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: var(--font-inter);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background-color: var(--bg-light);
     color: var(--dark-text);
     line-height: 1.6;
-    background-color: var(--bg-light); /* Consistent light background */
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
 }
 
-/* --- Top Navigation Bar --- */
+
+/* ==========================================================================
+   2. Header & Navigation
+   ========================================================================== */
+
 .top-nav {
     background-color: var(--bg-white);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 15px 0;
+    padding: 16px 0;
     border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
 }
 
-.top-nav .nav-content {
+.nav-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.top-nav .logo {
-    font-size: 28px;
-    font-weight: 800; /* Extra bold */
-    color: var(--primary-blue);
-    letter-spacing: -0.5px;
+.logo a.logo-link {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--dark-text);
+    text-decoration: none;
+    letter-spacing: -1.5px;
+    transition: color 0.3s ease;
 }
 
-.top-nav .main-nav {
+.logo a.logo-link:hover {
+    color: var(--primary-blue);
+}
+
+.main-nav {
     display: flex;
     align-items: center;
-    gap: 20px; /* Space between nav-label and auth-links */
+    gap: 24px;
 }
-/* Buttons inside navigation */
+
 .main-nav a {
-    display: inline-block;
-    padding: 10px 18px;
-    margin: 0 6px;
-    background-color: var(--primary-color, #2563eb); /* fallback if variable not set */
-    color: white;
-    font-weight: 500;
+    color: var(--light-text);
     text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 4px;
+    position: relative;
+    transition: color 0.3s ease;
 }
 
-/* Hover effect */
+.main-nav a:not(.auth-links a)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-blue);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+}
+
 .main-nav a:hover {
-    background-color: #1d4ed8; /* slightly darker blue */
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+    color: var(--dark-text);
 }
 
-/* Optional active/focus styles */
-.main-nav a:focus,
-.main-nav a:active {
-    outline: none;
-    background-color: #1e40af;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.4);
+.main-nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
 }
 
-.top-nav .nav-label {
-    font-size: 14px;
-    color: var(--secondary-gray);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: 16px;
 }
 
-.top-nav .auth-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
-}
 
-.top-nav .auth-links a:hover {
-    background-color: var(--bg-light);
-    color: var(--primary-blue);
-}
+/* ==========================================================================
+   3. Hero Section
+   ========================================================================== */
 
-/* --- Hero Section --- */
 .hero-section {
-    background-color: var(--primary-blue); /* Strong accent color */
-    color: var(--bg-white);
-    padding: 60px 0;
     text-align: center;
-    border-radius: 8px; /* Soft rounded corners */
-    margin-top: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 80px 0;
+    background: linear-gradient(180deg, var(--bg-light) 0%, #F3F4F6 100%);
 }
 
 .hero-title {
-    font-size: 42px;
+    font-size: 3.5rem;
     font-weight: 800;
-    margin-bottom: 10px;
-    line-height: 1.2;
+    color: var(--dark-text);
+    margin-bottom: 16px;
+    letter-spacing: -2px;
 }
 
 .hero-subtitle {
-    font-size: 18px;
-    max-width: 700px;
-    margin: 0 auto;
-    opacity: 0.9;
-}
-
-/* --- Main Content Area and Dashboard Grid --- */
-.main-content {
-    padding: 40px 0;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* Default to single column for small screens */
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-@media (min-width: 992px) { /* Two columns for larger screens */
-    .dashboard-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-/* --- Data Cards / Panels --- */
-.data-card {
-    background-color: var(--bg-white);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 30px;
-    border: 1px solid var(--border-color);
-}
-
-.card-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--dark-text);
-    margin-bottom: 25px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 15px;
-}
-
-/* --- Form Panel Styles --- */
-.evaluation-form .form-group {
-    margin-bottom: 20px;
-}
-
-.evaluation-form .form-label {
-    display: block;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--dark-text);
-    margin-bottom: 8px;
-}
-
-.evaluation-form .input-file {
-    display: block; /* Ensures it takes full width */
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background-color: var(--bg-white);
-    font-size: 15px;
+    font-size: 1.25rem;
     color: var(--light-text);
-    cursor: pointer;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.evaluation-form .input-textarea {
-    width: calc(100% - 22px); /* Account for padding and border */
-    padding: 11px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-family: var(--font-inter);
-    font-size: 15px;
-    color: var(--dark-text);
-    resize: vertical; /* Allow vertical resizing */
-    min-height: 150px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+/* ==========================================================================
+   4. Main Content & Layout
+   ========================================================================== */
+
+.main-content {
+    padding: 48px 0;
 }
 
-.evaluation-form .input-textarea:focus {
-    outline: none;
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Light blue focus ring */
+/* === Grid Container ===
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
 }
 
-.evaluation-form .form-actions {
-    padding-top: 15px;
-    border-top: 1px solid var(--border-color);
-    margin-top: 30px;
-    text-align: right; /* Align button to the right */
+/* === Card Styling === */
+.data-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* --- Buttons (Matching your existing btn-primary) --- */
+.data-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+}
+
+/* === Title === */
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 1.5rem;
+} */
+
+/* === Form Styling === */
+.evaluation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* Inputs */
+.input-file,
+.input-textarea {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+  resize: vertical;
+}
+
+.input-file {
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+.input-textarea {
+  min-height: 150px;
+  line-height: 1.5;
+}
+
+/* Hover / Focus */
+.input-file:hover,
+.input-textarea:hover {
+  border-color: #999;
+}
+
+.input-file:focus,
+.input-textarea:focus {
+  border-color: #4f46e5;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+}
+
+/* === Button === */
 .btn-primary {
-    background-color: var(--primary-blue);
-    color: var(--bg-white);
-    padding: 12px 25px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    text-decoration: none; /* For anchor tags used as buttons */
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    display: inline-block; /* For consistency */
-    text-align: center;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
 }
 
 .btn-primary:hover {
-    background-color: #2563EB; /* Slightly darker blue on hover */
-    transform: translateY(-1px);
+  background: #4338ca;
+  transform: translateY(-1px);
 }
 
 .btn-primary:active {
-    background-color: #1D4ED8; /* Even darker on active */
-    transform: translateY(0);
+  background: #3730a3;
+  transform: translateY(0);
 }
 
-/* --- Results Panel Styles --- */
-.results-panel-wrapper {
-    position: relative; /* For overlay positioning */
+/* .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    align-items: start;
 }
 
-.results-panel {
-    min-height: 500px; /* Ensure content stretches */
+.data-card {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.data-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--dark-text);
+} */
+
+/* ==========================================================================
+   5. Form Panel
+   ========================================================================== */
+
+.evaluation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.input-file,
+.input-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--bg-light);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-textarea {
+    resize: vertical;
+}
+
+.input-file::file-selector-button {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-right: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.input-file::file-selector-button:hover {
+    background-color: var(--primary-blue-dark);
+}
+
+.input-file:focus,
+.input-textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: var(--bg-white);
+    border: none;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-blue-dark);
+    transform: translateY(-2px);
+}
+
+#loading-message {
+    color: var(--light-text);
+    text-align: center;
+    margin: 32px 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+/* ==========================================================================
+   6. Results & Recommendations Panels
+   ========================================================================== */
+
+.results-panel-wrapper,
+.debug-info {
+    position: relative;
+}
+
+.results-blurred {
+    filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
+}
+
+.login-prompt-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+}
+
+.overlay-message {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--dark-text);
+}
+
+.overlay-message a {
+    color: var(--primary-blue);
+    font-weight: 600;
+    text-decoration: none;
+}
+.overlay-message a:hover {
+    text-decoration: underline;
 }
 
 .score-summary {
-    text-align: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
 }
 
 .score-circle {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    background-color: var(--primary-blue);
-    color: var(--bg-white);
-    font-size: 48px;
-    font-weight: 800;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: baseline; /* Aligns value and max text */
+    color: white;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    padding-top: 50px;
 }
 
 .score-value {
-    font-size: 60px; /* Larger for the actual score */
+    font-size: 3.5rem;
+    font-weight: 800;
 }
+
 .score-max {
-    font-size: 24px; /* Smaller for "/100" */
-    vertical-align: super;
+    font-size: 1.25rem;
+    font-weight: 500;
+    opacity: 0.8;
 }
 
 .score-message {
-    font-size: 18px;
+    margin-top: 16px;
+    font-size: 1.2rem;
     font-weight: 600;
     color: var(--dark-text);
 }
 
 .section-heading {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 600;
     color: var(--dark-text);
-    margin-top: 30px;
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    border-bottom: 1px dashed var(--border-color);
+    margin-top: 32px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
 }
 
 .score-breakdown-list {
     list-style: none;
     padding: 0;
-    margin: 0;
-    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .score-breakdown-list li {
-    padding: 8px 0;
-    border-bottom: 1px dotted var(--border-color);
-}
-.score-breakdown-list li:last-child {
-    border-bottom: none;
-}
-.score-breakdown-list li span {
-    font-weight: 600;
-    float: right; /* Align score to the right */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
 }
 
-.reasoning-section {
-    margin-top: 20px;
+.score-breakdown-list li span {
+    font-weight: 600;
+    color: var(--primary-blue);
+    background-color: #EFF6FF; /* Light blue background */
+    padding: 4px 10px;
+    border-radius: 12px;
 }
 
 .reasoning-item {
-    background-color: var(--bg-light);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 24px;
 }
 
 .reasoning-title {
-    font-size: 16px;
     font-weight: 600;
-    color: var(--primary-blue);
-    margin-top: 0;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--dark-text);
 }
 
 .reasoning-text {
-    font-size: 14px;
     color: var(--light-text);
-    margin: 0;
+    line-height: 1.7;
 }
 
-/* --- Blur Overlay for Unauthenticated Users --- */
-.login-prompt-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.95); /* Semi-transparent white */
-    backdrop-filter: blur(5px); /* Blur effect */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10; /* Above the content */
-    border-radius: 8px; /* Match card radius */
-    text-align: center;
+.recommendations-panel {
+    grid-column: 1 / -1; /* Span full width */
+    margin-top: 32px;
+}
+
+.recommendations-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.recommendation-item {
+    border: 1px solid var(--border-color);
     padding: 20px;
+    border-radius: var(--border-radius);
+    background-color: var(--bg-light);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.recommendation-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-sm);
 }
 
-.overlay-message {
-    font-size: 18px;
+.rec-job-title {
+    font-size: 1.15rem;
     font-weight: 600;
     color: var(--dark-text);
-    line-height: 1.4;
+}
+.rec-company-name {
+    font-weight: 500;
+    color: var(--light-text);
+    margin-bottom: 12px;
+}
+.rec-score {
+    margin-bottom: 16px;
+}
+.rec-apply-btn {
+    width: auto;
+    font-size: 0.9rem;
+    padding: 8px 16px;
 }
 
-.overlay-message a {
-    color: var(--primary-blue);
-    text-decoration: underline;
-    font-weight: 700;
-}
-
-/* Apply blur effect to the results panel itself */
-.results-blurred {
-    filter: blur(3px); /* Slightly less blur for the content itself */
-    pointer-events: none; /* Disable interaction with blurred content */
-}
-
-/* Specific overlay for debug panel if needed */
-.debug-overlay {
-    background-color: rgba(255, 255, 255, 0.98); /* More opaque for debug info */
-    backdrop-filter: blur(8px);
-}
-
-
-/* --- Debug Information Panel --- */
+/* ==========================================================================
+   7. Debug & Flash Messages
+   ========================================================================== */
 .debug-info {
-    margin-top: 30px;
-    position: relative; /* For overlay positioning */
+    grid-column: 1 / -1; /* Span full width of grid */
+    margin-top: 32px;
 }
-
-.debug-info pre {
-    background-color: var(--dark-text); /* Dark background for code */
-    color: var(--bg-white); /* Light text for code */
+pre {
+    background-color: #111827; /* Dark background for code */
+    color: #d1d5db;
     padding: 20px;
-    border-radius: 6px;
-    overflow-x: auto; /* Enable horizontal scrolling for long lines */
-    font-family: var(--font-roboto-mono); /* Monospace font for code */
-    font-size: 14px;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.875rem;
     line-height: 1.5;
 }
 
-/* --- Flash Messages --- */
 .flash-messages-container {
-    margin-bottom: 25px;
-    padding: 0 20px; /* Match container padding */
+    margin-bottom: 24px;
 }
-
-.flashes {
+ul.flashes {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
-
-.flash-message {
-    padding: 15px 20px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    font-size: 16px;
+li.flash-message {
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin-bottom: 16px;
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: fadeOut 0.5s forwards 5s; /* Fade out after 5 seconds */
+    border: 1px solid transparent;
 }
-
-.flash-message.success {
-    background-color: #D1FAE5; /* Light green */
-    color: var(--success-green); /* Dark green text */
-    border: 1px solid var(--success-green);
-}
-
-.flash-message.error {
-    background-color: #FEE2E2; /* Light red */
-    color: var(--error-red); /* Dark red text */
-    border: 1px solid var(--error-red);
-}
-
-.flash-message.info {
+/* Default flash styling */
+.flash-message {
     background-color: #DBEAFE; /* Light blue */
-    color: var(--primary-blue); /* Dark blue text */
-    border: 1px solid var(--primary-blue);
+    border-color: #93C5FD;
+    color: #1E40AF;
+}
+/* You can add more specific categories if needed */
+.flash-message.success {
+    background-color: #D1FAE5;
+    border-color: #6EE7B7;
+    color: #065F46;
+}
+.flash-message.error {
+    background-color: #FEE2E2;
+    border-color: #FCA5A5;
+    color: #991B1B;
 }
 
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; display: none; }
-}
+/* ==========================================================================
+   8. Footer
+   ========================================================================== */
 
-/* --- Footer Bar --- */
 .footer-bar {
-    background-color: var(--dark-text); /* Dark footer */
-    color: var(--bg-white);
     text-align: center;
-    padding: 20px 0;
-    margin-top: 50px;
-    font-size: 14px;
+    padding: 32px 0;
+    margin-top: 48px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-white);
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 32px;
-    }
-    .hero-subtitle {
-        font-size: 16px;
-    }
+.footer-bar p {
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+
+/* ==========================================================================
+   9. Responsive Design
+   ========================================================================== */
+
+@media (max-width: 992px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
-    .card-title {
-        font-size: 20px;
-    }
-    .score-circle {
-        width: 100px;
-        height: 100px;
-        font-size: 40px;
-    }
-    .score-value {
-        font-size: 50px;
-    }
-    .score-max {
-        font-size: 20px;
-    }
-    .overlay-message {
-        font-size: 16px;
-    }
 }
 
-@media (max-width: 480px) {
-    .container {
-        padding: 0 15px;
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
     }
-    .top-nav .nav-content {
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    .nav-content {
         flex-direction: column;
-        gap: 10px;
+        gap: 16px;
     }
-    .top-nav .main-nav {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .hero-section {
-        padding: 40px 0;
-    }
-    .main-content {
-        padding: 20px 0;
+    .main-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
     }
     .data-card {
-        padding: 20px;
-    }
-    .card-title {
-        font-size: 18px;
-    }
-    .evaluation-form .input-textarea {
-        min-height: 100px;
+        padding: 24px;
     }
 }
-.logo-link {
-    display: inline-block;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #007bff;
-    text-decoration: none;
-    letter-spacing: 1px;
-    font-family: 'Inter', Tahoma, Geneva, Verdana, sans-serif;
+
+#loading-message {
+  display: none; /* hidden by default */
+  color: #1f2937; /* dark gray */
+  background-color: #f3f4f6; /* light gray background */
+  border-left: 5px solid #3b82f6; /* subtle blue accent */
+  padding: 15px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-.logo-link:hover {
-    color: #0056b3;
-    text-decoration: none;
+/* Optional subtle fade-in effect */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-/* Add to project_amihok/static/css/evaluate_resume.css */
-
-.recommendations-panel {
-    /* Inherits data-card styles */
-    margin-top: 30px; /* Space from previous section */
-}
-
-.recommendations-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
-    gap: 20px;
-}
-
-.recommendation-item {
-    background-color: var(--bg-light);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.rec-job-title {
-    font-size: 1.25rem; /* 20px */
-    font-weight: 700;
-    color: var(--primary-blue);
-    margin-bottom: 5px;
-}
-
-.rec-company-name {
-    font-size: 1rem; /* 16px */
-    color: var(--dark-text);
-    margin-bottom: 10px;
-}
-
-.rec-score {
-    font-size: 0.9rem; /* 14px */
-    color: var(--light-text);
-    margin-bottom: 15px;
-}
-
-.rec-apply-btn {
-    /* Inherits btn-primary styles */
-    align-self: flex-end; /* Align button to bottom right */
-    margin-top: auto; /* Push button to bottom if content varies */
-    padding: 8px 15px;
-    font-size: 0.9rem;
-}
-
-/* Ensure your root variables are defined in this CSS file or a linked global one */
-/* :root {
-    --primary-blue: #3B82F6;
-    --dark-text: #1F2937;
-    --light-text: #4B5563;
-    --bg-light: #F9FAFB;
-    --bg-white: #FFFFFF;
-    --border-color: #E5E7EB;
-} *//* Add to project_amihok/static/css/evaluate_resume.css */
-
-.recommendations-panel {
-    /* Inherits data-card styles */
-    margin-top: 30px; /* Space from previous section */
-}
-
-.recommendations-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
-    gap: 20px;
-}
-
-.recommendation-item {
-    background-color: var(--bg-light);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.rec-job-title {
-    font-size: 1.25rem; /* 20px */
-    font-weight: 700;
-    color: var(--primary-blue);
-    margin-bottom: 5px;
-}
-
-.rec-company-name {
-    font-size: 1rem; /* 16px */
-    color: var(--dark-text);
-    margin-bottom: 10px;
-}
-
-.rec-score {
-    font-size: 0.9rem; /* 14px */
-    color: var(--light-text);
-    margin-bottom: 15px;
-}
-
-.rec-apply-btn {
-    /* Inherits btn-primary styles */
-    align-self: flex-end; /* Align button to bottom right */
-    margin-top: auto; /* Push button to bottom if content varies */
-    padding: 8px 15px;
-    font-size: 0.9rem;
-}
-
-/* Ensure your root variables are defined in this CSS file or a linked global one */
-/* :root {
-    --primary-blue: #3B82F6;
-    --dark-text: #1F2937;
-    --light-text: #4B5563;
-    --bg-light: #F9FAFB;
-    --bg-white: #FFFFFF;
-    --border-color: #E5E7EB;
-} */
