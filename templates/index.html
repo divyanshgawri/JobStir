@@ -14,9 +14,19 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-X4H5RPBG76');
+
+  // Send a test event after page loads
+  window.addEventListener("load", function () {
+    gtag('event', 'resume_upload_test', {
+      method: 'manual_trigger',
+      page_location: window.location.href,
+      page_title: document.title
+    });
+    console.log("✅ Test event 'resume_upload_test' sent to GA");
+  });
 </script>
+
 </head>
 <body>
     
