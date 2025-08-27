@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job - JobStir</title>
+    <link rel="stylesheet" href="../css/hr_job_upload.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" class="active">Post Job</a></li>
+                    <li><a href="hr_dashboard.html">Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="user-menu">
+                    <span class="user-greeting" id="user-greeting">Welcome, HR!</span>
+                    <button onclick="logout()" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="hr_dashboard.html">HR Dashboard</a></li>
+            <li><a href="hr_job_upload.html" class="active">Post Job</a></li>
+            <li><a href="admin_panel.html">Admin Panel</a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <span class="user-greeting" id="mobile-user-greeting">Welcome, HR!</span>
+            <button onclick="logout()" class="btn btn-secondary">Logout</button>
+        </div>
+    </div>
+
+    <main class="upload-container">
+        <div class="container">
+            <section class="hero-section">
+                <h1 class="hero-title">Post a Job Opportunity</h1>
+                <p class="hero-subtitle">Attract top-matched talent using JobStir's AI-powered matching engine.</p>
+            </section>
+
+            <div class="content-grid">
+                <section class="info-column">
+                    <div class="info-card">
+                        <h2>Why Post with JobStir?</h2>
+                        <div class="benefits-list">
+                            <div class="benefit-item">
+                                <i data-feather="target"></i>
+                                <div>
+                                    <h4>AI-Powered Matching</h4>
+                                    <p>Our intelligent system matches your job with the most qualified candidates automatically.</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i data-feather="clock"></i>
+                                <div>
+                                    <h4>Save Time</h4>
+                                    <p>Reduce screening time with pre-qualified candidates and detailed match scores.</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i data-feather="users"></i>
+                                <div>
+                                    <h4>Quality Candidates</h4>
+                                    <p>Access a curated pool of talented professionals actively seeking opportunities.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="hr_dashboard.html" class="btn btn-secondary">View Dashboard</a>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <div class="form-card">
+                        <div id="message-container" class="message-container hidden"></div>
+
+                        <form id="job-upload-form">
+                            <div class="form-group">
+                                <label for="company-name" class="form-label">Company Name</label>
+                                <div class="input-wrapper">
+                                    <i data-feather="building"></i>
+                                    <input type="text" id="company-name" name="company-name" required 
+                                           class="input-field" placeholder="e.g., Tech Innovators Inc.">
+                                </div>
+                                <div class="error-message" id="company-name-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="job-title" class="form-label">Job Title</label>
+                                <div class="input-wrapper">
+                                    <i data-feather="briefcase"></i>
+                                    <input type="text" id="job-title" name="job-title" required 
+                                           class="input-field" placeholder="e.g., Senior Software Engineer">
+                                </div>
+                                <div class="error-message" id="job-title-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="job-location" class="form-label">Location</label>
+                                <div class="input-wrapper">
+                                    <i data-feather="map-pin"></i>
+                                    <input type="text" id="job-location" name="job-location" required 
+                                           class="input-field" placeholder="e.g., New York, NY or Remote">
+                                </div>
+                                <div class="error-message" id="job-location-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="job-type" class="form-label">Job Type</label>
+                                <div class="input-wrapper">
+                                    <i data-feather="clock"></i>
+                                    <select id="job-type" name="job-type" required class="input-field">
+                                        <option value="">Select job type</option>
+                                        <option value="full-time">Full-time</option>
+                                        <option value="part-time">Part-time</option>
+                                        <option value="contract">Contract</option>
+                                        <option value="internship">Internship</option>
+                                    </select>
+                                </div>
+                                <div class="error-message" id="job-type-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="salary-range" class="form-label">Salary Range (Optional)</label>
+                                <div class="input-wrapper">
+                                    <i data-feather="dollar-sign"></i>
+                                    <input type="text" id="salary-range" name="salary-range" 
+                                           class="input-field" placeholder="e.g., $80,000 - $120,000">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="label-with-counter">
+                                    <label for="job-description" class="form-label">Job Description</label>
+                                    <span class="char-counter" id="char-counter">0 / 5000</span>
+                                </div>
+                                <textarea id="job-description" name="job-description" rows="8" required 
+                                          class="input-field" placeholder="Provide a detailed job description including responsibilities, requirements, and qualifications..." 
+                                          maxlength="5000"></textarea>
+                                <div class="error-message" id="job-description-error"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" id="submit-btn">
+                                <span class="btn-text">
+                                    <i data-feather="upload"></i>
+                                    Post Job
+                                </span>
+                                <div class="btn-spinner hidden"></div>
+                            </button>
+                        </form>
+
+                        <div id="success-message" class="success-message hidden">
+                            <div class="success-content">
+                                <i data-feather="check-circle"></i>
+                                <h3>Job Posted Successfully!</h3>
+                                <p>Your job posting is now live and candidates can start applying.</p>
+                                <div class="success-actions">
+                                    <button id="post-another-btn" class="btn btn-primary">Post Another Job</button>
+                                    <a href="hr_dashboard.html" class="btn btn-secondary">View Dashboard</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Process Section -->
+            <section class="process-section">
+                <h2>What Happens After You Post?</h2>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i data-feather="search"></i>
+                        </div>
+                        <h3>Job Review</h3>
+                        <p>Your job posting is reviewed for clarity and completeness to ensure optimal matching.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i data-feather="cpu"></i>
+                        </div>
+                        <h3>AI Matching</h3>
+                        <p>Our AI scans our talent pool to find candidates whose skills align perfectly with your requirements.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i data-feather="list"></i>
+                        </div>
+                        <h3>Candidate Shortlist</h3>
+                        <p>Receive curated shortlists of top-matched candidates with detailed profiles and match scores.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <i data-feather="calendar"></i>
+                        </div>
+                        <h3>Schedule Interviews</h3>
+                        <p>Easily manage communications and schedule interviews with promising candidates.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+    </script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/hr_job_upload.js"></script>
+</body>
+</html>

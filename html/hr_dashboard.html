@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Dashboard - JobStir</title>
+    <link rel="stylesheet" href="../css/color-scheme.css">
+    <link rel="stylesheet" href="../css/hr_dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="hr_job_upload.html">Post Job</a></li>
+                    <li><a href="#" class="active">Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="user-menu">
+                    <span class="user-greeting" id="user-greeting">Welcome, HR!</span>
+                    <button onclick="logout()" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="hr_dashboard.html" class="active">HR Dashboard</a></li>
+            <li><a href="hr_job_upload.html">Post Job</a></li>
+            <li><a href="admin_panel.html">Admin Panel</a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <span class="user-greeting" id="mobile-user-greeting">Welcome, HR!</span>
+            <button onclick="logout()" class="btn btn-secondary">Logout</button>
+        </div>
+    </div>
+
+    <main class="dashboard-container">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>HR Dashboard</h1>
+                <div class="header-actions">
+                    <a href="hr_job_upload.html" class="btn btn-primary">
+                        <i data-feather="plus"></i>
+                        Post New Job
+                    </a>
+                </div>
+            </div>
+
+            <div id="message-container" class="message-container hidden"></div>
+
+            <!-- Summary Cards -->
+            <section class="summary-section">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i data-feather="briefcase"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Jobs</h3>
+                        <p class="summary-number" id="total-jobs">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i data-feather="users"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Candidates</h3>
+                        <p class="summary-number" id="total-candidates">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i data-feather="clock"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Pending Reviews</h3>
+                        <p class="summary-number" id="pending-reviews">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i data-feather="check-circle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Approved</h3>
+                        <p class="summary-number" id="approved-candidates">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Job Listings -->
+            <section class="job-listings">
+                <div class="section-header">
+                    <h2>Your Job Postings</h2>
+                    <div class="filter-controls">
+                        <select id="job-filter" class="filter-select">
+                            <option value="all">All Jobs</option>
+                            <option value="active">Active</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="jobs-container" class="jobs-container">
+                    <!-- Jobs will be loaded here -->
+                </div>
+
+                <div id="no-jobs" class="no-jobs hidden">
+                    <div class="no-jobs-content">
+                        <i data-feather="briefcase"></i>
+                        <h3>No Jobs Posted Yet</h3>
+                        <p>Start by posting your first job to attract top talent.</p>
+                        <a href="hr_job_upload.html" class="btn btn-primary">Post Your First Job</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+    </script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/hr_dashboard.js"></script>
+</body>
+</html>

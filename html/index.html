@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobStir - The Smartest Way to Hire or Get Hired</title>
+    <link rel="stylesheet" href="../css/jobstir-unified.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <!-- Three.js library for 3D graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Performance Optimizer -->
+    <script src="../js/performance-optimizer.js"></script>
+</head>
+
+<body>
+
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="job_listings.html">Browse Jobs</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="evaluate_resume.html" class="evaluate-link"><b>Evaluate Resume</b></a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-desktop">
+                        <input type="checkbox" id="dark-mode-toggle-desktop" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <a href="signin.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="job_listings.html">Browse Jobs</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="evaluate_resume.html"><b>Evaluate Resume</b></a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <a href="signin.html" class="btn btn-secondary">Log In</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <h1>The Smartest Way to Hire or Get Hired</h1>
+                    <p>AI-Powered Hiring for Modern Teams. We connect exceptional talent with the world's most
+                        innovative companies.</p>
+                    <!-- Quick Search Bar -->
+                    <div class="hero-search">
+                        <div class="search-bar-compact">
+                            <div class="search-input-wrapper">
+                                <i data-feather="search"></i>
+                                <input type="text" id="hero-job-search" placeholder="Search jobs, companies, or keywords...">
+                            </div>
+                            <div class="location-input-wrapper">
+                                <i data-feather="map-pin"></i>
+                                <input type="text" id="hero-location-search" placeholder="Location">
+                            </div>
+                            <button class="search-btn" id="hero-search-btn">
+                                <i data-feather="search"></i>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-buttons">
+                        <a href="evaluate_resume.html" class="btn btn-primary">Evaluate Your Resume Now!</a>
+                        <a href="job_listings.html" class="btn btn-secondary">Find Opportunities</a>
+                    </div>
+                </div>
+                <div class="hero-image" id="hero-animation-container">
+                    <!-- The 3D animation will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="how-it-works">
+            <div class="container">
+                <div class="section-header">
+                    <h2>How It Works</h2>
+                    <p>A streamlined, three-step process to connect you with the right opportunities or candidates.</p>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon"><i data-feather="edit-3"></i></div>
+                        <h3>1. Define Your Role or Profile</h3>
+                        <p>Employers post detailed job requirements. Candidates build comprehensive profiles showcasing
+                            their skills.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i data-feather="bar-chart-2"></i></div>
+                        <h3>2. AI-Powered Matching</h3>
+                        <p>Our intelligent engine analyzes data points to find the best-fit candidates and roles with a
+                            transparent match score.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i data-feather="link"></i></div>
+                        <h3>3. Connect Instantly</h3>
+                        <p>Use our integrated tools to schedule interviews, communicate with matches, and move forward
+                            with confidence.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="latest-jobs" class="latest-jobs">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Latest Job Postings</h2>
+                    <p>Explore fresh opportunities from top companies hiring right now.</p>
+                </div>
+                <div class="jobs-grid">
+                    <div class="job-card">
+                        <div class="job-card-header">
+                            <div class="company-logo logo1"></div>
+                            <div>
+                                <h3 class="job-title">Senior Frontend Developer</h3>
+                                <p class="company-name">Innovate Solutions</p>
+                            </div>
+                        </div>
+                        <p class="job-location"><i data-feather="map-pin"></i> Remote (Global)</p>
+                        <div class="job-tags"><span class="tag tag-blue">React</span><span
+                                class="tag tag-green">TypeScript</span><span class="tag tag-purple">GraphQL</span></div>
+                        <a href="#" class="btn btn-job-details">View Details</a>
+                    </div>
+                    <div class="job-card">
+                        <div class="job-card-header">
+                            <div class="company-logo logo2"></div>
+                            <div>
+                                <h3 class="job-title">Product Marketing Manager</h3>
+                                <p class="company-name">QuantumLeap</p>
+                            </div>
+                        </div>
+                        <p class="job-location"><i data-feather="map-pin"></i> New York, NY</p>
+                        <div class="job-tags"><span class="tag tag-blue">SaaS</span><span
+                                class="tag tag-green">Marketing</span><span class="tag tag-purple">Strategy</span></div>
+                        <a href="#" class="btn btn-job-details">View Details</a>
+                    </div>
+                    <div class="job-card">
+                        <div class="job-card-header">
+                            <div class="company-logo logo3"></div>
+                            <div>
+                                <h3 class="job-title">Cloud Infrastructure Engineer</h3>
+                                <p class="company-name">NextGen Systems</p>
+                            </div>
+                        </div>
+                        <p class="job-location"><i data-feather="map-pin"></i> London, UK</p>
+                        <div class="job-tags"><span class="tag tag-blue">AWS</span><span
+                                class="tag tag-green">Kubernetes</span><span class="tag tag-purple">DevOps</span></div>
+                        <a href="#" class="btn btn-job-details">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="feature-highlights">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Feature Highlights</h2>
+                    <p>Powerful, intuitive features that make recruitment smarter for everyone involved.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card"><i data-feather="award"></i>
+                        <h4>Intelligent Ranking Engine</h4>
+                        <p>Our AI ranks candidates based on over 50 data points.</p>
+                    </div>
+                    <div class="feature-card"><i data-feather="calendar"></i>
+                        <h4>1-Click Interview Scheduling</h4>
+                        <p>Sync your calendar and schedule interviews in a single click.</p>
+                    </div>
+                    <div class="feature-card"><i data-feather="message-square"></i>
+                        <h4>Private Collaboration Notes</h4>
+                        <p>Collaborate with your team with private notes and ratings.</p>
+                    </div>
+                    <div class="feature-card"><i data-feather="file-text"></i>
+                        <h4>Resume Quality Analyzer</h4>
+                        <p>Get instant, AI-driven feedback on resume quality.</p>
+                    </div>
+                    <div class="feature-card"><i data-feather="shield"></i>
+                        <h4>GDPR-Compliant Privacy</h4>
+                        <p>Your data is safe with our enterprise-grade security controls.</p>
+                    </div>
+                    <div class="feature-card"><i data-feather="pie-chart"></i>
+                        <h4>Dashboard Analytics</h4>
+                        <p>Track your hiring pipeline with advanced analytics.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="social-proof">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Trusted by Leading Companies</h2>
+                    <p>See how JobStir is transforming hiring for teams and candidates alike.</p>
+                </div>
+                <div class="testimonials">
+                    <div class="testimonial">
+                        <p>"JobStir helped us reduce our time-to-hire by 50%. The AI-powered matching is a complete
+                            game-changer."</p><span>~ Paras Verma, Head of Innovify AI Solutions.</span>
+                    </div>
+                    <div class="testimonial">
+                        <p>"As a candidate, I appreciated the transparency and quick responses. It's the best platform
+                            I've used."</p><span>~ Roop Kamal Singh</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <div class="container">
+                <h2>Start hiring smarter, not harder.</h2>
+                <p>Join the future of recruitment today. No credit card required.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary">Post a Job</a>
+                    <a href="#" class="btn btn-secondary">Find Opportunities</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 JobStir. All rights reserved.</p>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/supabase-auth.js"></script>
+    <script src="../js/supabase-database.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/location-service.js"></script>
+    <script src="../js/home.js"></script>
+</body>
+
+</html>

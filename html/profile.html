@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - JobStir</title>
+    <link rel="stylesheet" href="../css/jobstir-unified.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="job_listings.html">Browse Jobs</a></li>
+                    <li><a href="candidate_portal.html">My Applications</a></li>
+                    <li><a href="#" class="active">Profile</a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle">
+                        <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <div class="user-menu">
+                    <span class="user-greeting" id="user-greeting">Welcome!</span>
+                    <button onclick="logout()" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job_listings.html">Browse Jobs</a></li>
+            <li><a href="candidate_portal.html">My Applications</a></li>
+            <li><a href="profile.html" class="active">Profile</a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <span class="user-greeting" id="mobile-user-greeting">Welcome!</span>
+            <button onclick="logout()" class="btn btn-secondary">Logout</button>
+        </div>
+    </div>
+
+    <main class="profile-container">
+        <div class="container">
+            <div class="profile-layout">
+                <!-- Profile Sidebar -->
+                <aside class="profile-sidebar">
+                    <div class="profile-card">
+                        <div class="avatar-section">
+                            <div class="avatar" id="user-avatar">
+                                <i data-feather="user"></i>
+                            </div>
+                            <button class="avatar-upload-btn" id="avatar-upload-btn">
+                                <i data-feather="camera"></i>
+                                Change Photo
+                            </button>
+                            <input type="file" id="avatar-input" accept="image/*" hidden>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="profile-name">Loading...</h2>
+                            <p id="profile-email">Loading...</p>
+                            <div class="profile-badges">
+                                <span class="badge" id="user-type-badge">Candidate</span>
+                                <span class="badge verified" id="verified-badge">
+                                    <i data-feather="check-circle"></i>
+                                    Verified
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="profile-nav">
+                        <ul>
+                            <li><a href="#personal" class="nav-link active" data-tab="personal">
+                                <i data-feather="user"></i>
+                                Personal Info
+                            </a></li>
+                            <li><a href="#resume" class="nav-link" data-tab="resume">
+                                <i data-feather="file-text"></i>
+                                Resume & Skills
+                            </a></li>
+                            <li><a href="#preferences" class="nav-link" data-tab="preferences">
+                                <i data-feather="settings"></i>
+                                Job Preferences
+                            </a></li>
+                            <li><a href="#notifications" class="nav-link" data-tab="notifications">
+                                <i data-feather="bell"></i>
+                                Notifications
+                            </a></li>
+                            <li><a href="#security" class="nav-link" data-tab="security">
+                                <i data-feather="shield"></i>
+                                Security
+                            </a></li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- Profile Content -->
+                <main class="profile-main">
+                    <div id="message-container" class="message-container hidden"></div>
+
+                    <!-- Personal Info Tab -->
+                    <section id="personal-tab" class="tab-content active">
+                        <div class="tab-header">
+                            <h2>Personal Information</h2>
+                            <p>Update your personal details and contact information.</p>
+                        </div>
+
+                        <form id="personal-form" class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="first-name">First Name</label>
+                                    <input type="text" id="first-name" name="first-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="last-name">Last Name</label>
+                                    <input type="text" id="last-name" name="last-name" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" required readonly>
+                                <small>Contact support to change your email address</small>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone">
+                                </div>
+                                <div class="form-group">
+                                    <label for="location">Location</label>
+                                    <input type="text" id="location" name="location" placeholder="City, Country">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio">Professional Bio</label>
+                                <textarea id="bio" name="bio" rows="4" placeholder="Tell us about yourself..."></textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary" onclick="resetForm('personal-form')">Reset</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Resume & Skills Tab -->
+                    <section id="resume-tab" class="tab-content">
+                        <div class="tab-header">
+                            <h2>Resume & Skills</h2>
+                            <p>Manage your resume and showcase your skills.</p>
+                        </div>
+
+                        <div class="resume-section">
+                            <div class="resume-upload">
+                                <div class="upload-area" id="resume-upload-area">
+                                    <i data-feather="upload-cloud"></i>
+                                    <h3>Upload Your Resume</h3>
+                                    <p>Drag and drop your resume here, or click to browse</p>
+                                    <input type="file" id="resume-input" accept=".pdf,.doc,.docx" hidden>
+                                    <button class="btn btn-primary" onclick="document.getElementById('resume-input').click()">
+                                        Choose File
+                                    </button>
+                                </div>
+                                <div id="resume-preview" class="resume-preview hidden">
+                                    <div class="file-info">
+                                        <i data-feather="file-text"></i>
+                                        <div>
+                                            <h4 id="resume-filename">resume.pdf</h4>
+                                            <p id="resume-filesize">2.3 MB</p>
+                                        </div>
+                                        <button class="btn btn-secondary btn-small" onclick="removeResume()">
+                                            <i data-feather="trash-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="skills-section">
+                                <h3>Skills</h3>
+                                <div class="skills-input">
+                                    <input type="text" id="skill-input" placeholder="Add a skill and press Enter">
+                                    <button class="btn btn-primary" onclick="addSkill()">Add</button>
+                                </div>
+                                <div id="skills-container" class="skills-container">
+                                    <!-- Skills will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Job Preferences Tab -->
+                    <section id="preferences-tab" class="tab-content">
+                        <div class="tab-header">
+                            <h2>Job Preferences</h2>
+                            <p>Set your job search preferences to get better matches.</p>
+                        </div>
+
+                        <form id="preferences-form" class="profile-form">
+                            <div class="form-group">
+                                <label for="job-titles">Desired Job Titles</label>
+                                <input type="text" id="job-titles" name="job-titles" placeholder="e.g., Software Engineer, Frontend Developer">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="salary-min">Minimum Salary</label>
+                                    <input type="number" id="salary-min" name="salary-min" placeholder="50000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="salary-max">Maximum Salary</label>
+                                    <input type="number" id="salary-max" name="salary-max" placeholder="100000">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Job Types</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" name="job-types" value="full-time"> Full-time</label>
+                                    <label><input type="checkbox" name="job-types" value="part-time"> Part-time</label>
+                                    <label><input type="checkbox" name="job-types" value="contract"> Contract</label>
+                                    <label><input type="checkbox" name="job-types" value="internship"> Internship</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Remote Preferences</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="remote-pref" value="remote"> Remote Only</label>
+                                    <label><input type="radio" name="remote-pref" value="hybrid"> Hybrid</label>
+                                    <label><input type="radio" name="remote-pref" value="onsite"> On-site Only</label>
+                                    <label><input type="radio" name="remote-pref" value="any"> Any</label>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Preferences</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Notifications Tab -->
+                    <section id="notifications-tab" class="tab-content">
+                        <div class="tab-header">
+                            <h2>Notification Settings</h2>
+                            <p>Choose how you want to be notified about job opportunities.</p>
+                        </div>
+
+                        <form id="notifications-form" class="profile-form">
+                            <div class="notification-group">
+                                <h3>Email Notifications</h3>
+                                <div class="toggle-group">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="email-job-matches" checked>
+                                        <span class="toggle-slider"></span>
+                                        Job matches
+                                    </label>
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="email-application-updates">
+                                        <span class="toggle-slider"></span>
+                                        Application updates
+                                    </label>
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="email-newsletter">
+                                        <span class="toggle-slider"></span>
+                                        Weekly newsletter
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="notification-group">
+                                <h3>Push Notifications</h3>
+                                <div class="toggle-group">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="push-new-jobs">
+                                        <span class="toggle-slider"></span>
+                                        New job postings
+                                    </label>
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="push-messages">
+                                        <span class="toggle-slider"></span>
+                                        Messages from employers
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Settings</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Security Tab -->
+                    <section id="security-tab" class="tab-content">
+                        <div class="tab-header">
+                            <h2>Security Settings</h2>
+                            <p>Manage your account security and privacy.</p>
+                        </div>
+
+                        <div class="security-section">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h3>Change Password</h3>
+                                    <p>Update your password to keep your account secure</p>
+                                </div>
+                                <button class="btn btn-secondary" onclick="showPasswordModal()">Change Password</button>
+                            </div>
+
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h3>Two-Factor Authentication</h3>
+                                    <p>Add an extra layer of security to your account</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="setup2FA()">Enable 2FA</button>
+                            </div>
+
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h3>Login Sessions</h3>
+                                    <p>Manage your active login sessions</p>
+                                </div>
+                                <button class="btn btn-secondary" onclick="showSessions()">View Sessions</button>
+                            </div>
+
+                            <div class="security-item danger">
+                                <div class="security-info">
+                                    <h3>Delete Account</h3>
+                                    <p>Permanently delete your account and all data</p>
+                                </div>
+                                <button class="btn btn-danger" onclick="showDeleteModal()">Delete Account</button>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+    </script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>

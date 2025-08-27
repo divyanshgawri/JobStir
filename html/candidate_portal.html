@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - JobStir</title>
+    <link rel="stylesheet" href="../css/jobstir-unified.css">
+    <link rel="stylesheet" href="../css/candidate_portal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="job_listings.html">Browse Jobs</a></li>
+                    <li><a href="#" class="active">My Applications</a></li>
+                    <li><a href="evaluate_resume.html">Resume Evaluator</a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle">
+                        <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <div class="user-menu">
+                    <span class="user-greeting" id="user-greeting">Welcome!</span>
+                    <button onclick="logout()" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job_listings.html">Browse Jobs</a></li>
+            <li><a href="candidate_portal.html" class="active">My Applications</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <span class="user-greeting" id="mobile-user-greeting">Welcome!</span>
+            <button onclick="logout()" class="btn btn-secondary">Logout</button>
+        </div>
+    </div>
+
+    <main class="portal-container">
+        <div class="container">
+            <div class="portal-header">
+                <h1>My Applications</h1>
+                <div class="header-actions">
+                    <a href="job_listings.html" class="btn btn-primary">
+                        <i data-feather="search"></i>
+                        Browse Jobs
+                    </a>
+                </div>
+            </div>
+
+            <div id="message-container" class="message-container hidden"></div>
+
+            <!-- Application Stats -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-feather="send"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Applications</h3>
+                        <p class="stat-number" id="total-applications">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-feather="clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Pending Review</h3>
+                        <p class="stat-number" id="pending-applications">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-feather="check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Interviews</h3>
+                        <p class="stat-number" id="interview-applications">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-feather="thumbs-up"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Offers</h3>
+                        <p class="stat-number" id="offer-applications">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Applications List -->
+            <section class="applications-section">
+                <div class="section-header">
+                    <h2>Your Applications</h2>
+                    <div class="filter-controls">
+                        <select id="status-filter" class="filter-select">
+                            <option value="all">All Applications</option>
+                            <option value="pending">Pending</option>
+                            <option value="reviewing">Under Review</option>
+                            <option value="interview">Interview</option>
+                            <option value="offer">Offer</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="applications-container" class="applications-container">
+                    <!-- Applications will be loaded here -->
+                </div>
+
+                <div id="no-applications" class="no-applications hidden">
+                    <div class="no-applications-content">
+                        <i data-feather="briefcase"></i>
+                        <h3>No Applications Yet</h3>
+                        <p>Start your job search by browsing available positions.</p>
+                        <a href="job_listings.html" class="btn btn-primary">Browse Jobs</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+    </script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/candidate_portal.js"></script>
+</body>
+</html>

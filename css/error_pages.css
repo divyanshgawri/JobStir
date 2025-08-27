@@ -1,0 +1,128 @@
+/* --- General Body & Typography --- */
+:root {
+    --primary-color: #6366f1;
+    --secondary-color: #a855f7;
+    --background-color: #f1f5f9;
+    --text-dark: #1e293b;
+    --text-light: #64748b;
+}
+
+.dark {
+    --background-color: #0f172a;
+    --text-dark: #f1f5f9;
+    --text-light: #94a3b8;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.error-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+#animation-container {
+    background: #00000a;
+}
+
+/* Fix for the animation canvas */
+#animation-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1;
+}
+
+.content-wrapper {
+    position: relative;
+    z-index: 2;
+    padding: 24px;
+    max-width: 600px;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.error-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 16px 0;
+}
+
+.error-message {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 32px;
+}
+
+.btn-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.btn-home:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* --- 405 Shield Animation --- */
+.shield-animation {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0) 70%);
+    animation: pulse 2s infinite;
+}
+
+.shield-animation i {
+    width: 60px;
+    height: 60px;
+    color: var(--primary-color);
+    animation: shield-pop 1s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(0.95); }
+}
+
+@keyframes shield-pop {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}

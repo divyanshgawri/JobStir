@@ -1,0 +1,559 @@
+/* About Page Specific Styles */
+/* Note: Base styles are handled by jobstir-unified.css */
+
+/* Ensure variables are available for about page */
+:root {
+    --primary-color: #2F4156;
+    --secondary-color: #567C8D;
+    --background-color: #F5EFEB;
+    --card-bg: #FFFFFF;
+    --text-dark: #2F4156;
+    --text-light: #567C8D;
+    --border-color: #C8D9E6;
+}
+
+.dark {
+    --background-color: #1a1f2e;
+    --card-bg: #2F4156;
+    --text-dark: #FFFFFF;
+    --text-light: #C8D9E6;
+    --border-color: rgba(86, 124, 141, 0.3);
+}
+
+/* Override hero section to use JobStir colors */
+.hero-section {
+    background: linear-gradient(135deg, #2F4156, #567C8D) !important;
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin: 0 0 32px 0;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* About Section */
+.about-section {
+    padding: 80px 0;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.text-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-content p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--text-light);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 32px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Timeline Section */
+.timeline-section {
+    padding: 80px 0;
+    background: var(--card-bg);
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 60px 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--primary-color);
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.timeline-item:nth-child(odd) {
+    flex-direction: row;
+}
+
+.timeline-item:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.timeline-date {
+    background: var(--primary-color);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    margin: 0 20px;
+}
+
+.timeline-content {
+    background: var(--background-color);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    flex: 1;
+    max-width: 300px;
+}
+
+.timeline-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.timeline-content p {
+    margin: 0;
+    color: var(--text-light);
+}
+
+/* Team Section */
+.team-section {
+    padding: 80px 0;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.team-card {
+    background: var(--card-bg);
+    padding: 40px 32px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-8px);
+}
+
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    color: white;
+}
+
+.team-avatar i {
+    width: 32px;
+    height: 32px;
+}
+
+.team-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.team-role {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin: 0 0 16px 0;
+}
+
+.team-quote {
+    color: var(--text-light);
+    font-style: italic;
+    margin: 0;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    padding: 80px 0;
+    background: var(--card-bg);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.testimonial-card {
+    background: var(--background-color);
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.testimonial-content {
+    margin-bottom: 24px;
+}
+
+.testimonial-content p {
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    font-style: italic;
+    margin: 0;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.author-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.author-info p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #2F4156, #567C8D);
+    color: white;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+}
+
+.cta-section p {
+    font-size: 1.25rem;
+    margin: 0 0 32px 0;
+    opacity: 0.9;
+}
+
+.cta-section .btn-primary {
+    background: white;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    padding: 12px 32px;
+}
+
+.cta-section .btn-primary:hover {
+    background: #f8fafc;
+    transform: translateY(-2px);
+}
+
+/* Footer */
+.footer {
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 40px 0;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .timeline::before {
+        left: 20px;
+    }
+
+    .timeline-item {
+        flex-direction: row !important;
+        padding-left: 50px;
+    }
+
+    .timeline-date {
+        position: absolute;
+        left: -40px;
+        margin: 0;
+    }
+
+    .timeline-content {
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Dark Mode Adjustments */
+.dark .hero-section {
+    background: linear-gradient(135deg, #2F4156, #567C8D);
+}
+
+.dark .cta-section {
+    background: linear-gradient(135deg, #2F4156, #567C8D);
+}
+
+/* Dark mode for all about page components */
+.dark .about-section {
+    background: var(--background-color);
+    color: var(--text-dark);
+}
+
+.dark .text-content h2 {
+    background: linear-gradient(135deg, #C8D9E6, #567C8D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dark .text-content p {
+    color: var(--text-light);
+}
+
+.dark .stat-card {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-dark);
+}
+
+.dark .stat-number {
+    color: #C8D9E6;
+}
+
+.dark .stat-label {
+    color: var(--text-light);
+}
+
+.dark .timeline-section {
+    background: var(--card-bg);
+}
+
+.dark .section-title {
+    background: linear-gradient(135deg, #C8D9E6, #567C8D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dark .timeline::before {
+    background: #C8D9E6;
+}
+
+.dark .timeline-date {
+    background: linear-gradient(135deg, #2F4156, #567C8D);
+    color: white;
+}
+
+.dark .timeline-content {
+    background: var(--background-color);
+    border-color: var(--border-color);
+}
+
+.dark .timeline-content h3 {
+    color: var(--text-dark);
+}
+
+.dark .timeline-content p {
+    color: var(--text-light);
+}
+
+.dark .team-section {
+    background: var(--background-color);
+}
+
+.dark .team-card {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+.dark .team-card h3 {
+    color: var(--text-dark);
+}
+
+.dark .team-role {
+    color: #C8D9E6;
+}
+
+.dark .team-quote {
+    color: var(--text-light);
+}
+
+.dark .testimonials-section {
+    background: var(--card-bg);
+}
+
+.dark .testimonial-card {
+    background: var(--background-color);
+    border-color: var(--border-color);
+}
+
+.dark .testimonial-content p {
+    color: var(--text-dark);
+}
+
+.dark .author-info h4 {
+    color: var(--text-dark);
+}
+
+.dark .author-info p {
+    color: var(--text-light);
+}
+
+.dark .footer {
+    background: var(--card-bg);
+    border-top-color: var(--border-color);
+}
+
+.dark .footer-links a {
+    color: var(--text-light);
+}
+
+.dark .footer-links a:hover {
+    color: #C8D9E6;
+}

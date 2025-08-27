@@ -1,0 +1,264 @@
+/* =============================================
+   UI FIXES FOR VISUAL CONSISTENCY
+   ============================================= */
+
+/* Fix white boxes appearing in dark mode */
+.dark * {
+    box-sizing: border-box;
+}
+
+.dark .card,
+.dark .modal-content,
+.dark .dropdown-menu,
+.dark .popover,
+.dark .tooltip-inner {
+    background: var(--card-bg) !important;
+    color: var(--text-dark) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Ensure all text inputs have proper dark mode styling */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="search"],
+.dark input[type="url"],
+.dark input[type="tel"],
+.dark input[type="number"],
+.dark select,
+.dark textarea {
+    background-color: rgba(47, 65, 86, 0.8) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-dark) !important;
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="password"]:focus,
+.dark input[type="search"]:focus,
+.dark input[type="url"]:focus,
+.dark input[type="tel"]:focus,
+.dark input[type="number"]:focus,
+.dark select:focus,
+.dark textarea:focus {
+    border-color: var(--teal) !important;
+    box-shadow: 0 0 0 0.2rem rgba(86, 124, 141, 0.25) !important;
+}
+
+/* Fix button styling inconsistencies - exclude header buttons */
+.dark .btn {
+    background: var(--card-bg) !important;
+    color: var(--text-dark) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* But exclude header buttons from dark mode overrides */
+.dark .top-nav .btn,
+.dark .nav-buttons .btn,
+.dark .user-menu .btn,
+.dark .dashboard-buttons .btn {
+    background: none !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Ensure proper contrast for all text elements */
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: var(--text-dark) !important;
+}
+
+.dark p, .dark span, .dark div, .dark li {
+    color: var(--text-dark);
+}
+
+.dark .text-muted {
+    color: var(--text-light) !important;
+}
+
+/* Fix any remaining white backgrounds */
+.dark .bg-white,
+.dark .bg-light {
+    background: var(--card-bg) !important;
+    color: var(--text-dark) !important;
+}
+
+/* Improve scrollbar visibility in dark mode */
+.dark ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--teal), rgba(86, 124, 141, 0.8));
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--sky-blue), var(--teal));
+}
+
+/* Fix table styling in dark mode */
+.dark table,
+.dark .table {
+    background: var(--card-bg) !important;
+    color: var(--text-dark) !important;
+}
+
+.dark table th,
+.dark .table th {
+    background: rgba(47, 65, 86, 0.8) !important;
+    color: var(--text-dark) !important;
+    border-color: var(--border-color) !important;
+}
+
+.dark table td,
+.dark .table td {
+    border-color: var(--border-color) !important;
+    color: var(--text-dark) !important;
+}
+
+/* Fix form validation colors to use palette */
+.form-control.is-valid {
+    border-color: var(--navy) !important;
+    box-shadow: 0 0 0 0.2rem rgba(47, 65, 86, 0.25) !important;
+}
+
+.form-control.is-invalid {
+    border-color: var(--teal) !important;
+    box-shadow: 0 0 0 0.2rem rgba(86, 124, 141, 0.25) !important;
+}
+
+.dark .form-control.is-valid {
+    border-color: var(--teal) !important;
+    box-shadow: 0 0 0 0.2rem rgba(86, 124, 141, 0.25) !important;
+}
+
+.dark .form-control.is-invalid {
+    border-color: var(--sky-blue) !important;
+    box-shadow: 0 0 0 0.2rem rgba(200, 217, 230, 0.25) !important;
+}
+
+/* Smooth transitions for theme switching */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Fix any remaining harsh colors */
+.text-success {
+    color: var(--navy) !important;
+}
+
+.text-danger {
+    color: var(--teal) !important;
+}
+
+.text-warning {
+    color: #8b7355 !important;
+}
+
+.dark .text-success {
+    color: var(--sky-blue) !important;
+}
+
+.dark .text-danger {
+    color: var(--teal) !important;
+}
+
+.dark .text-warning {
+    color: var(--beige) !important;
+}
+
+/* Ensure consistent spacing and padding */
+.card-body {
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* Fix any overlay issues */
+.dark .modal-backdrop {
+    background-color: rgba(26, 31, 46, 0.8);
+}
+
+.dark .dropdown-menu {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure proper focus states */
+.dark *:focus {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+}
+
+/* Fix any remaining list styling */
+.dark ul, .dark ol {
+    color: var(--text-dark);
+}
+
+.dark li {
+    color: inherit;
+}
+
+/* Ensure proper link colors */
+.dark a {
+    color: var(--teal);
+}
+
+.dark a:hover {
+    color: var(--sky-blue);
+}
+
+/* Fix badge colors to use palette */
+.badge-success {
+    background: var(--navy) !important;
+    color: var(--white) !important;
+}
+
+.badge-danger {
+    background: var(--teal) !important;
+    color: var(--white) !important;
+}
+
+.badge-warning {
+    background: #8b7355 !important;
+    color: var(--white) !important;
+}
+
+.dark .badge-success {
+    background: var(--teal) !important;
+}
+
+.dark .badge-danger {
+    background: var(--sky-blue) !important;
+    color: var(--navy) !important;
+}
+
+/* Fix progress bar colors */
+.progress-bar {
+    background: linear-gradient(90deg, var(--navy), var(--teal)) !important;
+}
+
+.dark .progress {
+    background-color: rgba(47, 65, 86, 0.3) !important;
+}
+
+/* =============================================
+   HEADER BUTTON FIXES - REMOVED CONFLICTING STYLES
+   ============================================= */
+
+/* Header button styles are now handled in style.css for better control */
+
+/* Ensure consistent border radius */
+.card, .btn, .form-control, .modal-content {
+    border-radius: 8px;
+}
+
+/* Fix any remaining white text on white background issues */
+.dark .text-white {
+    color: var(--text-dark) !important;
+}
+
+/* Ensure proper contrast for disabled elements */
+.dark .btn:disabled,
+.dark .form-control:disabled {
+    background-color: rgba(47, 65, 86, 0.5) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    border-color: rgba(86, 124, 141, 0.2) !important;
+}

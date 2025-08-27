@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - JobStir</title>
+    <link rel="stylesheet" href="../css/color-scheme.css">
+    <link rel="stylesheet" href="../css/admin_panel.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="admin-logo">
+                    <i data-feather="shield"></i>
+                    <span>JobStir Admin</span>
+                </div>
+                <div class="admin-user">
+                    <div class="admin-avatar">
+                        <i data-feather="user"></i>
+                    </div>
+                    <div class="admin-info">
+                        <span class="admin-name" id="admin-name">Admin</span>
+                        <span class="admin-role">Super Admin</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#dashboard" class="nav-link active" data-tab="dashboard">
+                        <i data-feather="bar-chart-2"></i>
+                        <span>Dashboard</span>
+                    </a></li>
+                    <li><a href="#users" class="nav-link" data-tab="users">
+                        <i data-feather="users"></i>
+                        <span>User Management</span>
+                    </a></li>
+                    <li><a href="#jobs" class="nav-link" data-tab="jobs">
+                        <i data-feather="briefcase"></i>
+                        <span>Job Management</span>
+                    </a></li>
+                    <li><a href="#applications" class="nav-link" data-tab="applications">
+                        <i data-feather="file-text"></i>
+                        <span>Applications</span>
+                    </a></li>
+                    <li><a href="#analytics" class="nav-link" data-tab="analytics">
+                        <i data-feather="trending-up"></i>
+                        <span>Analytics</span>
+                    </a></li>
+                    <li><a href="#content" class="nav-link" data-tab="content">
+                        <i data-feather="edit"></i>
+                        <span>Content Management</span>
+                    </a></li>
+                    <li><a href="#settings" class="nav-link" data-tab="settings">
+                        <i data-feather="settings"></i>
+                        <span>System Settings</span>
+                    </a></li>
+                    <li><a href="#security" class="nav-link" data-tab="security">
+                        <i data-feather="lock"></i>
+                        <span>Security</span>
+                    </a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="logout-btn">
+                    <i data-feather="log-out"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>  
+      <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Bar -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" id="sidebar-toggle">
+                        <i data-feather="menu"></i>
+                    </button>
+                    <h1 id="page-title">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="theme-switch-wrapper">
+                        <label class="theme-switch" for="admin-dark-mode-toggle">
+                            <input type="checkbox" id="admin-dark-mode-toggle" class="dark-mode-toggle" />
+                            <div class="slider round">
+                                <i data-feather="sun" class="sun-icon"></i>
+                                <i data-feather="moon" class="moon-icon"></i>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="notifications">
+                        <button class="notification-btn" id="notification-btn">
+                            <i data-feather="bell"></i>
+                            <span class="notification-badge" id="notification-count">3</span>
+                        </button>
+                    </div>
+                    <div class="admin-profile">
+                        <button class="profile-btn" id="profile-btn">
+                            <i data-feather="user"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="admin-content">
+                <div id="message-container" class="message-container hidden"></div>
+
+                <!-- Dashboard Tab -->
+                <section id="dashboard-tab" class="tab-content active">
+                    <div class="dashboard-grid">
+                        <!-- Stats Cards -->
+                        <div class="stats-row">
+                            <div class="stat-card">
+                                <div class="stat-icon users">
+                                    <i data-feather="users"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>Total Users</h3>
+                                    <p class="stat-number" id="total-users">0</p>
+                                    <span class="stat-change positive">+12% this month</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon jobs">
+                                    <i data-feather="briefcase"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>Active Jobs</h3>
+                                    <p class="stat-number" id="active-jobs">0</p>
+                                    <span class="stat-change positive">+8% this month</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon applications">
+                                    <i data-feather="file-text"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>Applications</h3>
+                                    <p class="stat-number" id="total-applications">0</p>
+                                    <span class="stat-change positive">+25% this month</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon revenue">
+                                    <i data-feather="dollar-sign"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>Revenue</h3>
+                                    <p class="stat-number" id="total-revenue">$0</p>
+                                    <span class="stat-change positive">+15% this month</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Row -->
+                        <div class="charts-row">
+
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3>User Growth</h3>
+                                    <select id="user-growth-period">
+                                        <option value="6m">Last 6 Months</option>
+                                        <option value="30d">Last 30 Days</option>
+                                        <option value="all">All Time</option>
+                                    </select>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="user-growth-chart"></canvas>
+                                </div>
+                            </div>
+                        
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3>Applications per Day</h3>
+                                     <select id="applications-period">
+                                        <option value="7d">Last 7 Days</option>
+                                        <option value="14d">Last 14 Days</option>
+                                        <option value="30d">This Month</option>
+                                    </select>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="applications-chart"></canvas>
+                                </div>
+                            </div>
+                        
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="activity-section">
+                            <div class="activity-card">
+                                <div class="activity-header">
+                                    <h3>Recent Activity</h3>
+                                    <button class="btn btn-secondary btn-small">View All</button>
+                                </div>
+                                <div class="activity-list" id="recent-activity">
+                                    <!-- Activity items will be loaded here -->
+                                </div>
+                            </div>
+                            <div class="quick-actions-card">
+                                <h3>Quick Actions</h3>
+                                <div class="quick-actions">
+                                    <button class="quick-action-btn" onclick="showModal('add-user-modal')">
+                                        <i data-feather="user-plus"></i>
+                                        Add User
+                                    </button>
+                                    <button class="quick-action-btn" onclick="showModal('broadcast-modal')">
+                                        <i data-feather="mail"></i>
+                                        Send Broadcast
+                                    </button>
+                                    <button class="quick-action-btn" onclick="exportData()">
+                                        <i data-feather="download"></i>
+                                        Export Data
+                                    </button>
+                                    <button class="quick-action-btn" onclick="showModal('maintenance-modal')">
+                                        <i data-feather="tool"></i>
+                                        Maintenance
+                                    </button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>         
+       <!-- User Management Tab -->
+                <section id="users-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>User Management</h2>
+                        <div class="tab-actions">
+                            <button class="btn btn-secondary" onclick="exportUsers()">
+                                <i data-feather="download"></i>
+                                Export Users
+                            </button>
+                            <button class="btn btn-primary" onclick="showModal('add-user-modal')">
+                                <i data-feather="user-plus"></i>
+                                Add User
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom:1rem;">
+                        <label for="site-mode-select"><strong>Site Mode:</strong></label>
+                        <select id="site-mode-select">
+                            <option value="production">Production</option>
+                            <option value="development">Development</option>
+                        </select>
+                    </div>
+                    <div id="dev-mode-banner" style="display:none; background: #eab308; color: #222; padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 5px;">
+                        <strong>Development Mode Enabled:</strong> Some features may be experimental or show extra debugging info.
+                    </div>
+
+                    
+                    <div class="filters-bar">
+                        <div class="search-box">
+                            <i data-feather="search"></i>
+                            <input type="text" id="user-search" placeholder="Search users...">
+                        </div>
+                        <select id="user-role-filter">
+                            <option value="all">All Roles</option>
+                            <option value="candidate">Candidates</option>
+                            <option value="hr">HR Users</option>
+                            <option value="admin">Admins</option>
+                        </select>
+                        <select id="user-status-filter">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="admin-table" id="users-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="select-all-users"></th>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Last Active</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-pagination">
+                        <div class="pagination-info">
+                            Showing <span id="users-showing">1-10</span> of <span id="users-total">0</span> users
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="users-prev">Previous</button>
+                            <div class="page-numbers" id="users-pages"></div>
+                            <button class="pagination-btn" id="users-next">Next</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Job Management Tab -->
+                <section id="jobs-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>Job Management</h2>
+                        <div class="tab-actions">
+                            <button class="btn btn-secondary" onclick="exportJobs()">
+                                <i data-feather="download"></i>
+                                Export Jobs
+                            </button>
+                            <button class="btn btn-primary" onclick="showModal('add-job-modal')">
+                                <i data-feather="plus"></i>
+                                Add Job
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filters-bar">
+                        <div class="search-box">
+                            <i data-feather="search"></i>
+                            <input type="text" id="job-search" placeholder="Search jobs...">
+                        </div>
+                        <select id="job-status-filter">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="paused">Paused</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                        <select id="job-type-filter">
+                            <option value="all">All Types</option>
+                            <option value="full-time">Full-time</option>
+                            <option value="part-time">Part-time</option>
+                            <option value="contract">Contract</option>
+                            <option value="internship">Internship</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="admin-table" id="jobs-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="select-all-jobs"></th>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Type</th>
+                                    <th>Applications</th>
+                                    <th>Status</th>
+                                    <th>Posted</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobs-table-body">
+                                <!-- Jobs will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-pagination">
+                        <div class="pagination-info">
+                            Showing <span id="jobs-showing">1-10</span> of <span id="jobs-total">0</span> jobs
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="jobs-prev">Previous</button>
+                            <div class="page-numbers" id="jobs-pages"></div>
+                            <button class="pagination-btn" id="jobs-next">Next</button>
+                        </div>
+                    </div>
+                </section>       
+         <!-- Applications Tab -->
+                <section id="applications-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>Application Management</h2>
+                        <div class="tab-actions">
+                            <button class="btn btn-secondary" onclick="exportApplications()">
+                                <i data-feather="download"></i>
+                                Export Applications
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filters-bar">
+                        <div class="search-box">
+                            <i data-feather="search"></i>
+                            <input type="text" id="application-search" placeholder="Search applications...">
+                        </div>
+                        <select id="application-status-filter">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="reviewing">Under Review</option>
+                            <option value="interview">Interview</option>
+                            <option value="offer">Offer</option>
+                            <option value="hired">Hired</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <input type="date" id="application-date-from" placeholder="From Date">
+                        <input type="date" id="application-date-to" placeholder="To Date">
+                    </div>
+
+                    <div class="table-container">
+                        <table class="admin-table" id="applications-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="select-all-applications"></th>
+                                    <th>Candidate</th>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Status</th>
+                                    <th>Match Score</th>
+                                    <th>Applied</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applications-table-body">
+                                <!-- Applications will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-pagination">
+                        <div class="pagination-info">
+                            Showing <span id="applications-showing">1-10</span> of <span id="applications-total">0</span> applications
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="applications-prev">Previous</button>
+                            <div class="page-numbers" id="applications-pages"></div>
+                            <button class="pagination-btn" id="applications-next">Next</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Tab -->
+                <section id="analytics-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>Analytics & Reports</h2>
+                        <div class="tab-actions">
+                            <select id="analytics-period">
+                                <option value="7d">Last 7 days</option>
+                                <option value="30d" selected>Last 30 days</option>
+                                <option value="90d">Last 90 days</option>
+                                <option value="1y">Last year</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h3>Platform Performance</h3>
+                            <div class="performance-metrics">
+                                <div class="metric">
+                                    <span class="metric-label">Page Views</span>
+                                    <span class="metric-value" id="page-views">0</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Unique Visitors</span>
+                                    <span class="metric-value" id="unique-visitors">0</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Bounce Rate</span>
+                                    <span class="metric-value" id="bounce-rate">0%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Avg. Session</span>
+                                    <span class="metric-value" id="avg-session">0m</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="analytics-card">
+                            <h3>Job Market Insights</h3>
+                            <div class="chart-container">
+                                <canvas id="job-categories-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-card">
+                            <h3>User Engagement</h3>
+                            <div class="chart-container">
+                                <canvas id="user-engagement-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-card">
+                            <h3>Revenue Analytics</h3>
+                            <div class="chart-container">
+                                <canvas id="revenue-chart"></canvas>
+                            </div>
+                        </div>
+                </section>
+
+                <!-- Content Management Tab -->
+                <section id="content-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>Content Management</h2>
+                        <div class="tab-actions">
+                            <button class="btn btn-primary" onclick="showModal('add-content-modal')">
+                                <i data-feather="plus"></i>
+                                Add Content
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="content-sections">
+                        <div class="content-section">
+                            <h3>Homepage Content</h3>
+                            <div class="content-items">
+                                <div class="content-item">
+                                    <h4>Hero Section</h4>
+                                    <p>Main headline and call-to-action</p>
+                                    <button class="btn btn-secondary btn-small" onclick="editContent('hero')">Edit</button>
+                                </div>
+                                <div class="content-item">
+                                    <h4>Features Section</h4>
+                                    <p>Platform features and benefits</p>
+                                    <button class="btn btn-secondary btn-small" onclick="editContent('features')">Edit</button>
+                                </div>
+                                <div class="content-item">
+                                    <h4>Testimonials</h4>
+                                    <p>Customer testimonials and reviews</p>
+                                    <button class="btn btn-secondary btn-small" onclick="editContent('testimonials')">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h3>Email Templates</h3>
+                            <div class="content-items">
+                                <div class="content-item">
+                                    <h4>Welcome Email</h4>
+                                    <p>New user welcome message</p>
+                                    <button class="btn btn-secondary btn-small" onclick="editTemplate('welcome')">Edit</button>
+                                </div>
+                                <div class="content-item">
+                                    <h4>Application Confirmation</h4>
+                                    <p>Job application confirmation</p>
+                                    <button class="btn btn-secondary btn-small" onclick="editTemplate('application')">Edit</button>
+                                </div>
+                                <div class="content-item">
+                                    <h4>Password Reset</h4>
+                                    <p>Password reset instructions</p>
+                                    <button class="btn btn-secondary btn-small" onclick="editTemplate('password-reset')">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>  
+              <!-- System Settings Tab -->
+                <section id="settings-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>System Settings</h2>
+                        <div class="tab-actions">
+                            <button class="btn btn-primary" onclick="saveSettings()">
+                                <i data-feather="save"></i>
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-sections">
+                        <div class="settings-section">
+                            <h3>General Settings</h3>
+                            <div class="settings-form">
+                                <div class="form-group">
+                                    <label for="site-name">Site Name</label>
+                                    <input type="text" id="site-name" value="JobStir">
+                                </div>
+                                <div class="form-group">
+                                    <label for="site-description">Site Description</label>
+                                    <textarea id="site-description" rows="3">AI-Powered Recruitment Platform</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-email">Contact Email</label>
+                                    <input type="email" id="contact-email" value="contact@jobstir.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="support-email">Support Email</label>
+                                    <input type="email" id="support-email" value="support@jobstir.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Feature Toggles</h3>
+                            <div class="toggle-settings">
+                                <div class="toggle-item">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="enable-registrations" checked>
+                                        <span class="toggle-slider"></span>
+                                        Enable User Registrations
+                                    </label>
+                                </div>
+                                <div class="toggle-item">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="enable-job-posting" checked>
+                                        <span class="toggle-slider"></span>
+                                        Enable Job Posting
+                                    </label>
+                                </div>
+                                <div class="toggle-item">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="enable-resume-evaluator" checked>
+                                        <span class="toggle-slider"></span>
+                                        Enable Resume Evaluator
+                                    </label>
+                                </div>
+                                <div class="toggle-item">
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="maintenance-mode">
+                                        <span class="toggle-slider"></span>
+                                        Maintenance Mode
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Email Configuration</h3>
+                            <div class="settings-form">
+                                <div class="form-group">
+                                    <label for="smtp-host">SMTP Host</label>
+                                    <input type="text" id="smtp-host" placeholder="smtp.gmail.com">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="smtp-port">SMTP Port</label>
+                                        <input type="number" id="smtp-port" value="587">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="smtp-security">Security</label>
+                                        <select id="smtp-security">
+                                            <option value="tls">TLS</option>
+                                            <option value="ssl">SSL</option>
+                                            <option value="none">None</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="smtp-username">SMTP Username</label>
+                                    <input type="text" id="smtp-username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="smtp-password">SMTP Password</label>
+                                    <input type="password" id="smtp-password">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Tab -->
+                <section id="security-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>Security Settings</h2>
+                        <div class="tab-actions">
+                            <button class="btn btn-danger" onclick="showModal('security-scan-modal')">
+                                <i data-feather="shield"></i>
+                                Run Security Scan
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="security-sections">
+                        <div class="security-section">
+                            <h3>Login Security</h3>
+                            <div class="security-items">
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>Two-Factor Authentication</h4>
+                                        <p>Require 2FA for admin accounts</p>
+                                    </div>
+                                    <label class="toggle-label">
+                                        <input type="checkbox" name="require-2fa" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>Session Timeout</h4>
+                                        <p>Automatic logout after inactivity</p>
+                                    </div>
+                                    <select id="session-timeout">
+                                        <option value="30">30 minutes</option>
+                                        <option value="60" selected>1 hour</option>
+                                        <option value="120">2 hours</option>
+                                        <option value="240">4 hours</option>
+                                    </select>
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>Failed Login Attempts</h4>
+                                        <p>Lock account after failed attempts</p>
+                                    </div>
+                                    <select id="failed-attempts">
+                                        <option value="3">3 attempts</option>
+                                        <option value="5" selected>5 attempts</option>
+                                        <option value="10">10 attempts</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="security-section">
+                            <h3>System Security</h3>
+                            <div class="security-items">
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>Rate Limiting</h4>
+                                        <p>Limit API requests per minute</p>
+                                    </div>
+                                    <input type="number" id="rate-limit" value="100" min="10" max="1000">
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>IP Whitelist</h4>
+                                        <p>Restrict admin access to specific IPs</p>
+                                    </div>
+                                    <button class="btn btn-secondary btn-small" onclick="manageIPWhitelist()">Manage</button>
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <h4>Security Logs</h4>
+                                        <p>View security-related events</p>
+                                    </div>
+                                    <button class="btn btn-secondary btn-small" onclick="viewSecurityLogs()">View Logs</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        feather.replace();
+    </script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/admin_panel.js"></script>
+</body>
+</html>

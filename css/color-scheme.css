@@ -1,0 +1,855 @@
+/* JobStir Custom Color Scheme */
+/* Color Palette:
+   Navy: #2F4156 - Primary/Headers
+   Teal: #567C8D - Secondary/Accents
+   Sky Blue: #C8D9E6 - Light backgrounds/Borders
+   Beige: #F5EFEB - Neutral backgrounds
+   White: #FFFFFF - Content backgrounds
+*/
+
+:root {
+    /* Primary Colors */
+    --navy: #2F4156;
+    --teal: #567C8D;
+    --sky-blue: #C8D9E6;
+    --beige: #F5EFEB;
+    --white: #FFFFFF;
+    
+    /* Color Variations */
+    --navy-light: rgba(47, 65, 86, 0.1);
+    --navy-medium: rgba(47, 65, 86, 0.7);
+    --teal-light: rgba(86, 124, 141, 0.1);
+    --teal-medium: rgba(86, 124, 141, 0.7);
+    --sky-blue-light: rgba(200, 217, 230, 0.3);
+    --beige-light: rgba(245, 239, 235, 0.5);
+    
+    /* Semantic Colors */
+    --primary: var(--navy);
+    --secondary: var(--teal);
+    --accent: var(--sky-blue);
+    --background: var(--beige);
+    --surface: var(--white);
+    --text-primary: var(--navy);
+    --text-secondary: var(--teal);
+    --text-muted: var(--teal-medium);
+    --border: var(--sky-blue);
+    --border-light: var(--sky-blue-light);
+    
+    /* Status Colors (using palette variations) */
+    --success: #4a7c59; /* Darker teal variant */
+    --warning: #8b7355; /* Darker beige variant */
+    --error: #7d4f4f; /* Navy with red tint */
+    --info: var(--teal);
+}
+
+/* =============================================
+   GLOBAL STYLES
+   ============================================= */
+
+body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* =============================================
+   NAVIGATION
+   ============================================= */
+
+.navbar, .top-nav {
+    background: linear-gradient(135deg, var(--navy), var(--teal));
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand, .site-title-main {
+    color: var(--white) !important;
+    font-weight: 700;
+}
+
+.nav-link, .nav-links a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover, .nav-links a:hover {
+    color: var(--white) !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.nav-link.active {
+    color: var(--white) !important;
+    font-weight: 600;
+}
+
+/* Mobile menu */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* =============================================
+   BUTTONS
+   ============================================= */
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--navy), var(--teal));
+    border: none;
+    /* color: var(--white); */
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--teal), var(--navy));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(47, 65, 86, 0.3);
+}
+
+.btn-secondary {
+    background: var(--sky-blue);
+    border: 1px solid var(--teal);
+    color: var(--navy);
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background: var(--teal);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--navy);
+    color: var(--navy);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--navy);
+    color: var(--white);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success), #3d6b4a);
+    border: none;
+    color: var(--white);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--error), #6b4040);
+    border: none;
+    color: var(--white);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--warning), #7a6448);
+    border: none;
+    color: var(--white);
+}
+
+.btn-info {
+    background: linear-gradient(135deg, var(--teal), var(--navy));
+    border: none;
+    color: var(--white);
+}
+
+/* =============================================
+   CARDS
+   ============================================= */
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(47, 65, 86, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(47, 65, 86, 0.15);
+    border-color: var(--teal);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--beige), var(--sky-blue-light));
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.card-title {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.card-text {
+    color: var(--text-secondary);
+}
+
+/* Job cards */
+.job-card::before {
+    background: linear-gradient(135deg, var(--navy), var(--teal));
+}
+
+/* =============================================
+   FORMS
+   ============================================= */
+
+.form-control {
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 0.2rem rgba(86, 124, 141, 0.25);
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.form-select {
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+.form-select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 0.2rem rgba(86, 124, 141, 0.25);
+}
+
+/* Form validation */
+.form-control.is-valid {
+    border-color: var(--success);
+    box-shadow: 0 0 0 0.2rem rgba(74, 124, 89, 0.25);
+}
+
+.form-control.is-invalid {
+    border-color: var(--error);
+    box-shadow: 0 0 0 0.2rem rgba(125, 79, 79, 0.25);
+}
+
+/* =============================================
+   TABLES
+   ============================================= */
+
+.table {
+    background: var(--surface);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(47, 65, 86, 0.1);
+}
+
+.table thead th {
+    background: linear-gradient(135deg, var(--navy), var(--teal));
+    color: var(--white);
+    border: none;
+    font-weight: 600;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--navy-light);
+}
+
+.table tbody td {
+    border-top: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+/* =============================================
+   BADGES
+   ============================================= */
+
+.badge-primary {
+    background: linear-gradient(135deg, var(--navy), var(--teal));
+    color: var(--white);
+}
+
+.badge-secondary {
+    background: var(--sky-blue);
+    color: var(--navy);
+}
+
+.badge-success {
+    background: linear-gradient(135deg, var(--success), #3d6b4a);
+    color: var(--white);
+}
+
+.badge-warning {
+    background: linear-gradient(135deg, var(--warning), #7a6448);
+    color: var(--white);
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, var(--error), #6b4040);
+    color: var(--white);
+}
+
+.badge-info {
+    background: var(--teal);
+    color: var(--white);
+}
+
+/* =============================================
+   ALERTS & NOTIFICATIONS
+   ============================================= */
+
+.alert-primary {
+    background: var(--navy-light);
+    border-color: var(--navy);
+    color: var(--navy);
+}
+
+.alert-secondary {
+    background: var(--teal-light);
+    border-color: var(--teal);
+    color: var(--teal);
+}
+
+.alert-info {
+    background: var(--sky-blue-light);
+    border-color: var(--sky-blue);
+    color: var(--navy);
+}
+
+.notification.success {
+    background: linear-gradient(135deg, var(--success), #3d6b4a);
+}
+
+.notification.error {
+    background: linear-gradient(135deg, var(--error), #6b4040);
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, var(--warning), #7a6448);
+}
+
+.notification.info {
+    background: linear-gradient(135deg, var(--teal), var(--navy));
+}
+
+/* =============================================
+   PROGRESS BARS
+   ============================================= */
+
+.progress {
+    background-color: var(--sky-blue-light);
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--navy), var(--teal));
+}
+
+/* =============================================
+   MODALS
+   ============================================= */
+
+.modal-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--beige), var(--sky-blue-light));
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+.modal-title {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    color: var(--text-primary);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border);
+}
+
+/* =============================================
+   DROPDOWNS
+   ============================================= */
+
+.dropdown-menu {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 12px rgba(47, 65, 86, 0.15);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background: var(--navy-light);
+    color: var(--navy);
+}
+
+.dropdown-divider {
+    border-color: var(--border);
+}
+
+/* =============================================
+   PAGINATION
+   ============================================= */
+
+.page-link {
+    color: var(--navy);
+    border-color: var(--border);
+    background: var(--surface);
+}
+
+.page-link:hover {
+    color: var(--white);
+    background: var(--teal);
+    border-color: var(--teal);
+}
+
+.page-item.active .page-link {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+}
+
+/* =============================================
+   BREADCRUMBS
+   ============================================= */
+
+.breadcrumb {
+    background: var(--beige-light);
+    border-radius: 8px;
+}
+
+.breadcrumb-item a {
+    color: var(--teal);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-primary);
+}
+
+/* =============================================
+   LIST GROUPS
+   ============================================= */
+
+.list-group-item {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+
+.list-group-item:hover {
+    background: var(--navy-light);
+}
+
+.list-group-item.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+}
+
+/* =============================================
+   TABS
+   ============================================= */
+
+.nav-tabs {
+    border-bottom-color: var(--border);
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: var(--border);
+    color: var(--navy);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--navy);
+    background: var(--surface);
+    border-color: var(--border) var(--border) var(--surface);
+}
+
+/* =============================================
+   ACCORDION
+   ============================================= */
+
+.accordion-item {
+    background: var(--surface);
+    border-color: var(--border);
+}
+
+.accordion-header button {
+    background: var(--beige);
+    color: var(--text-primary);
+    border: none;
+}
+
+.accordion-header button:not(.collapsed) {
+    background: var(--navy);
+    color: var(--white);
+}
+
+.accordion-body {
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+/* =============================================
+   SPINNERS & LOADING
+   ============================================= */
+
+.spinner-border {
+    color: var(--navy);
+}
+
+.spinner-border.text-primary {
+    color: var(--navy) !important;
+}
+
+.spinner-border.text-secondary {
+    color: var(--teal) !important;
+}
+
+.loading-spinner {
+    border-color: var(--sky-blue-light);
+    border-top-color: var(--navy);
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--beige), var(--sky-blue-light), var(--beige));
+}
+
+/* =============================================
+   CUSTOM COMPONENTS
+   ============================================= */
+
+/* Dashboard stats cards */
+.stats-card {
+    background: linear-gradient(135deg, var(--surface), var(--beige-light));
+    border-left: 4px solid var(--navy);
+}
+
+.stats-card:hover {
+    border-left-color: var(--teal);
+}
+
+/* User menu */
+.user-menu {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 12px rgba(47, 65, 86, 0.15);
+}
+
+.user-menu .dropdown-item:hover {
+    background: var(--navy-light);
+}
+
+/* Search filters */
+.filter-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.filter-title {
+    color: var(--navy);
+    font-weight: 600;
+}
+
+/* Job application status */
+.status-pending {
+    background: var(--warning);
+    color: var(--white);
+}
+
+.status-approved {
+    background: var(--success);
+    color: var(--white);
+}
+
+.status-rejected {
+    background: var(--error);
+    color: var(--white);
+}
+
+.status-interview {
+    background: var(--teal);
+    color: var(--white);
+}
+
+/* =============================================
+   DARK MODE SUPPORT
+   ============================================= */
+
+[data-theme="dark"] {
+    --background: #1a1f2e;
+    --surface: var(--navy);
+    --text-primary: var(--white);
+    --text-secondary: var(--sky-blue);
+    --border: var(--teal-medium);
+}
+
+[data-theme="dark"] .card {
+    background: var(--navy);
+    border-color: var(--teal-medium);
+    color: var(--white);
+}
+
+[data-theme="dark"] .form-control {
+    background: rgba(47, 65, 86, 0.8);
+    border-color: var(--teal-medium);
+    color: var(--white);
+}
+
+[data-theme="dark"] .table {
+    background: var(--navy);
+    color: var(--white);
+}
+
+/* Dark mode support for body and main elements */
+.dark {
+    --background-color: #1a1f2e;
+    --card-bg: var(--navy);
+    --text-dark: var(--white);
+    --text-light: var(--sky-blue);
+    --border-color: rgba(86, 124, 141, 0.3);
+    --surface: var(--navy);
+    --background: #1a1f2e;
+    --border: rgba(86, 124, 141, 0.3);
+    --text-muted: rgba(200, 217, 230, 0.7);
+}
+
+.dark body {
+    background-color: var(--background-color);
+    color: var(--text-dark);
+}
+
+.dark .card {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-dark);
+}
+
+.dark .hero-section {
+    background: linear-gradient(180deg, var(--card-bg) 0%, var(--background-color) 100%);
+}
+
+.dark .textarea-input {
+    background-color: rgba(47, 65, 86, 0.8);
+    border-color: var(--border-color);
+    color: var(--text-dark);
+}
+
+.dark .textarea-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(86, 124, 141, 0.2);
+}
+
+/* =============================================
+   MOBILE NAVIGATION
+   ============================================= */
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.menu-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100vh;
+    background: var(--surface);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    padding: 24px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.mobile-nav.active {
+    left: 0;
+}
+
+.mobile-nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.mobile-nav-header .site-title-main {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.mobile-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.close-menu {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.close-menu:hover {
+    background-color: var(--border-light);
+}
+
+.mobile-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-nav-links li {
+    margin-bottom: 20px;
+}
+
+.mobile-nav-links a {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: block;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: color 0.3s;
+}
+
+.mobile-nav-links a:hover,
+.mobile-nav-links a.active {
+    color: var(--primary);
+}
+
+.mobile-nav-buttons {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mobile-nav-buttons .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
+
+/* =============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================= */
+
+@media (max-width: 768px) {
+    .navbar, .top-nav {
+        background: var(--navy);
+    }
+    
+    .main-nav,
+    .nav-buttons {
+        display: none;
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px rgba(47, 65, 86, 0.1);
+    }
+    
+    .btn {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* =============================================
+   ACCESSIBILITY
+   ============================================= */
+
+/* Focus indicators using color palette */
+*:focus {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    :root {
+        --navy: #1a2332;
+        --teal: #3d5a6b;
+        --border: #2F4156;
+    }
+}
+
+/* =============================================
+   PRINT STYLES
+   ============================================= */
+
+@media print {
+    body {
+        background: white;
+        color: var(--navy);
+    }
+    
+    .navbar, .top-nav {
+        background: white;
+        color: var(--navy);
+        border-bottom: 2px solid var(--navy);
+    }
+    
+    .card {
+        border: 1px solid var(--navy);
+        box-shadow: none;
+    }
+}

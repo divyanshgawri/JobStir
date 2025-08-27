@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Jobs - JobStir</title>
+    <link rel="stylesheet" href="../css/jobstir-unified.css">
+    <link rel="stylesheet" href="../css/job_listings.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" class="active">Browse Jobs</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="evaluate_resume.html" class="evaluate-link"><b>Evaluate Resume</b></a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle">
+                        <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <a href="signin.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job_listings.html" class="active">Browse Jobs</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="evaluate_resume.html"><b>Evaluate Resume</b></a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <a href="signin.html" class="btn btn-secondary">Log In</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <h1 class="hero-title">Find Your Dream Job</h1>
+                <p class="hero-subtitle">Discover opportunities that match your skills and aspirations with AI-powered precision.</p>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-bar">
+                        <div class="search-input-wrapper">
+                            <i data-feather="search"></i>
+                            <input type="text" id="job-search" placeholder="Search jobs, companies, or keywords...">
+                        </div>
+                        <div class="location-input-wrapper">
+                            <i data-feather="map-pin"></i>
+                            <input type="text" id="location-search" placeholder="Location">
+                        </div>
+                        <button class="search-btn" id="search-btn">
+                            <i data-feather="search"></i>
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters and Results -->
+        <section class="jobs-section">
+            <div class="container">
+                <div class="jobs-layout">
+                    <!-- Filters Sidebar -->
+                    <aside class="filters-sidebar">
+                        <div class="filters-header">
+                            <h3>Filters</h3>
+                            <button id="clear-filters" class="clear-filters">Clear All</button>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4>Job Type</h4>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" value="full-time"> Full-time</label>
+                                <label><input type="checkbox" value="part-time"> Part-time</label>
+                                <label><input type="checkbox" value="contract"> Contract</label>
+                                <label><input type="checkbox" value="internship"> Internship</label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Experience Level</h4>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" value="entry"> Entry Level</label>
+                                <label><input type="checkbox" value="mid"> Mid Level</label>
+                                <label><input type="checkbox" value="senior"> Senior Level</label>
+                                <label><input type="checkbox" value="executive"> Executive</label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Remote Options</h4>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" value="remote"> Remote</label>
+                                <label><input type="checkbox" value="hybrid"> Hybrid</label>
+                                <label><input type="checkbox" value="onsite"> On-site</label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Salary Range</h4>
+                            <div class="salary-range">
+                                <input type="range" id="salary-min" min="0" max="200000" value="0">
+                                <input type="range" id="salary-max" min="0" max="200000" value="200000">
+                                <div class="salary-display">
+                                    <span id="salary-min-display">$0</span> - <span id="salary-max-display">$200k+</span>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Jobs Results -->
+                    <main class="jobs-main">
+                        <div class="results-header">
+                            <div class="results-info">
+                                <h2 id="results-count">Loading jobs...</h2>
+                                <div class="sort-controls">
+                                    <select id="sort-select">
+                                        <option value="newest">Newest First</option>
+                                        <option value="oldest">Oldest First</option>
+                                        <option value="salary-high">Salary: High to Low</option>
+                                        <option value="salary-low">Salary: Low to High</option>
+                                        <option value="relevance">Most Relevant</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="jobs-container" class="jobs-container">
+                            <!-- Job cards will be loaded here -->
+                        </div>
+
+                        <div id="loading-spinner" class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Loading amazing opportunities...</p>
+                        </div>
+
+                        <div id="no-jobs" class="no-jobs hidden">
+                            <i data-feather="search"></i>
+                            <h3>No Jobs Found</h3>
+                            <p>Try adjusting your search criteria or filters.</p>
+                            <button onclick="clearAllFilters()" class="btn btn-primary">Clear Filters</button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div id="pagination" class="pagination hidden">
+                            <button id="prev-page" class="pagination-btn">
+                                <i data-feather="chevron-left"></i>
+                                Previous
+                            </button>
+                            <div class="page-numbers" id="page-numbers"></div>
+                            <button id="next-page" class="pagination-btn">
+                                Next
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 JobStir. All rights reserved.</p>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/location-service.js"></script>
+    <script src="../js/job_listings.js"></script>
+</body>
+</html>

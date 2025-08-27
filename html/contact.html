@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact JobStir - Get in Touch</title>
+    <link rel="stylesheet" href="../css/jobstir-unified.css">
+    <link rel="stylesheet" href="../css/contact.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="job_listings.html">Browse Jobs</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                    <li><a href="evaluate_resume.html" class="evaluate-link"><b>Evaluate Resume</b></a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle">
+                        <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <a href="signin.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job_listings.html">Browse Jobs</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+            <li><a href="evaluate_resume.html"><b>Evaluate Resume</b></a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <a href="signin.html" class="btn btn-secondary">Log In</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <h1 class="hero-title">Contact JobStir</h1>
+                <p class="hero-subtitle">We'd love to hear from you! Whether you have questions, need support, or want to provide feedback.</p>
+                <a href="index.html" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </section>
+
+        <!-- Contact Content -->
+        <section class="contact-section">
+            <div class="container">
+                <div class="contact-grid">
+                    <!-- Contact Information -->
+                    <div class="contact-info">
+                        <h2>Get in Touch</h2>
+                        <p>We're here to help and answer any questions you might have. We look forward to hearing from you.</p>
+                        
+                        <div class="contact-cards">
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i data-feather="mail"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h3>General Inquiries</h3>
+                                    <p>Email: <a href="mailto:jobstirai@gmail.com">jobstirai@gmail.com</a></p>
+                                    <p>Phone: +91 12345 67890</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i data-feather="headphones"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h3>Technical Support</h3>
+                                    <p>Email: <a href="mailto:support@jobstir.tech">support@jobstir.tech</a></p>
+                                    <p>Phone: +1 (555) 987-6543</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i data-feather="map-pin"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h3>Our Office</h3>
+                                    <p>JobStir</p>
+                                    <p>Remotely Working</p>
+                                    <p>Amritsar City, PUNJAB, 143001</p>
+                                    <p>India</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="contact-form-section">
+                        <div class="form-card">
+                            <h2>Send us a Message</h2>
+                            <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+                            
+                            <div id="message-container" class="message-container hidden"></div>
+
+                            <form id="contact-form">
+                                <div class="form-group">
+                                    <label for="name" class="form-label">Name</label>
+                                    <div class="input-wrapper">
+                                        <i data-feather="user"></i>
+                                        <input type="text" id="name" name="name" required 
+                                               class="input-field" placeholder="Your full name">
+                                    </div>
+                                    <div class="error-message" id="name-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <div class="input-wrapper">
+                                        <i data-feather="mail"></i>
+                                        <input type="email" id="email" name="email" required 
+                                               class="input-field" placeholder="you@example.com">
+                                    </div>
+                                    <div class="error-message" id="email-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="subject" class="form-label">Subject</label>
+                                    <div class="input-wrapper">
+                                        <i data-feather="tag"></i>
+                                        <input type="text" id="subject" name="subject" required 
+                                               class="input-field" placeholder="What is this about?">
+                                    </div>
+                                    <div class="error-message" id="subject-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="message" class="form-label">Message</label>
+                                    <textarea id="message" name="message" rows="6" required 
+                                              class="input-field" placeholder="Tell us more about your inquiry..."></textarea>
+                                    <div class="error-message" id="message-error"></div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" id="submit-btn">
+                                    <span class="btn-text">
+                                        <i data-feather="send"></i>
+                                        Send Message
+                                    </span>
+                                    <div class="btn-spinner hidden"></div>
+                                </button>
+                            </form>
+
+                            <div id="success-message" class="success-message hidden">
+                                <div class="success-content">
+                                    <i data-feather="check-circle"></i>
+                                    <h3>Message Sent Successfully!</h3>
+                                    <p>Thank you for contacting us. We'll get back to you within 24 hours.</p>
+                                    <button id="send-another-btn" class="btn btn-secondary">Send Another Message</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <div class="container">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>How does JobStir's AI matching work?</h3>
+                            <i data-feather="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our AI analyzes over 50 data points from job descriptions and candidate profiles to create accurate match scores. This includes skills, experience, education, and cultural fit indicators.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Is JobStir free to use?</h3>
+                            <i data-feather="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>JobStir offers both free and premium plans. Job seekers can use basic features for free, while employers have access to advanced features with our premium plans.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>How secure is my data on JobStir?</h3>
+                            <i data-feather="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We take data security seriously. JobStir is GDPR-compliant and uses enterprise-grade security measures to protect your personal and professional information.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Can I edit my profile after creating it?</h3>
+                            <i data-feather="chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, you can update your profile, resume, and preferences at any time through your dashboard. We recommend keeping your profile updated for better matches.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 JobStir. All rights reserved.</p>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+        
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const answer = faqItem.querySelector('.faq-answer');
+            const icon = element.querySelector('i');
+            
+            faqItem.classList.toggle('active');
+            
+            if (faqItem.classList.contains('active')) {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                icon.setAttribute('data-feather', 'chevron-up');
+            } else {
+                answer.style.maxHeight = '0';
+                icon.setAttribute('data-feather', 'chevron-down');
+            }
+            
+            feather.replace();
+        }
+    </script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/contact.js"></script>
+</body>
+</html>

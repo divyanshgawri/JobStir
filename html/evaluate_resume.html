@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Evaluator - JobStir</title>
+    <link rel="stylesheet" href="../css/jobstir-unified.css">
+    <link rel="stylesheet" href="../css/evaluate-resume-enhanced.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+</head>
+
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="job_listings.html">Browse Jobs</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="evaluate_resume.html" class="evaluate-link active"><b>Evaluate Resume</b></a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-desktop">
+                        <input type="checkbox" id="dark-mode-toggle-desktop" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <a href="signin.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job_listings.html">Browse Jobs</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="evaluate_resume.html" class="active"><b>Evaluate Resume</b></a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <a href="signin.html" class="btn btn-secondary">Log In</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </div>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Bridge the Gap to Your Dream Job</h1>
+            <p class="hero-subtitle">Our AI instantly analyzes your resume against any job description, giving you a
+                precise match score and expert suggestions to make your application shine.</p>
+        </div>
+    </section>
+
+    <main id="main-content" class="container">
+        <div id="input-section" class="input-grid">
+            <!-- Resume Input Card -->
+            <div class="card resume-card">
+                <div class="card-header">
+                    <i data-feather="file-text"></i>
+                    <label for="resume-text" class="card-label">Your Resume</label>
+                </div>
+                <div class="upload-area">
+                    <label for="pdf-upload" class="btn-upload">
+                        <i data-feather="upload-cloud"></i> Upload PDF
+                    </label>
+                    <input type="file" id="pdf-upload" class="hidden-input" accept="application/pdf">
+                    <p id="pdf-status" class="pdf-status-text">or paste content below</p>
+                </div>
+                <textarea id="resume-text" rows="12" class="textarea-input"
+                    placeholder="Paste your resume text here..."></textarea>
+            </div>
+
+            <div class="card jd-card">
+                <div class="card-header">
+                    <i data-feather="briefcase"></i>
+                    <label for="job-description" class="card-label">Job Description</label>
+                </div>
+                <textarea id="job-description" rows="15" class="textarea-input"
+                    placeholder="Paste the job description here..."></textarea>
+                <div class="char-counter-wrapper">
+                    <span id="char-count">0 characters</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-center">
+            <button id="analyze-button" class="btn-primary">
+                <i data-feather="bar-chart-2"></i> Analyze Now
+            </button>
+        </div>
+    </main>
+
+    <div id="loader" class="loader-container hidden">
+        <div class="spinner"></div>
+        <p class="loader-text">Analyzing... this may take a moment.</p>
+    </div>
+
+    <div id="results-section" class="container hidden">
+        <div class="results-card">
+            <div class="results-header">
+                <div>
+                    <h2 class="results-title">Analysis Report</h2>
+                    <p class="results-subtitle">Here's the breakdown of the resume against the job description.</p>
+                </div>
+                <button id="reset-button" class="btn-secondary">
+                    <i data-feather="rotate-cw"></i> Analyze Another
+                </button>
+            </div>
+
+            <div class="summary-grid">
+                <div class="score-container">
+                    <h3 class="section-title">Match Score</h3>
+                    <div class="progress-circle-container">
+                        <svg class="progress-ring" viewBox="0 0 120 120">
+                            <circle class="progress-ring-bg" cx="60" cy="60" r="54" />
+                            <circle id="progress-circle" class="progress-ring-fg" cx="60" cy="60" r="54" />
+                        </svg>
+                        <span id="score-text" class="score-percentage">0%</span>
+                    </div>
+                </div>
+                <div class="summary-container">
+                    <h3 class="section-title">Executive Summary</h3>
+                    <p id="summary-text" class="summary-paragraph"></p>
+                </div>
+            </div>
+
+            <div class="tabs-container">
+                <div class="tab-navigation">
+                    <button class="tab-button active" data-tab="keywords"><i data-feather="key"></i>Overview</button>
+                    <button class="tab-button advanced-only hidden" data-tab="detailed"><i
+                            data-feather="bar-chart-2"></i>Detailed Analysis</button>
+                    <button class="tab-button advanced-only hidden" data-tab="insights"><i
+                            data-feather="target"></i>Insights</button>
+                    <button class="tab-button advanced-only hidden" data-tab="jobs"><i data-feather="briefcase"></i>Job
+                        Matches</button>
+                </div>
+                <div class="tab-content-wrapper">
+                    <!-- Basic Analysis (Always Available) -->
+                    <div id="keywords-content" class="tab-content active">
+                        <div class="keyword-grid">
+                            <div>
+                                <h4 class="keyword-title matched"><i data-feather="check-circle"></i> Matched Keywords
+                                </h4>
+                                <div id="matched-keywords" class="keyword-list"></div>
+                            </div>
+                            <div>
+                                <h4 class="keyword-title missing"><i data-feather="x-circle"></i> Missing Keywords</h4>
+                                <div id="missing-keywords" class="keyword-list"></div>
+                            </div>
+                        </div>
+                        <div class="quick-suggestions-section">
+                            <h4 class="section-title">Quick Suggestions</h4>
+                            <ul id="quick-suggestions" class="suggestions-list"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Analysis (Requires Login) -->
+                    <div id="detailed-content" class="tab-content advanced-only hidden">
+                        <div class="detailed-scoring">
+                            <h4 class="section-title">Detailed Score Breakdown</h4>
+                            <div class="score-categories">
+                                <div class="score-category">
+                                    <span class="category-name">Skills Match</span>
+                                    <div class="score-bar">
+                                        <div class="score-fill" id="skills-bar"></div>
+                                        <span class="score-value" id="skills-score">0/35</span>
+                                    </div>
+                                </div>
+                                <div class="score-category">
+                                    <span class="category-name">Experience Match</span>
+                                    <div class="score-bar">
+                                        <div class="score-fill" id="experience-bar"></div>
+                                        <span class="score-value" id="experience-score">0/25</span>
+                                    </div>
+                                </div>
+                                <div class="score-category">
+                                    <span class="category-name">Education Match</span>
+                                    <div class="score-bar">
+                                        <div class="score-fill" id="education-bar"></div>
+                                        <span class="score-value" id="education-score">0/20</span>
+                                    </div>
+                                </div>
+                                <div class="score-category">
+                                    <span class="category-name">Project Relevance</span>
+                                    <div class="score-bar">
+                                        <div class="score-fill" id="project-bar"></div>
+                                        <span class="score-value" id="project-score">0/20</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-reasoning">
+                            <h4 class="section-title">Detailed Analysis</h4>
+                            <div class="reasoning-sections">
+                                <div class="reasoning-item">
+                                    <h5>Skills Assessment</h5>
+                                    <p id="skills-reasoning"></p>
+                                </div>
+                                <div class="reasoning-item">
+                                    <h5>Experience Evaluation</h5>
+                                    <p id="experience-reasoning"></p>
+                                </div>
+                                <div class="reasoning-item">
+                                    <h5>Education Review</h5>
+                                    <p id="education-reasoning"></p>
+                                </div>
+                                <div class="reasoning-item">
+                                    <h5>Project Analysis</h5>
+                                    <p id="project-reasoning"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strengths & Improvements (Requires Login) -->
+                    <div id="insights-content" class="tab-content advanced-only hidden">
+                        <div class="insights-grid">
+                            <div class="strengths-section">
+                                <h4 class="section-title text-success">Your Strengths</h4>
+                                <ul id="strengths-list" class="insights-list"></ul>
+                            </div>
+                            <div class="improvements-section">
+                                <h4 class="section-title text-warning">Areas to Improve</h4>
+                                <ul id="improvements-list" class="insights-list"></ul>
+                            </div>
+                        </div>
+
+                        <div class="overall-assessment">
+                            <h4 class="section-title">Overall Assessment</h4>
+                            <p id="overall-assessment" class="assessment-text"></p>
+                            <div class="hiring-recommendation">
+                                <span class="recommendation-label">Hiring Recommendation:</span>
+                                <span id="hiring-recommendation" class="recommendation-value"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Recommendations (Premium Feature) -->
+                    <div id="jobs-content" class="tab-content advanced-only hidden">
+                        <h4 class="section-title">Recommended Jobs for You</h4>
+                        <p class="section-subtitle">Based on your resume analysis, here are jobs that match your
+                            profile:</p>
+                        <div id="job-recommendations" class="job-recommendations-grid hidden">
+                            <!-- Job recommendations will be populated here -->
+                        </div>
+                        <div id="no-jobs-message" class="no-items">
+                            No job recommendations available. Make sure you have jobs in your database.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="error-box" class="container error-box hidden">
+        <i data-feather="alert-triangle"></i>
+        <div>
+            <strong>Oops! Something went wrong.</strong>
+            <span id="error-message">Please try again.</span>
+        </div>
+    </div>
+
+    <!-- Upgrade Prompt Overlay -->
+    <div id="upgrade-overlay" class="upgrade-overlay hidden guest-only">
+        <!-- Content will be populated by JavaScript -->
+    </div>
+
+    <script>
+        feather.replace();
+        // Set PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    </script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/supabase-auth.js"></script>
+    <script src="../js/supabase-database.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/resume-evaluator-engine.js"></script>
+    <script src="../js/resume-evaluator-supabase.js"></script>
+    <script src="../js/performance-benchmark.js"></script>
+    <script src="../js/evaluate-resume.js"></script>
+</body>
+
+</html>
