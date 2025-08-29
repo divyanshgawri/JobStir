@@ -86,115 +86,209 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(styleSheet);
 
-    // --- Three.js 3D Globe Animation ---
+    // --- GitHub Globe Animation ---
     const container = document.getElementById('hero-animation-container');
     if (container && typeof THREE !== 'undefined') {
-        let scene, camera, renderer, globe, clouds, particles, stars, moonsGroup;
+        // Check if ThreeGlobe is loaded
+        if (typeof ThreeGlobe === 'undefined') {
+            console.error('ThreeGlobe library not loaded. Please check the script tag.');
+            return;
+        }
+        let scene, camera, renderer, globe, controls;
         let mouseX = 0, mouseY = 0;
         let windowHalfX = window.innerWidth / 2;
         let windowHalfY = window.innerHeight / 2;
+        let globeData = [];
+        let arcsData = [];
 
-        function init() {
+        // Sample data for arcs (connections between cities)
+        const sampleArcs = [
+            { startLat: 40.7128, startLng: -74.0060, endLat: 51.5074, endLng: -0.1278, color: '#ff6b6b', order: 1, arcAlt: 0.3 }, // NYC to London
+            { startLat: 37.7749, startLng: -122.4194, endLat: 35.6762, endLng: 139.6503, color: '#4ecdc4', order: 2, arcAlt: 0.4 }, // SF to Tokyo
+            { startLat: 51.5074, startLng: -0.1278, endLat: -33.8688, endLng: 151.2093, color: '#45b7d1', order: 3, arcAlt: 0.5 }, // London to Sydney
+            { startLat: 48.8566, startLng: 2.3522, endLat: 55.7558, endLng: 37.6173, color: '#f9ca24', order: 4, arcAlt: 0.3 }, // Paris to Moscow
+            { startLat: 28.6139, startLng: 77.2090, endLat: 1.3521, endLng: 103.8198, color: '#6c5ce7', order: 5, arcAlt: 0.4 }, // Delhi to Singapore
+            { startLat: -23.5505, startLng: -46.6333, endLat: 40.7128, endLng: -74.0060, color: '#fd79a8', order: 6, arcAlt: 0.6 }, // São Paulo to NYC
+            { startLat: 39.9042, startLng: 116.4074, endLat: 37.7749, endLng: -122.4194, color: '#00b894', order: 7, arcAlt: 0.5 }, // Beijing to SF
+            { startLat: 25.2048, startLng: 55.2708, endLat: 51.5074, endLng: -0.1278, color: '#e17055', order: 8, arcAlt: 0.4 }, // Dubai to London
+        ];
+
+        function loadGlobeData() {
+            // Use embedded globe data instead of fetch to avoid file:// protocol issues
+            if (typeof GLOBE_DATA !== 'undefined') {
+                return GLOBE_DATA;
+            } else {
+                console.error('GLOBE_DATA not available. Please ensure globe-data.js is loaded.');
+                return null;
+            }
+        }
+
+        function hexToRgb(hex) {
+            const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+                return r + r + g + g + b + b;
+            });
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16),
+            } : null;
+        }
+
+        function genRandomNumbers(min, max, count) {
+            const arr = [];
+            while (arr.length < count) {
+                const r = Math.floor(Math.random() * (max - min)) + min;
+                if (arr.indexOf(r) === -1) arr.push(r);
+            }
+            return arr;
+        }
+
+        async function init() {
             // Scene
             scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x000000, 400, 2000);
 
             // Camera
-            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.z = 5;
+            camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 180, 1800);
+            camera.position.z = 400;
 
             // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setClearColor(0x000000, 0);
             container.appendChild(renderer.domElement);
 
-            // Texture Loader with error handling
-            const textureLoader = new THREE.TextureLoader();
-            const loadTexture = (url, name) => {
-                return textureLoader.load(url, 
-                    () => console.log(`Successfully loaded ${name} texture.`),
-                    undefined,
-                    (err) => console.error(`An error occurred loading the ${name} texture.`, err)
-                );
+            // Load globe data
+            const countries = loadGlobeData();
+            
+            // Initialize Globe
+            globe = new ThreeGlobe()
+                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png');
+
+            // Configure globe appearance
+            const globeConfig = {
+                pointSize: 1,
+                atmosphereColor: '#ffffff',
+                showAtmosphere: true,
+                atmosphereAltitude: 0.1,
+                polygonColor: 'rgba(255,255,255,0.7)',
+                globeColor: '#1d072e',
+                emissive: '#000000',
+                emissiveIntensity: 0.1,
+                shininess: 0.9,
+                arcTime: 2000,
+                arcLength: 0.9,
+                rings: 1,
+                maxRings: 3,
             };
 
-            // Globe
-            const globeGeometry = new THREE.SphereGeometry(2, 64, 64);
-            const globeMaterial = new THREE.MeshPhongMaterial({
-                map: loadTexture('https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets/images/earthmap1k.jpg', 'Earth Day'),
-                specularMap: loadTexture('https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets/images/earthspec1k.jpg', 'Earth Specular'),
-                bumpMap: loadTexture('https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets/images/earthbump1k.jpg', 'Earth Bump'),
-                bumpScale: 0.05,
-                shininess: 10,
+            if (countries && countries.features) {
+                globe
+                    .hexPolygonsData(countries.features)
+                    .hexPolygonResolution(3)
+                    .hexPolygonMargin(0.7)
+                    .showAtmosphere(globeConfig.showAtmosphere)
+                    .atmosphereColor(globeConfig.atmosphereColor)
+                    .atmosphereAltitude(globeConfig.atmosphereAltitude)
+                    .hexPolygonColor(() => globeConfig.polygonColor);
+            } else {
+                console.warn('Country data not available, globe will display without country polygons');
+                globe
+                    .showAtmosphere(globeConfig.showAtmosphere)
+                    .atmosphereColor(globeConfig.atmosphereColor)
+                    .atmosphereAltitude(globeConfig.atmosphereAltitude);
+            }
+
+            // Add arcs
+            globe
+                .arcsData(sampleArcs)
+                .arcStartLat(d => d.startLat)
+                .arcStartLng(d => d.startLng)
+                .arcEndLat(d => d.endLat)
+                .arcEndLng(d => d.endLng)
+                .arcColor(d => d.color)
+                .arcAltitude(d => d.arcAlt)
+                .arcStroke(() => [0.32, 0.28, 0.3][Math.round(Math.random() * 2)])
+                .arcDashLength(globeConfig.arcLength)
+                .arcDashInitialGap(d => d.order)
+                .arcDashGap(15)
+                .arcDashAnimateTime(() => globeConfig.arcTime);
+
+            // Add points
+            let points = [];
+            sampleArcs.forEach(arc => {
+                points.push({
+                    lat: arc.startLat,
+                    lng: arc.startLng,
+                    size: globeConfig.pointSize,
+                    color: arc.color
+                });
+                points.push({
+                    lat: arc.endLat,
+                    lng: arc.endLng,
+                    size: globeConfig.pointSize,
+                    color: arc.color
+                });
             });
-            globe = new THREE.Mesh(globeGeometry, globeMaterial);
+
+            // Remove duplicates
+            const filteredPoints = points.filter(
+                (v, i, a) => a.findIndex(v2 => 
+                    ['lat', 'lng'].every(k => v2[k] === v[k])
+                ) === i
+            );
+
+            globe
+                .pointsData(filteredPoints)
+                .pointColor(d => d.color)
+                .pointsMerge(true)
+                .pointAltitude(0.0)
+                .pointRadius(2);
+
+            // Add rings animation
+            globe
+                .ringsData([])
+                .ringColor(() => globeConfig.polygonColor)
+                .ringMaxRadius(globeConfig.maxRings)
+                .ringPropagationSpeed(3)
+                .ringRepeatPeriod((globeConfig.arcTime * globeConfig.arcLength) / globeConfig.rings);
+
             scene.add(globe);
-            
-            // Clouds
-            const cloudGeometry = new THREE.SphereGeometry(2.05, 64, 64);
-            const cloudMaterial = new THREE.MeshPhongMaterial({
-                map: loadTexture('https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets/images/earthcloudmaptrans.png', 'Clouds'),
-                transparent: true,
-                opacity: 0.4
-            });
-            clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
-            scene.add(clouds);
 
             // Lights
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
             scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(5, 3, 5);
-            scene.add(directionalLight);
-
-            // Particles (Flowing dots)
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 2000;
-            const posArray = new Float32Array(particlesCount * 3);
-            for (let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 10;
-            }
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const particlesMaterial = new THREE.PointsMaterial({
-                size: 0.01,
-                color: 0xa855f7,
-            });
-            particles = new THREE.Points(particlesGeometry, particlesMaterial);
-            scene.add(particles);
             
-            // Starfield
-            const starGeometry = new THREE.BufferGeometry();
-            const starCount = 10000;
-            const starPosArray = new Float32Array(starCount * 3);
-            for(let i=0; i < starCount * 3; i++) {
-                starPosArray[i] = (Math.random() - 0.5) * 200;
-            }
-            starGeometry.setAttribute('position', new THREE.BufferAttribute(starPosArray, 3));
-            const starMaterial = new THREE.PointsMaterial({
-                size: 0.05,
-                color: 0xffffff,
-            });
-            stars = new THREE.Points(starGeometry, starMaterial);
-            scene.add(stars);
+            const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight1.position.set(-400, 100, 400);
+            scene.add(directionalLight1);
+            
+            const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight2.position.set(-200, 500, 200);
+            scene.add(directionalLight2);
+            
+            const pointLight = new THREE.PointLight(0xffffff, 0.8);
+            pointLight.position.set(-200, 500, 200);
+            scene.add(pointLight);
 
-            // Orbiting Moons (Dots)
-            moonsGroup = new THREE.Group();
-            const moonGeometry = new THREE.SphereGeometry(0.05, 16, 16);
-            const moonMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, emissive: 0xdddddd, shininess: 50 });
-
-            for (let i = 0; i < 3; i++) {
-                const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-                
-                const angle = (i / 3) * Math.PI * 2;
-                const radius = 2.8 + (Math.random() * 0.2);
-                moon.position.x = Math.cos(angle) * radius;
-                moon.position.z = Math.sin(angle) * radius;
-                moon.position.y = (Math.random() - 0.5) * 0.5;
-                
-                moonsGroup.add(moon);
-            }
-            scene.add(moonsGroup);
-
+            // Add rings animation interval
+            const ringsInterval = setInterval(() => {
+                if (globe) {
+                    const newNumbersOfRings = genRandomNumbers(0, sampleArcs.length, Math.floor((sampleArcs.length * 4) / 5));
+                    const ringsData = sampleArcs
+                        .filter((d, i) => newNumbersOfRings.includes(i))
+                        .map(d => ({
+                            lat: d.startLat,
+                            lng: d.startLng,
+                            color: d.color,
+                        }));
+                    globe.ringsData(ringsData);
+                }
+            }, 2000);
 
             // Event Listeners
             document.addEventListener('mousemove', onDocumentMouseMove);
@@ -202,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function onWindowResize() {
-            if (!container) return;
+            if (!container || !camera || !renderer) return;
             windowHalfX = window.innerWidth / 2;
             windowHalfY = window.innerHeight / 2;
             camera.aspect = container.clientWidth / container.clientHeight;
@@ -218,24 +312,29 @@ document.addEventListener('DOMContentLoaded', function() {
         function animate() {
             requestAnimationFrame(animate);
             
-            // Animations
-            globe.rotation.y += 0.001;
-            clouds.rotation.y += 0.0015;
-            particles.rotation.y += 0.0005;
-            stars.rotation.y += 0.0001;
-            moonsGroup.rotation.y += 0.003; // Animate the orbit
-
+            // Auto-rotate globe
+            if (globe) {
+                globe.rotation.y += 0.002;
+            }
 
             // Mouse interaction
-            camera.position.x += (mouseX - camera.position.x) * 0.05;
-            camera.position.y += (-mouseY - camera.position.y) * 0.05;
-            camera.lookAt(scene.position);
-
-            renderer.render(scene, camera);
+            if (camera && scene && renderer) {
+                camera.position.x += (mouseX - camera.position.x) * 0.05;
+                camera.position.y += (-mouseY - camera.position.y) * 0.05;
+                camera.lookAt(scene.position);
+                renderer.render(scene, camera);
+            }
         }
 
-        init();
-        animate();
+        // Initialize with error handling
+        try {
+            init();
+            animate();
+        } catch (error) {
+            console.error('Error initializing globe:', error);
+        }
+    } else if (container) {
+        console.warn('Three.js or ThreeGlobe not available. Globe will not be displayed.');
     }
     
     // Authentication UI Management
