@@ -1,12 +1,16 @@
+// Supabase configuration - Load from config.js
+const SUPABASE_URL = window.APP_CONFIG?.SUPABASE?.URL || 'https://your-project-id.supabase.co';
+const SUPABASE_ANON_KEY = window.APP_CONFIG?.SUPABASE?.ANON_KEY || 'your-supabase-anon-key-here';
+
 // Supabase Configuration for JobStir
 // Replace these with your actual Supabase project credentials
 
 const SUPABASE_CONFIG = {
     // 🔑 ADD YOUR SUPABASE PROJECT URL HERE
-    url: 'https://gvjtrtrjeeqtbkrqpaji.supabase.co', // e.g., 'https://your-project.supabase.co'
+    url: SUPABASE_URL,
 
     // 🔑 ADD YOUR SUPABASE ANON KEY HERE  
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2anRydHJqZWVxdGJrcnFwYWppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyNDIxNjMsImV4cCI6MjA3MTgxODE2M30.GAWO0B7xtD0JfSeTw4RlVOZES_gHixql0rPMSgSNf1Y', // Your public anon key
+    anonKey: SUPABASE_ANON_KEY,
 
     // Optional: Custom configuration
     options: {

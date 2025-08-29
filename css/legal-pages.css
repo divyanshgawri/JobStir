@@ -1,0 +1,140 @@
+/* Legal Pages CSS - Privacy Policy, Terms of Service */
+
+.legal-content {
+    padding: 2rem 0 4rem;
+    min-height: 80vh;
+}
+
+.legal-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--border-light);
+}
+
+.legal-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.last-updated {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-style: italic;
+}
+
+.legal-body {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+.legal-body section {
+    margin-bottom: 2.5rem;
+}
+
+.legal-body h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.legal-body h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 1.5rem 0 0.75rem;
+}
+
+.legal-body p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.legal-body ul, .legal-body ol {
+    margin: 1rem 0 1rem 1.5rem;
+    color: var(--text-secondary);
+}
+
+.legal-body li {
+    margin-bottom: 0.5rem;
+}
+
+.legal-body strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.legal-body a {
+    color: var(--primary);
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.legal-body a:hover {
+    color: var(--secondary);
+}
+
+.contact-info {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-top: 1rem;
+}
+
+.contact-info p {
+    margin-bottom: 0.5rem;
+}
+
+.contact-info p:last-child {
+    margin-bottom: 0;
+}
+
+/* Dark mode styles */
+.dark .legal-header h1 {
+    color: var(--white);
+}
+
+.dark .legal-body h2,
+.dark .legal-body h3 {
+    color: var(--white);
+}
+
+.dark .legal-body p,
+.dark .legal-body li {
+    color: var(--sky-blue);
+}
+
+.dark .contact-info {
+    background: var(--navy);
+    border-color: var(--teal);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .legal-content {
+        padding: 1rem 0 2rem;
+    }
+    
+    .legal-header h1 {
+        font-size: 2rem;
+    }
+    
+    .legal-body {
+        padding: 0 1rem;
+    }
+    
+    .legal-body h2 {
+        font-size: 1.25rem;
+    }
+    
+    .legal-body h3 {
+        font-size: 1.1rem;
+    }
+}

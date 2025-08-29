@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - JobStir</title>
+    <link rel="stylesheet" href="../css/jobstir-unified.css">
+    <link rel="stylesheet" href="../css/job-detail.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="container nav-content">
+            <div class="logo">
+                <a href="index.html" class="site-title-main">JobStir</a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="job_listings.html">Browse Jobs</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="evaluate_resume.html" class="evaluate-link"><b>Evaluate Resume</b></a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle">
+                        <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <a href="signin.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="site-title-main">JobStir</a>
+            <div class="mobile-header-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="dark-mode-toggle-mobile">
+                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
+                        <div class="slider round">
+                            <i data-feather="sun" class="sun-icon"></i>
+                            <i data-feather="moon" class="moon-icon"></i>
+                        </div>
+                    </label>
+                </div>
+                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
+            </div>
+        </div>
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="job_listings.html">Browse Jobs</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="evaluate_resume.html"><b>Evaluate Resume</b></a></li>
+        </ul>
+        <div class="mobile-nav-buttons">
+            <a href="signin.html" class="btn btn-secondary">Log In</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </div>
+
+    <main class="job-detail-main">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb">
+                <a href="index.html">Home</a>
+                <i data-feather="chevron-right"></i>
+                <a href="job_listings.html">Jobs</a>
+                <i data-feather="chevron-right"></i>
+                <span id="job-title-breadcrumb">Job Details</span>
+            </nav>
+
+            <div class="job-detail-layout">
+                <!-- Main Job Content -->
+                <div class="job-content">
+                    <div class="job-header">
+                        <div class="company-info">
+                            <div class="company-logo" id="company-logo"></div>
+                            <div class="job-title-section">
+                                <h1 id="job-title">Loading...</h1>
+                                <p class="company-name" id="company-name">Loading...</p>
+                                <div class="job-meta">
+                                    <span class="location" id="job-location">
+                                        <i data-feather="map-pin"></i> Loading...
+                                    </span>
+                                    <span class="job-type" id="job-type">
+                                        <i data-feather="clock"></i> Loading...
+                                    </span>
+                                    <span class="salary" id="job-salary">
+                                        <i data-feather="dollar-sign"></i> Loading...
+                                    </span>
+                                    <span class="posted-date" id="posted-date">
+                                        <i data-feather="calendar"></i> Loading...
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="job-actions">
+                            <button class="btn btn-primary apply-btn" id="apply-btn">
+                                <i data-feather="send"></i> Apply Now
+                            </button>
+                            <button class="btn btn-secondary save-btn" id="save-btn">
+                                <i data-feather="bookmark"></i> Save Job
+                            </button>
+                            <button class="btn btn-secondary share-btn" id="share-btn">
+                                <i data-feather="share-2"></i> Share
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Job Tags -->
+                    <div class="job-tags" id="job-tags">
+                        <!-- Tags will be populated dynamically -->
+                    </div>
+
+                    <!-- Job Description -->
+                    <section class="job-section">
+                        <h2>Job Description</h2>
+                        <div class="job-description" id="job-description">
+                            <p>Loading job description...</p>
+                        </div>
+                    </section>
+
+                    <!-- Requirements -->
+                    <section class="job-section">
+                        <h2>Requirements</h2>
+                        <ul class="requirements-list" id="requirements-list">
+                            <li>Loading requirements...</li>
+                        </ul>
+                    </section>
+
+                    <!-- Benefits -->
+                    <section class="job-section">
+                        <h2>Benefits & Perks</h2>
+                        <ul class="benefits-list" id="benefits-list">
+                            <li>Loading benefits...</li>
+                        </ul>
+                    </section>
+
+                    <!-- Company Description -->
+                    <section class="job-section">
+                        <h2>About the Company</h2>
+                        <div class="company-description" id="company-description">
+                            <p>Loading company information...</p>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="job-sidebar">
+                    <!-- Quick Apply Card -->
+                    <div class="sidebar-card apply-card">
+                        <h3>Quick Apply</h3>
+                        <p>Ready to take the next step?</p>
+                        <button class="btn btn-primary btn-full-width" id="quick-apply-btn">
+                            <i data-feather="send"></i> Apply Now
+                        </button>
+                        <p class="apply-note">
+                            <i data-feather="info"></i>
+                            Sign in to apply with your saved profile
+                        </p>
+                    </div>
+
+                    <!-- Job Stats -->
+                    <div class="sidebar-card stats-card">
+                        <h3>Job Statistics</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">Applications</span>
+                            <span class="stat-value" id="application-count">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Views</span>
+                            <span class="stat-value" id="view-count">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Posted</span>
+                            <span class="stat-value" id="posted-time">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Similar Jobs -->
+                    <div class="sidebar-card similar-jobs-card">
+                        <h3>Similar Jobs</h3>
+                        <div class="similar-jobs-list" id="similar-jobs-list">
+                            <!-- Similar jobs will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Resume Analyzer -->
+                    <div class="sidebar-card analyzer-card">
+                        <h3>Resume Match</h3>
+                        <p>See how well your resume matches this job</p>
+                        <a href="evaluate_resume.html" class="btn btn-secondary btn-full-width">
+                            <i data-feather="bar-chart-2"></i> Analyze Resume
+                        </a>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Application Modal -->
+    <div id="application-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Apply for this Position</h3>
+                <button class="modal-close" id="modal-close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="application-form">
+                    <div class="form-group">
+                        <label for="applicant-name">Full Name</label>
+                        <input type="text" id="applicant-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="applicant-email">Email</label>
+                        <input type="email" id="applicant-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="applicant-phone">Phone</label>
+                        <input type="tel" id="applicant-phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="cover-letter">Cover Letter</label>
+                        <textarea id="cover-letter" rows="6" placeholder="Tell us why you're perfect for this role..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="resume-upload">Resume</label>
+                        <input type="file" id="resume-upload" accept=".pdf,.doc,.docx">
+                        <p class="file-note">PDF, DOC, or DOCX (Max 5MB)</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-application">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="submit-application">
+                    <i data-feather="send"></i> Submit Application
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 JobStir. All rights reserved.</p>
+                <ul class="footer-links">
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/supabase-auth.js"></script>
+    <script src="../js/supabase-database.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/job-detail.js"></script>
+</body>
+</html>

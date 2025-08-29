@@ -75,9 +75,28 @@
 
     <section class="hero-section">
         <div class="container">
-            <h1 class="hero-title">Bridge the Gap to Your Dream Job</h1>
-            <p class="hero-subtitle">Our AI instantly analyzes your resume against any job description, giving you a
-                precise match score and expert suggestions to make your application shine.</p>
+            <h1 class="hero-title">AI-Powered Resume Analysis & Career Insights</h1>
+            <p class="hero-subtitle">Get comprehensive resume analysis, ATS compatibility checks, salary estimates, and personalized career recommendations powered by advanced AI.</p>
+            
+            <!-- Enhanced Features Bar -->
+            <div class="features-bar">
+                <div class="feature-item">
+                    <i data-feather="zap"></i>
+                    <span>Real-time Analysis</span>
+                </div>
+                <div class="feature-item">
+                    <i data-feather="shield"></i>
+                    <span>ATS Compatibility</span>
+                </div>
+                <div class="feature-item">
+                    <i data-feather="dollar-sign"></i>
+                    <span>Salary Insights</span>
+                </div>
+                <div class="feature-item">
+                    <i data-feather="trending-up"></i>
+                    <span>Career Path</span>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -113,10 +132,32 @@
             </div>
         </div>
 
-        <div class="action-center">
-            <button id="analyze-button" class="btn-primary">
-                <i data-feather="bar-chart-2"></i> Analyze Now
-            </button>
+        <!-- Enhanced Controls -->
+        <div class="controls-section">
+            <div class="analysis-controls">
+                <button id="analyze-button" class="btn-primary">
+                    <i data-feather="bar-chart-2"></i> Analyze Resume
+                </button>
+                <div class="control-options">
+                    <label class="toggle-control">
+                        <input type="checkbox" id="realtime-toggle">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">Real-time Analysis</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="export-analysis" class="btn-secondary" disabled>
+                    <i data-feather="download"></i> Export Report
+                </button>
+                <button id="compare-analysis" class="btn-secondary" disabled>
+                    <i data-feather="git-compare"></i> Compare
+                </button>
+                <button id="settings-button" class="btn-secondary">
+                    <i data-feather="settings"></i> Settings
+                </button>
+            </div>
         </div>
     </main>
 
@@ -157,12 +198,11 @@
             <div class="tabs-container">
                 <div class="tab-navigation">
                     <button class="tab-button active" data-tab="keywords"><i data-feather="key"></i>Overview</button>
-                    <button class="tab-button advanced-only hidden" data-tab="detailed"><i
-                            data-feather="bar-chart-2"></i>Detailed Analysis</button>
-                    <button class="tab-button advanced-only hidden" data-tab="insights"><i
-                            data-feather="target"></i>Insights</button>
-                    <button class="tab-button advanced-only hidden" data-tab="jobs"><i data-feather="briefcase"></i>Job
-                        Matches</button>
+                    <button class="tab-button advanced-only hidden" data-tab="detailed"><i data-feather="bar-chart-2"></i>Detailed Analysis</button>
+                    <button class="tab-button advanced-only hidden" data-tab="insights"><i data-feather="target"></i>Career Insights</button>
+                    <button class="tab-button advanced-only hidden" data-tab="ats"><i data-feather="shield"></i>ATS Check</button>
+                    <button class="tab-button advanced-only hidden" data-tab="salary"><i data-feather="dollar-sign"></i>Salary Estimate</button>
+                    <button class="tab-button advanced-only hidden" data-tab="jobs"><i data-feather="briefcase"></i>Job Matches</button>
                 </div>
                 <div class="tab-content-wrapper">
                     <!-- Basic Analysis (Always Available) -->
@@ -266,11 +306,107 @@
                         </div>
                     </div>
 
+                    <!-- ATS Compatibility Check -->
+                    <div id="ats-content" class="tab-content advanced-only hidden">
+                        <h4 class="section-title">ATS Compatibility Analysis</h4>
+                        <p class="section-subtitle">Check how well your resume works with Applicant Tracking Systems</p>
+                        
+                        <div class="ats-score-container">
+                            <div class="ats-overall-score">
+                                <div class="score-circle">
+                                    <span id="ats-score-text">--</span>
+                                </div>
+                                <h5>ATS Compatibility Score</h5>
+                            </div>
+                        </div>
+                        
+                        <div class="ats-breakdown">
+                            <div class="ats-category">
+                                <span class="category-name">Contact Information</span>
+                                <div class="score-bar"><div class="score-fill" id="ats-contact-bar"></div></div>
+                                <span class="score-value" id="ats-contact-score">--</span>
+                            </div>
+                            <div class="ats-category">
+                                <span class="category-name">Structure & Format</span>
+                                <div class="score-bar"><div class="score-fill" id="ats-structure-bar"></div></div>
+                                <span class="score-value" id="ats-structure-score">--</span>
+                            </div>
+                            <div class="ats-category">
+                                <span class="category-name">Keyword Density</span>
+                                <div class="score-bar"><div class="score-fill" id="ats-keywords-bar"></div></div>
+                                <span class="score-value" id="ats-keywords-score">--</span>
+                            </div>
+                        </div>
+                        
+                        <div class="ats-recommendations">
+                            <h5>ATS Optimization Tips</h5>
+                            <ul id="ats-recommendations-list"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Salary Estimate -->
+                    <div id="salary-content" class="tab-content advanced-only hidden">
+                        <h4 class="section-title">Salary Estimate & Market Insights</h4>
+                        <p class="section-subtitle">Estimated compensation based on your skills and experience</p>
+                        
+                        <div class="salary-estimate-container">
+                            <div class="salary-range">
+                                <div class="salary-item">
+                                    <span class="salary-label">Estimated Range</span>
+                                    <span class="salary-value" id="salary-range">--</span>
+                                </div>
+                                <div class="salary-item">
+                                    <span class="salary-label">Market Median</span>
+                                    <span class="salary-value" id="salary-median">--</span>
+                                </div>
+                                <div class="salary-item">
+                                    <span class="salary-label">Confidence</span>
+                                    <span class="salary-confidence" id="salary-confidence">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="market-insights">
+                            <h5>Market Insights</h5>
+                            <div class="insights-grid">
+                                <div class="insight-item">
+                                    <strong>Demand Level:</strong>
+                                    <span id="market-demand">--</span>
+                                </div>
+                                <div class="insight-item">
+                                    <strong>Growth Trend:</strong>
+                                    <span id="market-growth">--</span>
+                                </div>
+                                <div class="insight-item">
+                                    <strong>Competition:</strong>
+                                    <span id="market-competition">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="salary-projection">
+                            <h5>Growth Projection</h5>
+                            <div class="projection-timeline">
+                                <div class="projection-item">
+                                    <span class="timeline">1 Year</span>
+                                    <span class="projected-salary" id="salary-1year">--</span>
+                                </div>
+                                <div class="projection-item">
+                                    <span class="timeline">3 Years</span>
+                                    <span class="projected-salary" id="salary-3years">--</span>
+                                </div>
+                                <div class="projection-item">
+                                    <span class="timeline">5 Years</span>
+                                    <span class="projected-salary" id="salary-5years">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Job Recommendations (Premium Feature) -->
                     <div id="jobs-content" class="tab-content advanced-only hidden">
                         <h4 class="section-title">Recommended Jobs for You</h4>
-                        <p class="section-subtitle">Based on your resume analysis, here are jobs that match your
-                            profile:</p>
+                        <p class="section-subtitle">Based on your resume analysis, here are jobs that match your profile:</p>
                         <div id="job-recommendations" class="job-recommendations-grid hidden">
                             <!-- Job recommendations will be populated here -->
                         </div>
@@ -291,6 +427,55 @@
         </div>
     </div>
 
+    <!-- Analysis History Sidebar -->
+    <div id="analysis-history-sidebar" class="history-sidebar hidden">
+        <div class="sidebar-header">
+            <h4>Analysis History</h4>
+            <button class="close-sidebar" onclick="this.parentElement.parentElement.classList.add('hidden')">
+                <i data-feather="x"></i>
+            </button>
+        </div>
+        <div class="history-list" id="history-list">
+            <!-- History items will be populated here -->
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Analysis Settings</h4>
+                <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.classList.add('hidden')">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="auto-save-setting">
+                        <span>Auto-save analysis results</span>
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="detailed-feedback-setting">
+                        <span>Enable detailed feedback</span>
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="market-insights-setting">
+                        <span>Include market insights</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="this.parentElement.parentElement.parentElement.classList.add('hidden')">Cancel</button>
+                <button class="btn-primary" onclick="resumeEvaluator.saveSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Upgrade Prompt Overlay -->
     <div id="upgrade-overlay" class="upgrade-overlay hidden guest-only">
         <!-- Content will be populated by JavaScript -->
@@ -301,12 +486,16 @@
         // Set PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
     </script>
+    <script src="../js/config.js"></script>
     <script src="../js/supabase-config.js"></script>
     <script src="../js/supabase-auth.js"></script>
     <script src="../js/supabase-database.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/navigation.js"></script>
     <script src="../js/resume-evaluator-engine.js"></script>
+    <script src="../js/career-insights-engine.js"></script>
+    <script src="../js/ats-compatibility-checker.js"></script>
+    <script src="../js/salary-estimator.js"></script>
     <script src="../js/resume-evaluator-supabase.js"></script>
     <script src="../js/performance-benchmark.js"></script>
     <script src="../js/evaluate-resume.js"></script>

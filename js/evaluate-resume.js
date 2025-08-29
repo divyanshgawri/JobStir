@@ -1,39 +1,105 @@
-// High-Performance AI Resume Evaluator - Pure JavaScript Implementation
-// Replaces Flask backend with optimized client-side processing
+// Enhanced AI Resume Evaluator - Advanced JavaScript Implementation
+// Features: Real-time analysis, AI scoring, job matching, and career insights
 
 class ResumeEvaluator {
     constructor() {
         this.evaluatorEngine = null;
         this.isProcessing = false;
+        this.analysisHistory = [];
+        this.currentAnalysis = null;
+        this.autoSaveEnabled = true;
+        this.realTimeMode = false;
         this.initializeElements();
         this.bindEvents();
         this.initializeEngine();
+        this.loadUserPreferences();
     }
 
     async initializeEngine() {
         try {
-            // Initialize the high-performance evaluator engine
+            // Initialize the enhanced evaluator engine with advanced features
             this.evaluatorEngine = new ResumeEvaluatorEngine();
-            console.log('✅ Resume evaluator engine initialized successfully');
+            console.log('✅ Enhanced resume evaluator engine initialized successfully');
+            
+            // Initialize advanced features
+            await this.initializeAdvancedFeatures();
             
             // Check Supabase integration
             if (window.resumeEvaluatorSupabase) {
                 console.log('✅ Supabase integration ready');
+                await this.loadAnalysisHistory();
             } else {
                 console.log('⚠️ Supabase integration not available - evaluations will not be saved');
             }
             
-            // Log system status
-            console.log('🚀 JobStir Resume Evaluator Status:');
-            console.log('   - Engine: Ready');
-            console.log('   - Performance: 16.7x faster than Flask');
+            // Log enhanced system status
+            console.log('🚀 JobStir Enhanced Resume Evaluator Status:');
+            console.log('   - Engine: Ready with AI enhancements');
+            console.log('   - Real-time Analysis: ' + (this.realTimeMode ? 'Enabled' : 'Disabled'));
             console.log('   - Database: ' + (window.resumeEvaluatorSupabase ? 'Connected' : 'Offline'));
-            console.log('   - Cache: Enabled');
+            console.log('   - Analysis History: ' + this.analysisHistory.length + ' records');
+            console.log('   - Auto-save: ' + (this.autoSaveEnabled ? 'Enabled' : 'Disabled'));
             console.log('   - Web Workers: ' + (typeof Worker !== 'undefined' ? 'Available' : 'Not supported'));
             
         } catch (error) {
             console.error('❌ Failed to initialize evaluator engine:', error);
             this.showError('Failed to initialize resume evaluator. Please refresh the page.');
+        }
+    }
+
+    async initializeAdvancedFeatures() {
+        // Initialize real-time analysis if supported
+        if (typeof Worker !== 'undefined') {
+            this.setupRealTimeAnalysis();
+        }
+        
+        // Initialize career insights engine
+        this.careerInsights = new CareerInsightsEngine();
+        
+        // Initialize ATS compatibility checker
+        this.atsChecker = new ATSCompatibilityChecker();
+        
+        // Initialize salary estimator
+        this.salaryEstimator = new SalaryEstimator();
+        
+        console.log('✅ Advanced features initialized');
+    }
+
+    setupRealTimeAnalysis() {
+        // Enable real-time analysis with debouncing
+        let analysisTimeout;
+        const debounceDelay = 2000; // 2 seconds
+        
+        const triggerRealTimeAnalysis = () => {
+            if (!this.realTimeMode || this.isProcessing) return;
+            
+            clearTimeout(analysisTimeout);
+            analysisTimeout = setTimeout(() => {
+                this.performQuickAnalysis();
+            }, debounceDelay);
+        };
+        
+        this.resumeText.addEventListener('input', triggerRealTimeAnalysis);
+        this.jobDescription.addEventListener('input', triggerRealTimeAnalysis);
+    }
+
+    async loadUserPreferences() {
+        const preferences = localStorage.getItem('jobstir_evaluator_preferences');
+        if (preferences) {
+            const prefs = JSON.parse(preferences);
+            this.realTimeMode = prefs.realTimeMode || false;
+            this.autoSaveEnabled = prefs.autoSaveEnabled !== false;
+        }
+    }
+
+    async loadAnalysisHistory() {
+        try {
+            if (window.resumeEvaluatorSupabase) {
+                this.analysisHistory = await window.resumeEvaluatorSupabase.getAnalysisHistory();
+                this.updateHistoryUI();
+            }
+        } catch (error) {
+            console.warn('Failed to load analysis history:', error);
         }
     }
 
@@ -92,6 +158,17 @@ class ResumeEvaluator {
         // Job recommendations
         this.jobRecommendations = document.getElementById('job-recommendations');
         this.noJobsMessage = document.getElementById('no-jobs-message');
+        
+        // Enhanced features elements
+        this.realTimeToggle = document.getElementById('realtime-toggle');
+        this.analysisHistory = document.getElementById('analysis-history');
+        this.careerInsightsSection = document.getElementById('career-insights');
+        this.atsCompatibilitySection = document.getElementById('ats-compatibility');
+        this.salaryEstimateSection = document.getElementById('salary-estimate');
+        this.exportButton = document.getElementById('export-analysis');
+        this.compareButton = document.getElementById('compare-analysis');
+        this.settingsButton = document.getElementById('settings-button');
+        this.settingsModal = document.getElementById('settings-modal');
     }
 
     bindEvents() {
@@ -111,6 +188,15 @@ class ResumeEvaluator {
         this.tabButtons.forEach(button => {
             button.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
         });
+        
+        // Enhanced event bindings
+        this.realTimeToggle?.addEventListener('change', (e) => this.toggleRealTimeMode(e.target.checked));
+        this.exportButton?.addEventListener('click', () => this.exportAnalysis());
+        this.compareButton?.addEventListener('click', () => this.showComparisonModal());
+        this.settingsButton?.addEventListener('click', () => this.showSettingsModal());
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
         
         // Initial character count
         this.updateCharCount();
@@ -180,7 +266,7 @@ class ResumeEvaluator {
     async analyzeResume() {
         if (this.isProcessing || !this.evaluatorEngine) return;
 
-        // Validation
+        // Enhanced validation
         const resumeContent = this.resumeText.value.trim();
         const jobContent = this.jobDescription.value.trim();
 
@@ -200,46 +286,83 @@ class ResumeEvaluator {
         }
 
         this.isProcessing = true;
-        this.showLoader();
+        this.showEnhancedLoader();
         this.hideError();
 
         try {
-            // Use the high-performance JavaScript engine instead of Flask backend
             const startTime = performance.now();
-            const result = await this.evaluatorEngine.evaluateResume(resumeContent, jobContent);
-            const processingTime = performance.now() - startTime;
             
-            console.log(`Resume analysis completed in ${processingTime.toFixed(2)}ms`);
+            // Enhanced analysis with multiple engines
+            const [basicResult, careerInsights, atsCompatibility, salaryEstimate] = await Promise.all([
+                this.evaluatorEngine.evaluateResume(resumeContent, jobContent),
+                this.careerInsights?.analyzeCareerPath(resumeContent, jobContent),
+                this.atsChecker?.checkCompatibility(resumeContent),
+                this.salaryEstimator?.estimateSalary(resumeContent, jobContent)
+            ]);
             
-            // Save to Supabase if user is authenticated
-            if (window.resumeEvaluatorSupabase) {
+            // Combine all analysis results
+            const enhancedResult = {
+                ...basicResult,
+                career_insights: careerInsights,
+                ats_compatibility: atsCompatibility,
+                salary_estimate: salaryEstimate,
+                analysis_timestamp: new Date().toISOString(),
+                processing_time: performance.now() - startTime
+            };
+            
+            console.log(`Enhanced resume analysis completed in ${enhancedResult.processing_time.toFixed(2)}ms`);
+            
+            // Save to analysis history
+            this.analysisHistory.unshift(enhancedResult);
+            if (this.analysisHistory.length > 10) {
+                this.analysisHistory = this.analysisHistory.slice(0, 10);
+            }
+            
+            // Auto-save if enabled
+            if (this.autoSaveEnabled && window.resumeEvaluatorSupabase) {
                 try {
-                    await window.resumeEvaluatorSupabase.saveEvaluationResult(result, resumeContent, jobContent);
+                    await window.resumeEvaluatorSupabase.saveEvaluationResult(enhancedResult, resumeContent, jobContent);
                     
                     // Update user profile with extracted resume data
-                    if (result.parsed_resume) {
-                        await window.resumeEvaluatorSupabase.updateUserProfileFromResume(result.parsed_resume);
+                    if (enhancedResult.parsed_resume) {
+                        await window.resumeEvaluatorSupabase.updateUserProfileFromResume(enhancedResult.parsed_resume);
                     }
                 } catch (supabaseError) {
                     console.warn('Failed to save to Supabase:', supabaseError);
-                    // Don't show error to user - this is optional functionality
                 }
             }
             
-            // Track analytics
+            // Track enhanced analytics
             if (window.trackConversion) {
-                window.trackConversion('resume_analysis', result.total_score);
+                window.trackConversion('enhanced_resume_analysis', enhancedResult.total_score);
             }
             
-            this.lastResult = result;
-            this.displayResults(result);
+            this.currentAnalysis = enhancedResult;
+            this.displayEnhancedResults(enhancedResult);
+            this.updateHistoryUI();
             
         } catch (error) {
-            console.error('Analysis error:', error);
+            console.error('Enhanced analysis error:', error);
             this.showError('Failed to analyze resume. Please try again.');
         } finally {
             this.isProcessing = false;
             this.hideLoader();
+        }
+    }
+
+    async performQuickAnalysis() {
+        if (this.isProcessing || !this.evaluatorEngine) return;
+        
+        const resumeContent = this.resumeText.value.trim();
+        const jobContent = this.jobDescription.value.trim();
+        
+        if (resumeContent.length < 50 || jobContent.length < 50) return;
+        
+        try {
+            const quickResult = await this.evaluatorEngine.quickAnalyze(resumeContent, jobContent);
+            this.displayQuickPreview(quickResult);
+        } catch (error) {
+            console.warn('Quick analysis failed:', error);
         }
     }
 
@@ -271,6 +394,159 @@ class ResumeEvaluator {
             this.displayJobRecommendations(data.job_recommendations || []);
         } else {
             this.hideAdvancedFeatures();
+        }
+    }
+
+    displayEnhancedResults(data) {
+        try {
+            // Call the basic display first
+            this.displayResults(data);
+            
+            // Enable action buttons
+            this.exportButton.disabled = false;
+            this.compareButton.disabled = false;
+            
+            // Display enhanced features if authenticated
+            const isAuthenticated = this.checkAuthentication();
+            
+            if (isAuthenticated) {
+                // Display ATS compatibility
+                if (data.ats_compatibility) {
+                    this.displayATSCompatibility(data.ats_compatibility);
+                }
+                
+                // Display salary estimate
+                if (data.salary_estimate) {
+                    this.displaySalaryEstimate(data.salary_estimate);
+                }
+                
+                // Display career insights
+                if (data.career_insights) {
+                    this.displayCareerInsights(data.career_insights);
+                }
+            }
+            
+        } catch (error) {
+            console.error('Error displaying enhanced results:', error);
+            this.showError('Failed to display some analysis results. Basic analysis is still available.');
+        }
+    }
+
+    displayATSCompatibility(atsData) {
+        try {
+            // Update ATS score
+            document.getElementById('ats-score-text').textContent = `${atsData.overall_score}%`;
+            
+            // Update detailed scores
+            this.updateATSScoreBar('contact', atsData.detailed_scores.contact_info);
+            this.updateATSScoreBar('structure', atsData.detailed_scores.structure);
+            this.updateATSScoreBar('keywords', atsData.detailed_scores.keyword_density);
+            
+            // Display recommendations
+            const recommendationsList = document.getElementById('ats-recommendations-list');
+            recommendationsList.innerHTML = '';
+            atsData.recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recommendationsList.appendChild(li);
+            });
+            
+        } catch (error) {
+            console.error('Error displaying ATS compatibility:', error);
+        }
+    }
+
+    updateATSScoreBar(category, score) {
+        try {
+            const bar = document.getElementById(`ats-${category}-bar`);
+            const scoreElement = document.getElementById(`ats-${category}-score`);
+            
+            if (bar && scoreElement) {
+                bar.style.width = `${score}%`;
+                scoreElement.textContent = `${score}%`;
+                
+                // Add color classes
+                bar.className = 'score-fill';
+                if (score >= 80) {
+                    bar.classList.add('excellent');
+                } else if (score >= 60) {
+                    bar.classList.add('good');
+                } else if (score >= 40) {
+                    bar.classList.add('fair');
+                } else {
+                    bar.classList.add('poor');
+                }
+            }
+        } catch (error) {
+            console.error(`Error updating ATS score bar for ${category}:`, error);
+        }
+    }
+
+    displaySalaryEstimate(salaryData) {
+        try {
+            // Update salary range
+            const range = salaryData.estimated_range;
+            document.getElementById('salary-range').textContent = 
+                `$${range.min.toLocaleString()} - $${range.max.toLocaleString()}`;
+            document.getElementById('salary-median').textContent = 
+                `$${range.median.toLocaleString()}`;
+            document.getElementById('salary-confidence').textContent = 
+                `${salaryData.confidence_level}%`;
+            
+            // Update market insights
+            const insights = salaryData.market_insights;
+            document.getElementById('market-demand').textContent = insights.demand_level;
+            document.getElementById('market-growth').textContent = insights.growth_trend;
+            document.getElementById('market-competition').textContent = insights.competition;
+            
+            // Update growth projections
+            const projection = salaryData.growth_projection;
+            document.getElementById('salary-1year').textContent = 
+                `$${projection.one_year.toLocaleString()}`;
+            document.getElementById('salary-3years').textContent = 
+                `$${projection.three_years.toLocaleString()}`;
+            document.getElementById('salary-5years').textContent = 
+                `$${projection.five_years.toLocaleString()}`;
+            
+        } catch (error) {
+            console.error('Error displaying salary estimate:', error);
+        }
+    }
+
+    displayCareerInsights(careerData) {
+        try {
+            // This would integrate with the existing insights display
+            // Add career-specific insights to the insights tab
+            if (careerData.next_steps) {
+                const existingImprovements = document.getElementById('improvements-list');
+                careerData.next_steps.forEach(step => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i data-feather="trending-up"></i> ${step}`;
+                    existingImprovements.appendChild(li);
+                });
+            }
+            
+            feather.replace();
+        } catch (error) {
+            console.error('Error displaying career insights:', error);
+        }
+    }
+
+    displayQuickPreview(quickResult) {
+        try {
+            // Show a subtle preview of the analysis without full results
+            const previewElement = document.getElementById('quick-preview');
+            if (previewElement && quickResult) {
+                previewElement.innerHTML = `
+                    <div class="quick-preview-content">
+                        <span class="preview-score">${quickResult.score || 0}%</span>
+                        <span class="preview-text">Match Preview</span>
+                    </div>
+                `;
+                previewElement.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Error displaying quick preview:', error);
         }
     }
 
@@ -662,48 +938,221 @@ class ResumeEvaluator {
         
         // Scroll to top
         document.getElementById('main-content').scrollIntoView({ behavior: 'smooth' });
+}
+
+exportAnalysis() {
+    try {
+        if (!this.currentAnalysis) {
+            this.showWarning('No analysis to export. Please analyze a resume first.');
+            return;
+        }
         
-        // Reset to first tab
-        this.switchTab('keywords');
-    }
-
-    showLoader() {
-        this.loader.classList.remove('hidden');
-        this.analyzeButton.disabled = true;
-        this.analyzeButton.innerHTML = '<i data-feather="loader"></i> Analyzing...';
-        feather.replace();
-    }
-
-    hideLoader() {
-        this.loader.classList.add('hidden');
-        this.analyzeButton.disabled = false;
-        this.analyzeButton.innerHTML = '<i data-feather="bar-chart-2"></i> Analyze Now';
-        feather.replace();
-    }
-
-    showError(message) {
-        this.errorMessage.textContent = message;
-        this.errorBox.classList.remove('hidden');
-        this.errorBox.scrollIntoView({ behavior: 'smooth' });
+        const exportData = {
+            analysis: this.currentAnalysis,
+            timestamp: new Date().toISOString(),
+            version: '2.0'
+        };
         
-        // Auto-hide after 5 seconds
-        setTimeout(() => this.hideError(), 5000);
-    }
-
-    hideError() {
-        this.errorBox.classList.add('hidden');
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+            type: 'application/json'
+        });
+        
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `resume-analysis-${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showSuccess('Analysis exported successfully');
+        
+    } catch (error) {
+        console.error('Error exporting analysis:', error);
+        this.showError('Failed to export analysis');
     }
 }
 
+showComparisonModal() {
+    try {
+        if (this.analysisHistory.length < 2) {
+            this.showWarning('Need at least 2 analyses to compare');
+            return;
+        }
+        
+        // Implementation for comparison modal would go here
+        this.showSuccess('Comparison feature coming soon!');
+        
+    } catch (error) {
+        console.error('Error showing comparison modal:', error);
+        this.showError('Failed to open comparison');
+    }
+}
+
+showSettingsModal() {
+    try {
+        const modal = document.getElementById('settings-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            
+            // Load current settings
+            document.getElementById('auto-save-setting').checked = this.autoSaveEnabled;
+            document.getElementById('detailed-feedback-setting').checked = true;
+            document.getElementById('market-insights-setting').checked = true;
+        }
+    } catch (error) {
+        console.error('Error showing settings modal:', error);
+        this.showError('Failed to open settings');
+    }
+}
+
+saveSettings() {
+    try {
+        const autoSave = document.getElementById('auto-save-setting').checked;
+        const detailedFeedback = document.getElementById('detailed-feedback-setting').checked;
+        const marketInsights = document.getElementById('market-insights-setting').checked;
+        
+        this.autoSaveEnabled = autoSave;
+        
+        this.saveUserPreferences();
+        
+        document.getElementById('settings-modal').classList.add('hidden');
+        this.showSuccess('Settings saved successfully');
+        
+    } catch (error) {
+        console.error('Error saving settings:', error);
+        this.showError('Failed to save settings');
+    }
+}
+
+saveUserPreferences() {
+    try {
+        const preferences = {
+            realTimeMode: this.realTimeMode,
+            autoSaveEnabled: this.autoSaveEnabled
+        };
+        
+        localStorage.setItem('jobstir_evaluator_preferences', JSON.stringify(preferences));
+    } catch (error) {
+        console.error('Error saving user preferences:', error);
+    }
+}
+
+updateHistoryUI() {
+    try {
+        const historyList = document.getElementById('history-list');
+        if (!historyList) return;
+        
+        historyList.innerHTML = '';
+        
+        this.analysisHistory.slice(0, 5).forEach((analysis, index) => {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div class="history-score">${analysis.total_score || 0}%</div>
+                <div class="history-details">
+                    <div class="history-date">${new Date(analysis.analysis_timestamp).toLocaleDateString()}</div>
+                    <div class="history-time">${new Date(analysis.analysis_timestamp).toLocaleTimeString()}</div>
+                </div>
+            `;
+            
+            historyItem.addEventListener('click', () => {
+                this.loadHistoryAnalysis(analysis);
+            });
+            
+            historyList.appendChild(historyItem);
+        });
+        
+    } catch (error) {
+        console.error('Error updating history UI:', error);
+    }
+}
+
+loadHistoryAnalysis(analysis) {
+    try {
+        this.currentAnalysis = analysis;
+        this.displayEnhancedResults(analysis);
+        document.getElementById('analysis-history-sidebar').classList.add('hidden');
+        this.showSuccess('Historical analysis loaded');
+    } catch (error) {
+        console.error('Error loading historical analysis:', error);
+        this.showError('Failed to load historical analysis');
+    }
+}
+
+handleKeyboardShortcuts(event) {
+    try {
+        // Ctrl/Cmd + Enter to analyze
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+            event.preventDefault();
+            this.analyzeResume();
+        }
+        
+        // Ctrl/Cmd + R to reset
+        if ((event.ctrlKey || event.metaKey) && event.key === 'r') {
+            event.preventDefault();
+            this.resetForm();
+        }
+        
+        // Escape to close modals
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.modal:not(.hidden)').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+        }
+        
+    } catch (error) {
+        console.error('Error handling keyboard shortcuts:', error);
+    }
+}
+
+// Global logout function
+window.logout = function() {
+    localStorage.removeItem('jobstir_session');
+    window.location.href = 'index.html';
+};
+
+// Global resume evaluator instance
+window.resumeEvaluator = null;
+
 // Initialize the resume evaluator when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new ResumeEvaluator();
-    
-    // Initialize Feather Icons
-    feather.replace();
-    
-    // Update authentication UI
-    updateAuthUI();
+    try {
+        window.resumeEvaluator = new ResumeEvaluator();
+        
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Update authentication UI
+        updateAuthUI();
+        
+        // Add global error handler
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+            if (window.resumeEvaluator) {
+                window.resumeEvaluator.showError('An unexpected error occurred. Please refresh the page.');
+            }
+        });
+        
+        // Add unhandled promise rejection handler
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+            if (window.resumeEvaluator) {
+                window.resumeEvaluator.showError('An error occurred during processing. Please try again.');
+            }
+        });
+        
+    } catch (error) {
+        console.error('Failed to initialize resume evaluator:', error);
+        document.body.innerHTML += `
+            <div class="initialization-error">
+                <h3>Initialization Error</h3>
+                <p>Failed to load the resume evaluator. Please refresh the page.</p>
+                <button onclick="window.location.reload()">Refresh Page</button>
+            </div>
+        `;
+    }
 });
 
 // Authentication UI Management (same as home.js)
@@ -752,9 +1201,3 @@ function createUserMenu(user) {
         </div>
     `;
 }
-
-// Global logout function
-window.logout = function() {
-    localStorage.removeItem('jobstir_session');
-    window.location.href = 'index.html';
-};
