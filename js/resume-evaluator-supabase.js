@@ -12,16 +12,22 @@ class ResumeEvaluatorSupabase {
 
     async init() {
         try {
-            // Initialize Supabase client
-            if (typeof window.supabase !== 'undefined') {
-                this.supabase = window.supabase;
-            } else {
+            // Initialize Supabase client (use shared singleton)
+            if (window && window.getSupabaseClient) {
+                this.supabase = window.getSupabaseClient();
+            }
+            if (!this.supabase) {
                 console.warn('Supabase client not available');
                 return;
             }
 
-            // Get current user
+            // Get current user and keep in sync with auth state
             await this.getCurrentUser();
+            if (this.supabase.auth && this.supabase.auth.onAuthStateChange) {
+                this.supabase.auth.onAuthStateChange(async () => {
+                    await this.getCurrentUser();
+                });
+            }
         } catch (error) {
             console.error('Failed to initialize Supabase integration:', error);
         }

@@ -389,6 +389,7 @@ class ResumeEvaluatorEngine {
             quick_suggestions: [],
             strengths: [],
             improvements: [],
+            missing_keyword_contexts: [],
             reasoning: {
                 skills_reasoning: '',
                 experience_reasoning: '',
@@ -401,6 +402,7 @@ class ResumeEvaluatorEngine {
 
         // Extract job requirements
         const jobKeywords = this.extractJobKeywords(jobDescription);
+        const keywordContexts = this.extractKeywordContexts(jobDescription, jobKeywords);
         const resumeKeywords = this.extractResumeKeywords(parsedResume);
 
         // Calculate skills match
@@ -426,12 +428,21 @@ class ResumeEvaluatorEngine {
                               analysis.education_score + analysis.project_score;
 
         // Generate suggestions and feedback
-        analysis.quick_suggestions = this.generateQuickSuggestions(analysis, parsedResume, jobKeywords);
+        analysis.quick_suggestions = this.generateQuickSuggestions(analysis, parsedResume, jobKeywords, keywordContexts);
         analysis.strengths = this.identifyStrengths(parsedResume, jobKeywords);
         analysis.improvements = this.identifyImprovements(analysis, parsedResume, jobKeywords);
 
+        // Map missing keywords to context snippets for UI tooltips
+        analysis.missing_keyword_contexts = (analysis.missing_keywords || []).map(k => ({
+            keyword: k,
+            context: keywordContexts[k] || ''
+        }));
+
         // Generate reasoning
         analysis.reasoning = this.generateReasoning(analysis, parsedResume, jobDescription);
+        // Provide top positive/negative keyword examples for clearer UX
+        analysis.matched_keywords = (analysis.matched_keywords || []).slice(0, 15);
+        analysis.missing_keywords = (analysis.missing_keywords || []).slice(0, 15);
         analysis.summary = this.generateSummary(analysis);
 
         return analysis;
@@ -506,6 +517,33 @@ class ResumeEvaluatorEngine {
         return { score, matched, missing };
     }
 
+    extractKeywordContexts(jobDescription, keywords) {
+        // Split JD into sentences and map each keyword to its best-matching sentence
+        const sentences = jobDescription
+            .split(/(?<=[\.!?])\s+/)
+            .map(s => s.trim())
+            .filter(Boolean);
+        const contexts = {};
+        const jdLower = jobDescription.toLowerCase();
+        keywords.forEach(kw => {
+            const k = kw.toLowerCase();
+            // Find first sentence that includes keyword
+            let ctx = '';
+            for (const s of sentences) {
+                if (s.toLowerCase().includes(k)) { ctx = s; break; }
+            }
+            // Fallback to a short window around first index
+            if (!ctx && jdLower.includes(k)) {
+                const idx = jdLower.indexOf(k);
+                const start = Math.max(0, idx - 60);
+                const end = Math.min(jobDescription.length, idx + k.length + 60);
+                ctx = jobDescription.substring(start, end) + '...';
+            }
+            contexts[kw] = ctx;
+        });
+        return contexts;
+    }
+
     calculateExperienceMatch(experience, jobDescription) {
         if (!experience || experience.length === 0) {
             return { score: 0 };
@@ -576,11 +614,15 @@ class ResumeEvaluatorEngine {
         return { score: Math.min(projectScore, 1) };
     }
 
-    generateQuickSuggestions(analysis, parsedResume, jobKeywords) {
+    generateQuickSuggestions(analysis, parsedResume, jobKeywords, keywordContexts = {}) {
         const suggestions = [];
 
         if (analysis.skills_score < 20) {
-            suggestions.push(`Add more relevant skills: ${analysis.missing_keywords.slice(0, 3).join(', ')}`);
+            const topMissing = analysis.missing_keywords.slice(0, 3);
+            const withContext = topMissing
+                .map(k => keywordContexts[k] ? `${k} (JD: "${keywordContexts[k]}")` : k)
+                .join(', ');
+            suggestions.push(`Add more relevant skills: ${withContext}`);
         }
 
         if (analysis.experience_score < 15) {

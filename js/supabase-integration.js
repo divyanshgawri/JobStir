@@ -10,13 +10,26 @@ class SupabaseManager {
     // Initialize Supabase client
     async init(supabaseUrl, supabaseAnonKey) {
         try {
-            // Import Supabase client (you'll need to include the Supabase JS library)
+            // Prefer shared singleton from supabase-config to avoid multiple clients
+            if (window && window.getSupabaseClient) {
+                const shared = window.getSupabaseClient();
+                if (shared) {
+                    this.supabase = shared;
+                    this.isInitialized = true;
+                    console.log('✅ Supabase initialized via shared singleton');
+                    return true;
+                }
+            }
+
+            // Fallback: direct createClient from global if available
             if (typeof createClient === 'undefined') {
                 console.error('Supabase client library not loaded. Please include: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>');
                 return false;
             }
             
-            this.supabase = createClient(supabaseUrl, supabaseAnonKey);
+            this.supabase = createClient(supabaseUrl, supabaseAnonKey, {
+                auth: { storageKey: 'jobstir-auth' }
+            });
             this.isInitialized = true;
             console.log('✅ Supabase initialized successfully');
             return true;

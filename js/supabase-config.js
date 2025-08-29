@@ -13,7 +13,9 @@ const SUPABASE_CONFIG = {
         auth: {
             autoRefreshToken: true,
             persistSession: true,
-            detectSessionInUrl: true
+            detectSessionInUrl: true,
+            // Use a unique storage key to avoid multiple GoTrueClient warnings across instances
+            storageKey: 'jobstir-auth'
         },
         db: {
             schema: 'public'
@@ -26,6 +28,10 @@ let supabase = null;
 
 // Function to initialize Supabase (call this after setting your credentials)
 function initializeSupabase() {
+    // Return existing singleton if already initialized
+    if (window.__JOBSTIR_SUPABASE__) {
+        return window.__JOBSTIR_SUPABASE__;
+    }
     if (SUPABASE_CONFIG.url === 'YOUR_SUPABASE_PROJECT_URL' ||
         SUPABASE_CONFIG.anonKey === 'YOUR_SUPABASE_ANON_KEY') {
         console.warn('⚠️ Supabase not configured. Please add your project URL and anon key to supabase-config.js');
@@ -45,6 +51,9 @@ function initializeSupabase() {
             SUPABASE_CONFIG.options
         );
 
+        // Store as global singleton to prevent multiple instances per browser context
+        window.__JOBSTIR_SUPABASE__ = supabase;
+
         console.log('✅ Supabase initialized successfully');
         return supabase;
     } catch (error) {
@@ -55,6 +64,9 @@ function initializeSupabase() {
 
 // Get Supabase client instance
 function getSupabaseClient() {
+    if (window.__JOBSTIR_SUPABASE__) {
+        return window.__JOBSTIR_SUPABASE__;
+    }
     if (!supabase) {
         supabase = initializeSupabase();
     }

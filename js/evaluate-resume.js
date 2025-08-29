@@ -231,6 +231,7 @@ class ResumeEvaluator {
                 window.trackConversion('resume_analysis', result.total_score);
             }
             
+            this.lastResult = result;
             this.displayResults(result);
             
         } catch (error) {
@@ -296,23 +297,46 @@ class ResumeEvaluator {
     }
 
     displayKeywords(matched, missing) {
-        // Display matched keywords
-        this.matchedKeywords.innerHTML = '';
-        matched.forEach(keyword => {
-            const span = document.createElement('span');
-            span.className = 'keyword-tag matched';
-            span.textContent = keyword;
-            this.matchedKeywords.appendChild(span);
-        });
+        // Helper to format labels nicely and skip empties
+        const formatLabel = (text) => {
+            const t = (text || '').toString().trim();
+            if (!t) return '';
+            return t
+                .split(/\s+/)
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                .join(' ');
+        };
 
-        // Display missing keywords
-        this.missingKeywords.innerHTML = '';
-        missing.forEach(keyword => {
-            const span = document.createElement('span');
-            span.className = 'keyword-tag missing';
-            span.textContent = keyword;
-            this.missingKeywords.appendChild(span);
-        });
+        const renderChips = (container, items, styleClass) => {
+            container.innerHTML = '';
+            const unique = Array.from(new Set(items.map(k => (k || '').toString().trim())));
+            if (unique.length === 0) {
+                const empty = document.createElement('span');
+                empty.className = 'keyword-tag';
+                empty.textContent = 'None';
+                container.appendChild(empty);
+                return;
+            }
+            unique
+                .filter(Boolean)
+                .slice(0, 30)
+                .forEach(keyword => {
+                    const span = document.createElement('span');
+                    span.className = `keyword-tag ${styleClass}`;
+                    span.textContent = formatLabel(keyword);
+                    // If we have contexts from the engine, set as title for tooltip
+                    if (this.lastResult && Array.isArray(this.lastResult.missing_keyword_contexts)) {
+                        const ctxItem = this.lastResult.missing_keyword_contexts.find(k => k.keyword === keyword);
+                        if (ctxItem && ctxItem.context && styleClass === 'missing') {
+                            span.title = ctxItem.context;
+                        }
+                    }
+                    container.appendChild(span);
+                });
+        };
+
+        renderChips(this.matchedKeywords, matched, 'matched');
+        renderChips(this.missingKeywords, missing, 'missing');
     }
 
     displayQuickSuggestions(suggestions) {
@@ -565,8 +589,8 @@ class ResumeEvaluator {
     }
 
     checkAuthentication() {
-        // Check if user is authenticated (implement based on your auth system)
-        return localStorage.getItem('user_token') || sessionStorage.getItem('user_info');
+        // Consider logged in if our session exists
+        return !!localStorage.getItem('jobstir_session');
     }
 
     showAdvancedFeatures() {

@@ -981,6 +981,13 @@
     border-radius: 12px;
 }
 
+@media (max-width: 480px) {
+    .summary-grid {
+        padding: 1rem;
+        gap: 1rem;
+    }
+}
+
 .score-container {
     text-align: center;
 }
@@ -1100,6 +1107,20 @@
     gap: 8px;
     padding: 0;
     list-style: none;
+}
+
+@media (max-width: 480px) {
+    .keyword-list {
+        gap: 6px;
+    }
+    .keyword-tag {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .keyword-list span {

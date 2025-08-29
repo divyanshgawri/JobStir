@@ -7,8 +7,11 @@ class LocationService {
     }
 
     async init() {
-        // Try to get user's current location
-        await this.getCurrentLocation();
+        // Only attempt geolocation if the user has allowed it post-signup/signin
+        const geoAllowed = localStorage.getItem('jobstir_geo_allowed') === 'true';
+        if (geoAllowed) {
+            await this.getCurrentLocation();
+        }
         
         // Initialize location autocomplete
         this.initLocationAutocomplete();
@@ -21,6 +24,20 @@ class LocationService {
                 resolve(null);
                 return;
             }
+
+            // Use cached location first to avoid re-prompting users every visit
+            try {
+                const cached = localStorage.getItem('jobstir_geo_cache');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    this.userLocation = parsed;
+                    if (parsed.city) {
+                        this.updateLocationInputs(parsed.city);
+                    }
+                    resolve(parsed);
+                    return;
+                }
+            } catch (_) {}
 
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
@@ -35,6 +52,7 @@ class LocationService {
                     }
                     
                     console.log('User location detected:', this.userLocation);
+                    try { localStorage.setItem('jobstir_geo_cache', JSON.stringify(this.userLocation)); } catch (_) {}
                     resolve(this.userLocation);
                 },
                 (error) => {
