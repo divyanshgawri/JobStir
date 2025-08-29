@@ -1080,19 +1080,25 @@ loadHistoryAnalysis(analysis) {
         this.showError('Failed to load historical analysis');
     }
 }
+}
 
-handleKeyboardShortcuts(event) {
+// Global keyboard shortcuts handler
+function handleKeyboardShortcuts(event) {
     try {
         // Ctrl/Cmd + Enter to analyze
         if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
             event.preventDefault();
-            this.analyzeResume();
+            if (window.resumeEvaluator) {
+                window.resumeEvaluator.analyzeResume();
+            }
         }
         
         // Ctrl/Cmd + R to reset
         if ((event.ctrlKey || event.metaKey) && event.key === 'r') {
             event.preventDefault();
-            this.resetForm();
+            if (window.resumeEvaluator) {
+                window.resumeEvaluator.resetForm();
+            }
         }
         
         // Escape to close modals

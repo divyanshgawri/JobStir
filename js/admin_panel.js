@@ -3,35 +3,102 @@ class AdminPanel {
     constructor() {
         this.currentTab = 'dashboard';
         this.charts = {};
+        this.supabase = null;
+        this.currentUser = null;
         this.data = {
             users: [],
             jobs: [],
             applications: [],
             analytics: {}
         };
+        this.pagination = {
+            users: { page: 1, limit: 10, total: 0 },
+            jobs: { page: 1, limit: 10, total: 0 },
+            applications: { page: 1, limit: 10, total: 0 }
+        };
+        this.filters = {
+            users: { search: '', role: 'all', status: 'all' },
+            jobs: { search: '', status: 'all', type: 'all' },
+            applications: { search: '', status: 'all', dateFrom: '', dateTo: '' }
+        };
         this.init();
     }
 
-    init() {
+    async init() {
+        await this.initSupabase();
         this.checkAdminAccess();
         this.initEventListeners();
         this.initCharts();
-        this.loadDashboardData();
+        await this.loadDashboardData();
         this.updateAdminInfo();
     }
 
-    checkAdminAccess() {
-        const session = localStorage.getItem('jobstir_session');
-        if (!session) {
-            window.location.href = 'signin.html';
-            return;
+    async initSupabase() {
+        try {
+            // Wait for config to load
+            if (typeof window.getSupabaseClient === 'function') {
+                this.supabase = window.getSupabaseClient();
+                if (this.supabase) {
+                    console.log('✅ Admin Panel: Supabase connected successfully');
+                    // Test connection
+                    const { data, error } = await this.supabase.from('users').select('count').limit(1);
+                    if (error) {
+                        console.warn('⚠️ Admin Panel: Supabase connection test failed:', error.message);
+                    }
+                } else {
+                    console.warn('⚠️ Admin Panel: Supabase client not available');
+                }
+            } else {
+                console.warn('⚠️ Admin Panel: Supabase config not loaded');
+            }
+        } catch (error) {
+            console.error('❌ Admin Panel: Failed to initialize Supabase:', error);
         }
+    }
 
-        const user = JSON.parse(session);
-        if (!user.isAdmin) {
-            alert('Access denied. Admin privileges required.');
-            window.location.href = 'index.html';
-            return;
+    async checkAdminAccess() {
+        try {
+            // Check localStorage session first
+            const session = localStorage.getItem('jobstir_session');
+            if (!session) {
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            const user = JSON.parse(session);
+            this.currentUser = user;
+
+            // Check Supabase session if available
+            if (this.supabase) {
+                const { data: { session: supabaseSession } } = await this.supabase.auth.getSession();
+                if (supabaseSession) {
+                    // Verify admin role from database
+                    const { data: userData, error } = await this.supabase
+                        .from('users')
+                        .select('role, is_admin')
+                        .eq('id', supabaseSession.user.id)
+                        .single();
+                    
+                    if (error || !userData?.is_admin) {
+                        alert('Access denied. Admin privileges required.');
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    
+                    this.currentUser = { ...user, ...userData };
+                }
+            }
+
+            // Fallback check for localStorage admin flag
+            if (!user.isAdmin && !this.currentUser?.is_admin) {
+                alert('Access denied. Admin privileges required.');
+                window.location.href = 'index.html';
+                return;
+            }
+        } catch (error) {
+            console.error('Admin access check failed:', error);
+            alert('Authentication error. Please sign in again.');
+            window.location.href = 'signin.html';
         }
     }
 
@@ -133,77 +200,170 @@ class AdminPanel {
     }
 
     async loadDashboardData() {
-        // Simulate loading dashboard data
-        const stats = {
-            totalUsers: 1247,
-            activeJobs: 89,
-            totalApplications: 3456,
-            totalRevenue: 45670
-        };
+        try {
+            let stats = {
+                totalUsers: 0,
+                activeJobs: 0,
+                totalApplications: 0,
+                totalRevenue: 0
+            };
 
-        // Update stat cards
-        document.getElementById('total-users').textContent = stats.totalUsers.toLocaleString();
-        document.getElementById('active-jobs').textContent = stats.activeJobs.toLocaleString();
-        document.getElementById('total-applications').textContent = stats.totalApplications.toLocaleString();
-        document.getElementById('total-revenue').textContent = `$${stats.totalRevenue.toLocaleString()}`;
+            if (this.supabase) {
+                // Load real data from Supabase
+                const [usersResult, jobsResult, applicationsResult] = await Promise.all([
+                    this.supabase.from('users').select('id', { count: 'exact', head: true }),
+                    this.supabase.from('jobs').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+                    this.supabase.from('applications').select('id', { count: 'exact', head: true })
+                ]);
 
-        // Load recent activity
-        this.loadRecentActivity();
+                stats.totalUsers = usersResult.count || 0;
+                stats.activeJobs = jobsResult.count || 0;
+                stats.totalApplications = applicationsResult.count || 0;
 
-        // Update charts
-        this.updateDashboardCharts();
+                // Calculate revenue (placeholder - implement based on your business model)
+                stats.totalRevenue = stats.activeJobs * 150; // Example: $150 per active job
+            } else {
+                // Fallback to demo data
+                stats = {
+                    totalUsers: 1247,
+                    activeJobs: 89,
+                    totalApplications: 3456,
+                    totalRevenue: 45670
+                };
+            }
+
+            // Update stat cards
+            document.getElementById('total-users').textContent = stats.totalUsers.toLocaleString();
+            document.getElementById('active-jobs').textContent = stats.activeJobs.toLocaleString();
+            document.getElementById('total-applications').textContent = stats.totalApplications.toLocaleString();
+            document.getElementById('total-revenue').textContent = `$${stats.totalRevenue.toLocaleString()}`;
+
+            // Load recent activity
+            await this.loadRecentActivity();
+
+            // Update charts
+            this.updateDashboardCharts();
+        } catch (error) {
+            console.error('Failed to load dashboard data:', error);
+            this.showMessage('Failed to load dashboard data', 'error');
+        }
     }
 
-    loadRecentActivity() {
-        const activities = [
-            {
-                icon: 'user-plus',
-                title: 'New user registered',
-                time: '2 minutes ago',
-                type: 'user'
-            },
-            {
-                icon: 'briefcase',
-                title: 'New job posted by TechCorp',
-                time: '15 minutes ago',
-                type: 'job'
-            },
-            {
-                icon: 'file-text',
-                title: 'Application submitted for Senior Developer',
-                time: '1 hour ago',
-                type: 'application'
-            },
-            {
-                icon: 'dollar-sign',
-                title: 'Payment received from Premium HR',
-                time: '2 hours ago',
-                type: 'payment'
-            },
-            {
-                icon: 'alert-triangle',
-                title: 'System maintenance scheduled',
-                time: '3 hours ago',
-                type: 'system'
-            }
-        ];
+    async loadRecentActivity() {
+        try {
+            let activities = [];
 
-        const activityContainer = document.getElementById('recent-activity');
-        if (activityContainer) {
-            activityContainer.innerHTML = activities.map(activity => `
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i data-feather="${activity.icon}"></i>
+            if (this.supabase) {
+                // Load recent activities from database
+                const { data: recentUsers } = await this.supabase
+                    .from('users')
+                    .select('email, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(2);
+
+                const { data: recentJobs } = await this.supabase
+                    .from('jobs')
+                    .select('title, company, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(2);
+
+                const { data: recentApplications } = await this.supabase
+                    .from('applications')
+                    .select('*, jobs(title), users(email)')
+                    .order('created_at', { ascending: false })
+                    .limit(2);
+
+                // Convert to activity format
+                if (recentUsers) {
+                    recentUsers.forEach(user => {
+                        activities.push({
+                            icon: 'user-plus',
+                            title: `New user registered: ${user.email}`,
+                            time: this.formatTimeAgo(user.created_at),
+                            type: 'user'
+                        });
+                    });
+                }
+
+                if (recentJobs) {
+                    recentJobs.forEach(job => {
+                        activities.push({
+                            icon: 'briefcase',
+                            title: `New job posted: ${job.title} at ${job.company}`,
+                            time: this.formatTimeAgo(job.created_at),
+                            type: 'job'
+                        });
+                    });
+                }
+
+                if (recentApplications) {
+                    recentApplications.forEach(app => {
+                        activities.push({
+                            icon: 'file-text',
+                            title: `Application submitted for ${app.jobs?.title || 'Unknown Job'}`,
+                            time: this.formatTimeAgo(app.created_at),
+                            type: 'application'
+                        });
+                    });
+                }
+
+                // Sort by time and limit to 5
+                activities.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+                activities = activities.slice(0, 5);
+            } else {
+                // Fallback demo data
+                activities = [
+                    {
+                        icon: 'user-plus',
+                        title: 'New user registered',
+                        time: '2 minutes ago',
+                        type: 'user'
+                    },
+                    {
+                        icon: 'briefcase',
+                        title: 'New job posted by TechCorp',
+                        time: '15 minutes ago',
+                        type: 'job'
+                    },
+                    {
+                        icon: 'file-text',
+                        title: 'Application submitted for Senior Developer',
+                        time: '1 hour ago',
+                        type: 'application'
+                    }
+                ];
+            }
+
+            const activityContainer = document.getElementById('recent-activity');
+            if (activityContainer) {
+                activityContainer.innerHTML = activities.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i data-feather="${activity.icon}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-title">${activity.title}</p>
+                            <p class="activity-time">${activity.time}</p>
+                        </div>
                     </div>
-                    <div class="activity-content">
-                        <p class="activity-title">${activity.title}</p>
-                        <p class="activity-time">${activity.time}</p>
-                    </div>
-                </div>
-            `).join('');
-            
-            feather.replace();
+                `).join('');
+                
+                feather.replace();
+            }
+        } catch (error) {
+            console.error('Failed to load recent activity:', error);
         }
+    }
+
+    formatTimeAgo(dateString) {
+        const now = new Date();
+        const date = new Date(dateString);
+        const diffInSeconds = Math.floor((now - date) / 1000);
+
+        if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+        return `${Math.floor(diffInSeconds / 86400)} days ago`;
     }
 
     initCharts() {
@@ -299,39 +459,93 @@ class AdminPanel {
         }
     }
 
-    loadUsersData() {
-        // Simulate loading users data
-        const users = [
-            {
-                id: 1,
-                name: 'John Doe',
-                email: 'john@example.com',
-                role: 'candidate',
-                status: 'active',
-                joined: '2024-01-15',
-                lastActive: '2024-01-20'
-            },
-            {
-                id: 2,
-                name: 'Jane Smith',
-                email: 'jane@company.com',
-                role: 'hr',
-                status: 'active',
-                joined: '2024-01-10',
-                lastActive: '2024-01-19'
-            },
-            {
-                id: 3,
-                name: 'Bob Johnson',
-                email: 'bob@example.com',
-                role: 'candidate',
-                status: 'inactive',
-                joined: '2024-01-05',
-                lastActive: '2024-01-15'
-            }
-        ];
+    async loadUsersData() {
+        try {
+            let users = [];
+            const { search, role, status } = this.filters.users;
+            const { page, limit } = this.pagination.users;
+            const offset = (page - 1) * limit;
 
-        this.renderUsersTable(users);
+            if (this.supabase) {
+                // Build query with filters
+                let query = this.supabase
+                    .from('users')
+                    .select('id, email, full_name, role, status, created_at, last_sign_in_at', { count: 'exact' });
+
+                // Apply filters
+                if (search) {
+                    query = query.or(`email.ilike.%${search}%,full_name.ilike.%${search}%`);
+                }
+                if (role !== 'all') {
+                    query = query.eq('role', role);
+                }
+                if (status !== 'all') {
+                    query = query.eq('status', status);
+                }
+
+                // Apply pagination
+                query = query.range(offset, offset + limit - 1).order('created_at', { ascending: false });
+
+                const { data, error, count } = await query;
+
+                if (error) {
+                    console.error('Failed to load users:', error);
+                    this.showMessage('Failed to load users', 'error');
+                    return;
+                }
+
+                users = data.map(user => ({
+                    id: user.id,
+                    name: user.full_name || user.email.split('@')[0],
+                    email: user.email,
+                    role: user.role || 'candidate',
+                    status: user.status || 'active',
+                    joined: user.created_at,
+                    lastActive: user.last_sign_in_at || user.created_at
+                }));
+
+                this.pagination.users.total = count;
+            } else {
+                // Fallback demo data
+                users = [
+                    {
+                        id: 1,
+                        name: 'John Doe',
+                        email: 'john@example.com',
+                        role: 'candidate',
+                        status: 'active',
+                        joined: '2024-01-15',
+                        lastActive: '2024-01-20'
+                    },
+                    {
+                        id: 2,
+                        name: 'Jane Smith',
+                        email: 'jane@company.com',
+                        role: 'hr',
+                        status: 'active',
+                        joined: '2024-01-10',
+                        lastActive: '2024-01-19'
+                    },
+                    {
+                        id: 3,
+                        name: 'Bob Johnson',
+                        email: 'bob@example.com',
+                        role: 'candidate',
+                        status: 'inactive',
+                        joined: '2024-01-05',
+                        lastActive: '2024-01-15'
+                    }
+                ];
+                this.pagination.users.total = users.length;
+            }
+
+            this.data.users = users;
+            this.renderUsersTable(users);
+            this.updateUsersPagination();
+        } catch (error) {
+            console.error('Failed to load users data:', error);
+            this.showMessage('Failed to load users data', 'error');
+        }
     }
 
     renderUsersTable(users) {
@@ -365,39 +579,96 @@ class AdminPanel {
         `).join('');
     }
 
-    loadJobsData() {
-        // Simulate loading jobs data
-        const jobs = [
-            {
-                id: 1,
-                title: 'Senior Frontend Developer',
-                company: 'TechCorp',
-                type: 'full-time',
-                applications: 25,
-                status: 'active',
-                posted: '2024-01-15'
-            },
-            {
-                id: 2,
-                title: 'Product Manager',
-                company: 'StartupXYZ',
-                type: 'full-time',
-                applications: 18,
-                status: 'active',
-                posted: '2024-01-12'
-            },
-            {
-                id: 3,
-                title: 'UX Designer',
-                company: 'DesignStudio',
-                type: 'contract',
-                applications: 12,
-                status: 'paused',
-                posted: '2024-01-10'
-            }
-        ];
+    async loadJobsData() {
+        try {
+            let jobs = [];
+            const { search, status, type } = this.filters.jobs;
+            const { page, limit } = this.pagination.jobs;
+            const offset = (page - 1) * limit;
 
-        this.renderJobsTable(jobs);
+            if (this.supabase) {
+                // Build query with filters
+                let query = this.supabase
+                    .from('jobs')
+                    .select(`
+                        id, title, company, job_type, status, created_at,
+                        applications:applications(count)
+                    `, { count: 'exact' });
+
+                // Apply filters
+                if (search) {
+                    query = query.or(`title.ilike.%${search}%,company.ilike.%${search}%`);
+                }
+                if (status !== 'all') {
+                    query = query.eq('status', status);
+                }
+                if (type !== 'all') {
+                    query = query.eq('job_type', type);
+                }
+
+                // Apply pagination
+                query = query.range(offset, offset + limit - 1).order('created_at', { ascending: false });
+
+                const { data, error, count } = await query;
+
+                if (error) {
+                    console.error('Failed to load jobs:', error);
+                    this.showMessage('Failed to load jobs', 'error');
+                    return;
+                }
+
+                jobs = data.map(job => ({
+                    id: job.id,
+                    title: job.title,
+                    company: job.company,
+                    type: job.job_type || 'full-time',
+                    applications: job.applications?.[0]?.count || 0,
+                    status: job.status,
+                    posted: job.created_at
+                }));
+
+                this.pagination.jobs.total = count;
+            } else {
+                // Fallback demo data
+                jobs = [
+                    {
+                        id: 1,
+                        title: 'Senior Frontend Developer',
+                        company: 'TechCorp',
+                        type: 'full-time',
+                        applications: 25,
+                        status: 'active',
+                        posted: '2024-01-15'
+                    },
+                    {
+                        id: 2,
+                        title: 'Product Manager',
+                        company: 'StartupXYZ',
+                        type: 'full-time',
+                        applications: 18,
+                        status: 'active',
+                        posted: '2024-01-12'
+                    },
+                    {
+                        id: 3,
+                        title: 'UX Designer',
+                        company: 'DesignStudio',
+                        type: 'contract',
+                        applications: 12,
+                        status: 'paused',
+                        posted: '2024-01-10'
+                    }
+                ];
+                this.pagination.jobs.total = jobs.length;
+            }
+
+            this.data.jobs = jobs;
+            this.renderJobsTable(jobs);
+            this.updateJobsPagination();
+        } catch (error) {
+            console.error('Failed to load jobs data:', error);
+            this.showMessage('Failed to load jobs data', 'error');
+        }
     }
 
     renderJobsTable(jobs) {
@@ -424,39 +695,100 @@ class AdminPanel {
         `).join('');
     }
 
-    loadApplicationsData() {
-        // Simulate loading applications data
-        const applications = [
-            {
-                id: 1,
-                candidate: 'Alice Johnson',
-                jobTitle: 'Senior Frontend Developer',
-                company: 'TechCorp',
-                status: 'pending',
-                matchScore: 85,
-                applied: '2024-01-18'
-            },
-            {
-                id: 2,
-                candidate: 'Bob Smith',
-                jobTitle: 'Product Manager',
-                company: 'StartupXYZ',
-                status: 'interview',
-                matchScore: 92,
-                applied: '2024-01-17'
-            },
-            {
-                id: 3,
-                candidate: 'Carol Davis',
-                jobTitle: 'UX Designer',
-                company: 'DesignStudio',
-                status: 'rejected',
-                matchScore: 67,
-                applied: '2024-01-16'
-            }
-        ];
+    async loadApplicationsData() {
+        try {
+            let applications = [];
+            const { search, status, dateFrom, dateTo } = this.filters.applications;
+            const { page, limit } = this.pagination.applications;
+            const offset = (page - 1) * limit;
 
-        this.renderApplicationsTable(applications);
+            if (this.supabase) {
+                // Build query with filters
+                let query = this.supabase
+                    .from('applications')
+                    .select(`
+                        id, status, match_score, created_at,
+                        users(email, full_name),
+                        jobs(title, company)
+                    `, { count: 'exact' });
+
+                // Apply filters
+                if (search) {
+                    query = query.or(`users.email.ilike.%${search}%,users.full_name.ilike.%${search}%,jobs.title.ilike.%${search}%`);
+                }
+                if (status !== 'all') {
+                    query = query.eq('status', status);
+                }
+                if (dateFrom) {
+                    query = query.gte('created_at', dateFrom);
+                }
+                if (dateTo) {
+                    query = query.lte('created_at', dateTo);
+                }
+
+                // Apply pagination
+                query = query.range(offset, offset + limit - 1).order('created_at', { ascending: false });
+
+                const { data, error, count } = await query;
+
+                if (error) {
+                    console.error('Failed to load applications:', error);
+                    this.showMessage('Failed to load applications', 'error');
+                    return;
+                }
+
+                applications = data.map(app => ({
+                    id: app.id,
+                    candidate: app.users?.full_name || app.users?.email || 'Unknown',
+                    jobTitle: app.jobs?.title || 'Unknown Job',
+                    company: app.jobs?.company || 'Unknown Company',
+                    status: app.status || 'pending',
+                    matchScore: app.match_score || 0,
+                    applied: app.created_at
+                }));
+
+                this.pagination.applications.total = count;
+            } else {
+                // Fallback demo data
+                applications = [
+                    {
+                        id: 1,
+                        candidate: 'Alice Johnson',
+                        jobTitle: 'Senior Frontend Developer',
+                        company: 'TechCorp',
+                        status: 'pending',
+                        matchScore: 85,
+                        applied: '2024-01-18'
+                    },
+                    {
+                        id: 2,
+                        candidate: 'Bob Smith',
+                        jobTitle: 'Product Manager',
+                        company: 'StartupXYZ',
+                        status: 'interview',
+                        matchScore: 92,
+                        applied: '2024-01-17'
+                    },
+                    {
+                        id: 3,
+                        candidate: 'Carol Davis',
+                        jobTitle: 'UX Designer',
+                        company: 'DesignStudio',
+                        status: 'rejected',
+                        matchScore: 67,
+                        applied: '2024-01-16'
+                    }
+                ];
+                this.pagination.applications.total = applications.length;
+            }
+
+            this.data.applications = applications;
+            this.renderApplicationsTable(applications);
+            this.updateApplicationsPagination();
+        } catch (error) {
+            console.error('Failed to load applications data:', error);
+            this.showMessage('Failed to load applications data', 'error');
+        }
     }
 
     renderApplicationsTable(applications) {
@@ -702,41 +1034,125 @@ class AdminPanel {
     }
 
     searchUsers(query) {
-        // Implement user search logic
-        console.log('Searching users:', query);
+        this.filters.users.search = query;
+        this.pagination.users.page = 1; // Reset to first page
+        this.loadUsersData();
     }
 
     searchJobs(query) {
-        // Implement job search logic
-        console.log('Searching jobs:', query);
+        this.filters.jobs.search = query;
+        this.pagination.jobs.page = 1; // Reset to first page
+        this.loadJobsData();
     }
 
     searchApplications(query) {
-        // Implement application search logic
-        console.log('Searching applications:', query);
+        this.filters.applications.search = query;
+        this.pagination.applications.page = 1; // Reset to first page
+        this.loadApplicationsData();
     }
 
     filterUsers() {
-        // Implement user filtering logic
-        console.log('Filtering users');
+        const roleFilter = document.getElementById('user-role-filter');
+        const statusFilter = document.getElementById('user-status-filter');
+        
+        this.filters.users.role = roleFilter?.value || 'all';
+        this.filters.users.status = statusFilter?.value || 'all';
+        this.pagination.users.page = 1; // Reset to first page
+        this.loadUsersData();
     }
 
     filterJobs() {
-        // Implement job filtering logic
-        console.log('Filtering jobs');
+        const statusFilter = document.getElementById('job-status-filter');
+        const typeFilter = document.getElementById('job-type-filter');
+        
+        this.filters.jobs.status = statusFilter?.value || 'all';
+        this.filters.jobs.type = typeFilter?.value || 'all';
+        this.pagination.jobs.page = 1; // Reset to first page
+        this.loadJobsData();
     }
 
     filterApplications() {
-        // Implement application filtering logic
-        console.log('Filtering applications');
+        const statusFilter = document.getElementById('application-status-filter');
+        const dateFrom = document.getElementById('application-date-from');
+        const dateTo = document.getElementById('application-date-to');
+        
+        this.filters.applications.status = statusFilter?.value || 'all';
+        this.filters.applications.dateFrom = dateFrom?.value || '';
+        this.filters.applications.dateTo = dateTo?.value || '';
+        this.pagination.applications.page = 1; // Reset to first page
+        this.loadApplicationsData();
     }
 
     previousPage(type) {
-        console.log(`Previous page for ${type}`);
+        if (this.pagination[type].page > 1) {
+            this.pagination[type].page--;
+            this.loadTabData(type);
+        }
     }
 
     nextPage(type) {
-        console.log(`Next page for ${type}`);
+        const maxPage = Math.ceil(this.pagination[type].total / this.pagination[type].limit);
+        if (this.pagination[type].page < maxPage) {
+            this.pagination[type].page++;
+            this.loadTabData(type);
+        }
+    }
+
+    updateUsersPagination() {
+        this.updatePagination('users');
+    }
+
+    updateJobsPagination() {
+        this.updatePagination('jobs');
+    }
+
+    updateApplicationsPagination() {
+        this.updatePagination('applications');
+    }
+
+    updatePagination(type) {
+        const { page, limit, total } = this.pagination[type];
+        const maxPage = Math.ceil(total / limit);
+        const start = (page - 1) * limit + 1;
+        const end = Math.min(page * limit, total);
+
+        // Update pagination info
+        const showingElement = document.getElementById(`${type}-showing`);
+        const totalElement = document.getElementById(`${type}-total`);
+        
+        if (showingElement) showingElement.textContent = `${start}-${end}`;
+        if (totalElement) totalElement.textContent = total.toString();
+
+        // Update pagination buttons
+        const prevBtn = document.getElementById(`${type}-prev`);
+        const nextBtn = document.getElementById(`${type}-next`);
+        
+        if (prevBtn) prevBtn.disabled = page <= 1;
+        if (nextBtn) nextBtn.disabled = page >= maxPage;
+
+        // Update page numbers
+        const pagesContainer = document.getElementById(`${type}-pages`);
+        if (pagesContainer) {
+            const pageNumbers = [];
+            const startPage = Math.max(1, page - 2);
+            const endPage = Math.min(maxPage, page + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                pageNumbers.push(`
+                    <button class="page-number ${i === page ? 'active' : ''}" 
+                            onclick="adminPanel.goToPage('${type}', ${i})">
+                        ${i}
+                    </button>
+                `);
+            }
+            
+            pagesContainer.innerHTML = pageNumbers.join('');
+        }
+    }
+
+    goToPage(type, pageNumber) {
+        this.pagination[type].page = pageNumber;
+        this.loadTabData(type);
     }
 
     saveSettings() {
@@ -768,6 +1184,199 @@ class AdminPanel {
         }, 5000);
     }
 
+    // CRUD Operations
+    async createUser(userData) {
+        try {
+            if (this.supabase) {
+                const { data, error } = await this.supabase.auth.signUp({
+                    email: userData.email,
+                    password: userData.password,
+                    options: {
+                        data: {
+                            full_name: userData.name,
+                            role: userData.role
+                        }
+                    }
+                });
+                
+                if (error) throw error;
+                
+                this.showMessage('User created successfully', 'success');
+                this.loadUsersData();
+            }
+        } catch (error) {
+            console.error('Failed to create user:', error);
+            this.showMessage('Failed to create user: ' + error.message, 'error');
+        }
+    }
+
+    async updateUser(id, userData) {
+        try {
+            if (this.supabase) {
+                const { error } = await this.supabase
+                    .from('users')
+                    .update({
+                        full_name: userData.name,
+                        role: userData.role,
+                        status: userData.status
+                    })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                this.showMessage('User updated successfully', 'success');
+                this.loadUsersData();
+            }
+        } catch (error) {
+            console.error('Failed to update user:', error);
+            this.showMessage('Failed to update user: ' + error.message, 'error');
+        }
+    }
+
+    async deleteUser(id) {
+        if (!confirm('Are you sure you want to delete this user?')) return;
+        
+        try {
+            if (this.supabase) {
+                const { error } = await this.supabase
+                    .from('users')
+                    .update({ status: 'deleted' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                this.showMessage('User deleted successfully', 'success');
+                this.loadUsersData();
+            }
+        } catch (error) {
+            console.error('Failed to delete user:', error);
+            this.showMessage('Failed to delete user: ' + error.message, 'error');
+        }
+    }
+
+    async updateJob(id, jobData) {
+        try {
+            if (this.supabase) {
+                const { error } = await this.supabase
+                    .from('jobs')
+                    .update(jobData)
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                this.showMessage('Job updated successfully', 'success');
+                this.loadJobsData();
+            }
+        } catch (error) {
+            console.error('Failed to update job:', error);
+            this.showMessage('Failed to update job: ' + error.message, 'error');
+        }
+    }
+
+    async deleteJob(id) {
+        if (!confirm('Are you sure you want to delete this job?')) return;
+        
+        try {
+            if (this.supabase) {
+                const { error } = await this.supabase
+                    .from('jobs')
+                    .update({ status: 'deleted' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                this.showMessage('Job deleted successfully', 'success');
+                this.loadJobsData();
+            }
+        } catch (error) {
+            console.error('Failed to delete job:', error);
+            this.showMessage('Failed to delete job: ' + error.message, 'error');
+        }
+    }
+
+    async updateApplicationStatus(id, status) {
+        try {
+            if (this.supabase) {
+                const { error } = await this.supabase
+                    .from('applications')
+                    .update({ status })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                this.showMessage('Application status updated successfully', 'success');
+                this.loadApplicationsData();
+            }
+        } catch (error) {
+            console.error('Failed to update application status:', error);
+            this.showMessage('Failed to update application status: ' + error.message, 'error');
+        }
+    }
+
+    // Export functions
+    async exportUsers() {
+        try {
+            const csvContent = this.convertToCSV(this.data.users, [
+                'id', 'name', 'email', 'role', 'status', 'joined', 'lastActive'
+            ]);
+            this.downloadCSV(csvContent, 'users.csv');
+        } catch (error) {
+            console.error('Failed to export users:', error);
+            this.showMessage('Failed to export users', 'error');
+        }
+    }
+
+    async exportJobs() {
+        try {
+            const csvContent = this.convertToCSV(this.data.jobs, [
+                'id', 'title', 'company', 'type', 'applications', 'status', 'posted'
+            ]);
+            this.downloadCSV(csvContent, 'jobs.csv');
+        } catch (error) {
+            console.error('Failed to export jobs:', error);
+            this.showMessage('Failed to export jobs', 'error');
+        }
+    }
+
+    async exportApplications() {
+        try {
+            const csvContent = this.convertToCSV(this.data.applications, [
+                'id', 'candidate', 'jobTitle', 'company', 'status', 'matchScore', 'applied'
+            ]);
+            this.downloadCSV(csvContent, 'applications.csv');
+        } catch (error) {
+            console.error('Failed to export applications:', error);
+            this.showMessage('Failed to export applications', 'error');
+        }
+    }
+
+    convertToCSV(data, headers) {
+        const csvRows = [];
+        csvRows.push(headers.join(','));
+        
+        for (const row of data) {
+            const values = headers.map(header => {
+                const value = row[header];
+                return typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value;
+            });
+            csvRows.push(values.join(','));
+        }
+        
+        return csvRows.join('\n');
+    }
+
+    downloadCSV(content, filename) {
+        const blob = new Blob([content], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+
     // Static method for logout
     static logout() {
         localStorage.removeItem('jobstir_session');
@@ -776,23 +1385,77 @@ class AdminPanel {
 }
 
 // Global functions for button clicks
-window.viewUser = (id) => console.log('View user:', id);
-window.editUser = (id) => console.log('Edit user:', id);
-window.deleteUser = (id) => console.log('Delete user:', id);
-window.viewJob = (id) => console.log('View job:', id);
-window.editJob = (id) => console.log('Edit job:', id);
-window.deleteJob = (id) => console.log('Delete job:', id);
-window.viewApplication = (id) => console.log('View application:', id);
-window.updateApplicationStatus = (id) => console.log('Update application:', id);
-window.exportUsers = () => console.log('Export users');
-window.exportJobs = () => console.log('Export jobs');
-window.exportApplications = () => console.log('Export applications');
-window.exportData = () => console.log('Export data');
-window.showModal = (modalId) => console.log('Show modal:', modalId);
-window.editContent = (contentId) => console.log('Edit content:', contentId);
-window.editTemplate = (templateId) => console.log('Edit template:', templateId);
-window.manageIPWhitelist = () => console.log('Manage IP whitelist');
-window.viewSecurityLogs = () => console.log('View security logs');
+window.viewUser = (id) => {
+    const user = window.adminPanel.data.users.find(u => u.id == id);
+    if (user) {
+        alert(`User Details:\n\nName: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nStatus: ${user.status}\nJoined: ${new Date(user.joined).toLocaleDateString()}`);
+    }
+};
+
+window.editUser = (id) => {
+    const user = window.adminPanel.data.users.find(u => u.id == id);
+    if (user) {
+        const name = prompt('Enter new name:', user.name);
+        const role = prompt('Enter new role (candidate/hr/admin):', user.role);
+        const status = prompt('Enter new status (active/inactive/suspended):', user.status);
+        
+        if (name && role && status) {
+            window.adminPanel.updateUser(id, { name, role, status });
+        }
+    }
+};
+
+window.deleteUser = (id) => window.adminPanel.deleteUser(id);
+
+window.viewJob = (id) => {
+    const job = window.adminPanel.data.jobs.find(j => j.id == id);
+    if (job) {
+        alert(`Job Details:\n\nTitle: ${job.title}\nCompany: ${job.company}\nType: ${job.type}\nApplications: ${job.applications}\nStatus: ${job.status}\nPosted: ${new Date(job.posted).toLocaleDateString()}`);
+    }
+};
+
+window.editJob = (id) => {
+    const job = window.adminPanel.data.jobs.find(j => j.id == id);
+    if (job) {
+        const title = prompt('Enter new title:', job.title);
+        const company = prompt('Enter new company:', job.company);
+        const status = prompt('Enter new status (active/paused/closed):', job.status);
+        
+        if (title && company && status) {
+            window.adminPanel.updateJob(id, { title, company, status });
+        }
+    }
+};
+
+window.deleteJob = (id) => window.adminPanel.deleteJob(id);
+
+window.viewApplication = (id) => {
+    const app = window.adminPanel.data.applications.find(a => a.id == id);
+    if (app) {
+        alert(`Application Details:\n\nCandidate: ${app.candidate}\nJob: ${app.jobTitle}\nCompany: ${app.company}\nStatus: ${app.status}\nMatch Score: ${app.matchScore}%\nApplied: ${new Date(app.applied).toLocaleDateString()}`);
+    }
+};
+
+window.updateApplicationStatus = (id) => {
+    const status = prompt('Enter new status (pending/reviewing/interview/offer/hired/rejected):');
+    if (status) {
+        window.adminPanel.updateApplicationStatus(id, status);
+    }
+};
+
+window.exportUsers = () => window.adminPanel.exportUsers();
+window.exportJobs = () => window.adminPanel.exportJobs();
+window.exportApplications = () => window.adminPanel.exportApplications();
+window.exportData = () => {
+    window.adminPanel.exportUsers();
+    window.adminPanel.exportJobs();
+    window.adminPanel.exportApplications();
+};
+window.showModal = (modalId) => alert(`Modal functionality for ${modalId} - To be implemented`);
+window.editContent = (contentId) => alert(`Content editing for ${contentId} - To be implemented`);
+window.editTemplate = (templateId) => alert(`Template editing for ${templateId} - To be implemented`);
+window.manageIPWhitelist = () => alert('IP Whitelist management - To be implemented');
+window.viewSecurityLogs = () => alert('Security logs viewer - To be implemented');
 window.logout = AdminPanel.logout;
 
 // Initialize admin panel when DOM is loaded
