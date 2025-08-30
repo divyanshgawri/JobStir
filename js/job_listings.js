@@ -97,15 +97,36 @@ class JobListings {
         `;
     }
 
-    loadJobs() {
-        // Load jobs from localStorage (simulate backend)
-        this.jobs = JSON.parse(localStorage.getItem('jobstir_jobs') || '[]');
+    async loadJobs() {
+        this.showLoading();
         
-        // Add some demo jobs if none exist
-        if (this.jobs.length === 0) {
-            this.jobs = this.generateDemoJobs();
-            localStorage.setItem('jobstir_jobs', JSON.stringify(this.jobs));
+        try {
+            // Try to load jobs from API first
+            if (window.jobAPI) {
+                const response = await window.jobAPI.getJobs();
+                if (response && response.jobs && Array.isArray(response.jobs)) {
+                    this.jobs = response.jobs;
+                    console.log(`Loaded ${this.jobs.length} jobs from API`);
+                } else {
+                    throw new Error('Invalid API response');
+                }
+            } else {
+                throw new Error('API integration not available');
+            }
+        } catch (error) {
+            console.warn('Failed to load jobs from API, using fallback:', error.message);
+            
+            // Fallback to localStorage or demo jobs
+            this.jobs = JSON.parse(localStorage.getItem('jobstir_jobs') || '[]');
+            
+            if (this.jobs.length === 0) {
+                this.jobs = this.generateDemoJobs();
+                localStorage.setItem('jobstir_jobs', JSON.stringify(this.jobs));
+            }
         }
+        
+        // Ensure all job objects have required properties
+        this.jobs = this.jobs.map(job => this.sanitizeJobObject(job));
         
         this.filteredJobs = [...this.jobs];
         this.updateResultsCount();
@@ -323,6 +344,41 @@ class JobListings {
         }
 
         return true;
+    }
+
+    // Add sanitization method to prevent undefined property errors
+    sanitizeJobObject(job) {
+        if (!job || typeof job !== 'object') {
+            return {
+                id: '',
+                title: 'Unknown Position',
+                company: 'Unknown Company',
+                location: 'Location not specified',
+                type: 'full-time',
+                salary: 'Not disclosed',
+                description: 'No description available',
+                requirements: [],
+                remote: 'onsite',
+                experienceLevel: 'mid',
+                createdAt: new Date().toISOString(),
+                status: 'active'
+            };
+        }
+
+        return {
+            id: job.id || '',
+            title: job.title || 'Unknown Position',
+            company: job.company || 'Unknown Company',
+            location: job.location || 'Location not specified',
+            type: job.type || 'full-time',
+            salary: job.salary || 'Not disclosed',
+            description: job.description || 'No description available',
+            requirements: Array.isArray(job.requirements) ? job.requirements : [],
+            remote: job.remote || 'onsite',
+            experienceLevel: job.experienceLevel || 'mid',
+            createdAt: job.createdAt || new Date().toISOString(),
+            status: job.status || 'active'
+        };
     }
 
     applyFilters() {

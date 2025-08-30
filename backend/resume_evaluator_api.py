@@ -374,14 +374,271 @@ def health_check():
         "version": "1.0.0"
     })
 
+@app.route('/api/jobs', methods=['GET'])
+def get_jobs():
+    """Get all available jobs with optional filtering."""
+    try:
+        # Get query parameters
+        search = request.args.get('search', '').lower()
+        location = request.args.get('location', '').lower()
+        job_type = request.args.get('type', '')
+        remote = request.args.get('remote', '')
+        experience_level = request.args.get('experience', '')
+        
+        # Sample jobs data (in production, this would come from a database)
+        jobs = [
+            {
+                "id": "1",
+                "title": "Senior Software Engineer",
+                "company": "TechCorp Inc.",
+                "location": "San Francisco, CA",
+                "type": "full-time",
+                "salary": "$120,000 - $160,000",
+                "description": "We are looking for a Senior Software Engineer with experience in Python, JavaScript, React, and cloud technologies. The ideal candidate will have 5+ years of experience building scalable web applications.",
+                "requirements": ["Python", "JavaScript", "React", "AWS", "5+ years experience"],
+                "remote": "hybrid",
+                "experienceLevel": "senior",
+                "createdAt": datetime.now().isoformat(),
+                "status": "active"
+            },
+            {
+                "id": "2",
+                "title": "Data Scientist",
+                "company": "DataFlow Solutions",
+                "location": "New York, NY",
+                "type": "full-time",
+                "salary": "$130,000 - $180,000",
+                "description": "Join our data science team to build machine learning models and analyze large datasets. Experience with Python, SQL, TensorFlow, and statistical analysis required.",
+                "requirements": ["Python", "SQL", "Machine Learning", "TensorFlow", "Statistics"],
+                "remote": "remote",
+                "experienceLevel": "mid",
+                "createdAt": datetime.now().isoformat(),
+                "status": "active"
+            },
+            {
+                "id": "3",
+                "title": "Frontend Developer",
+                "company": "WebDesign Pro",
+                "location": "Austin, TX",
+                "type": "full-time",
+                "salary": "$90,000 - $130,000",
+                "description": "We need a creative Frontend Developer skilled in React, Vue.js, HTML, CSS, and modern JavaScript frameworks. Experience with responsive design is essential.",
+                "requirements": ["React", "Vue.js", "HTML", "CSS", "JavaScript", "Responsive Design"],
+                "remote": "hybrid",
+                "experienceLevel": "mid",
+                "createdAt": datetime.now().isoformat(),
+                "status": "active"
+            },
+            {
+                "id": "4",
+                "title": "DevOps Engineer",
+                "company": "CloudTech Solutions",
+                "location": "Seattle, WA",
+                "type": "full-time",
+                "salary": "$110,000 - $150,000",
+                "description": "Join our DevOps team to help build and maintain scalable cloud infrastructure and deployment pipelines using AWS, Docker, and Kubernetes.",
+                "requirements": ["AWS", "Docker", "Kubernetes", "CI/CD", "Terraform"],
+                "remote": "remote",
+                "experienceLevel": "senior",
+                "createdAt": datetime.now().isoformat(),
+                "status": "active"
+            },
+            {
+                "id": "5",
+                "title": "Product Manager",
+                "company": "StartupXYZ",
+                "location": "Remote",
+                "type": "full-time",
+                "salary": "$100,000 - $140,000",
+                "description": "Drive product strategy and work with engineering teams to shape the future of our platform. Experience with Agile methodologies and product analytics required.",
+                "requirements": ["Product Management", "Agile", "Analytics", "3+ years experience"],
+                "remote": "remote",
+                "experienceLevel": "mid",
+                "createdAt": datetime.now().isoformat(),
+                "status": "active"
+            }
+        ]
+        
+        # Apply filters
+        filtered_jobs = []
+        for job in jobs:
+            # Search filter
+            if search and search not in job['title'].lower() and search not in job['company'].lower() and search not in job['description'].lower():
+                continue
+            
+            # Location filter
+            if location and location not in job['location'].lower():
+                continue
+                
+            # Job type filter
+            if job_type and job['type'] != job_type:
+                continue
+                
+            # Remote filter
+            if remote and job['remote'] != remote:
+                continue
+                
+            # Experience level filter
+            if experience_level and job['experienceLevel'] != experience_level:
+                continue
+                
+            filtered_jobs.append(job)
+        
+        return jsonify({
+            "jobs": filtered_jobs,
+            "total": len(filtered_jobs),
+            "timestamp": datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        logging.error(f"Error fetching jobs: {e}")
+        return jsonify({"error": "Failed to fetch jobs"}), 500
+
+@app.route('/api/jobs/<job_id>', methods=['GET'])
+def get_job_details(job_id):
+    """Get detailed information about a specific job."""
+    try:
+        # In production, this would query the database
+        # For now, return a sample job detail
+        job_detail = {
+            "id": job_id,
+            "title": "Senior Software Engineer",
+            "company": "TechCorp Inc.",
+            "location": "San Francisco, CA",
+            "type": "full-time",
+            "salary": "$120,000 - $160,000",
+            "description": "We are looking for a Senior Software Engineer with experience in Python, JavaScript, React, and cloud technologies. The ideal candidate will have 5+ years of experience building scalable web applications and will be responsible for architecting and implementing complex features.",
+            "requirements": ["Python", "JavaScript", "React", "AWS", "5+ years experience", "System Design", "API Development"],
+            "responsibilities": [
+                "Design and implement scalable web applications",
+                "Collaborate with cross-functional teams",
+                "Mentor junior developers",
+                "Participate in code reviews",
+                "Optimize application performance"
+            ],
+            "benefits": [
+                "Competitive salary and equity",
+                "Health, dental, and vision insurance",
+                "Flexible work arrangements",
+                "Professional development budget",
+                "Unlimited PTO"
+            ],
+            "remote": "hybrid",
+            "experienceLevel": "senior",
+            "createdAt": datetime.now().isoformat(),
+            "status": "active",
+            "applicants": 45,
+            "views": 234
+        }
+        
+        return jsonify(job_detail)
+        
+    except Exception as e:
+        logging.error(f"Error fetching job details for {job_id}: {e}")
+        return jsonify({"error": "Job not found"}), 404
+
+@app.route('/api/jobs/<job_id>/apply', methods=['POST'])
+def apply_to_job(job_id):
+    """Apply to a specific job."""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No application data provided"}), 400
+        
+        # Validate required fields
+        required_fields = ['user_id', 'resume_text']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({"error": f"{field} is required"}), 400
+        
+        # Create application record
+        application = {
+            "id": str(uuid4()),
+            "job_id": job_id,
+            "user_id": data['user_id'],
+            "resume_text": data['resume_text'],
+            "cover_letter": data.get('cover_letter', ''),
+            "status": "pending",
+            "applied_at": datetime.now().isoformat(),
+            "match_score": None
+        }
+        
+        # Calculate match score if job description is available
+        if data.get('job_description'):
+            try:
+                resume_json = extract_resume_info_llm(data['resume_text'])
+                analysis_result = get_resume_score_with_breakdown(resume_json, data['job_description'])
+                application['match_score'] = analysis_result.get('total_score', 0)
+            except Exception as e:
+                logging.warning(f"Failed to calculate match score: {e}")
+        
+        # In production, save to database
+        # For now, just return success
+        
+        return jsonify({
+            "message": "Application submitted successfully",
+            "application_id": application['id'],
+            "match_score": application['match_score']
+        })
+        
+    except Exception as e:
+        logging.error(f"Error applying to job {job_id}: {e}")
+        return jsonify({"error": "Failed to submit application"}), 500
+
+@app.route('/api/applications', methods=['GET'])
+def get_user_applications():
+    """Get applications for a specific user."""
+    try:
+        user_id = request.args.get('user_id')
+        if not user_id:
+            return jsonify({"error": "user_id parameter is required"}), 400
+        
+        # Sample applications (in production, query from database)
+        applications = [
+            {
+                "id": "app_1",
+                "job_id": "1",
+                "job_title": "Senior Software Engineer",
+                "company": "TechCorp Inc.",
+                "location": "San Francisco, CA",
+                "status": "pending",
+                "applied_at": datetime.now().isoformat(),
+                "match_score": 85
+            },
+            {
+                "id": "app_2",
+                "job_id": "2",
+                "job_title": "Data Scientist",
+                "company": "DataFlow Solutions",
+                "location": "New York, NY",
+                "status": "reviewed",
+                "applied_at": datetime.now().isoformat(),
+                "match_score": 78
+            }
+        ]
+        
+        return jsonify({
+            "applications": applications,
+            "total": len(applications)
+        })
+        
+    except Exception as e:
+        logging.error(f"Error fetching applications: {e}")
+        return jsonify({"error": "Failed to fetch applications"}), 500
+
 @app.route('/', methods=['GET'])
 def index():
     """Basic index route."""
     return jsonify({
-        "message": "Resume Evaluator API",
-        "version": "1.0.0",
+        "message": "JobStir API - Resume Evaluator & Job Listings",
+        "version": "2.0.0",
         "endpoints": {
-            "evaluate": "/api/evaluate-resume",
+            "evaluate_resume": "/api/evaluate-resume",
+            "jobs": "/api/jobs",
+            "job_details": "/api/jobs/<job_id>",
+            "apply_job": "/api/jobs/<job_id>/apply",
+            "applications": "/api/applications",
             "health": "/api/health"
         }
     })
