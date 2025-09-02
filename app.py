@@ -264,7 +264,7 @@ class Exam(BaseModel):
     questions: List[ExamQuestion] = Field(..., description="List of exam questions")
 
 # LLM Chain Setup
-llm = ChatGroq(model="llama3-70b-8192", temperature=0)
+llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 parser = StrOutputParser()
 
 # Initialize Groq client for chat completions (used in get_resume_score_with_breakdown)
@@ -343,7 +343,7 @@ def extract_resume_info_llm(text: str) -> dict:
             raise ResumeExtractionError(f"An unexpected error occurred: {e}") from e
 
 # New LLM Chain for Knockout Questions
-knockout_llm = ChatGroq(model="llama3-70b-8192", temperature=0, max_tokens=5000)
+knockout_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0, max_tokens=5000)
 knockout_parser = StrOutputParser()
 
 # In app_trial.py, use this ultra-strict prompt for knockout generation
@@ -627,8 +627,8 @@ Output:
 def validate_knockout_criteria_llm(resume_json: dict, criteria: dict) -> dict:
     """Uses a dedicated validation chain to check criteria against a resume."""
     # NOTE: You might want to use a less powerful model here to save costs if needed,
-    # but llama3-70b-8192 will provide the highest quality analysis.
-    validation_llm = ChatGroq(model="llama3-70b-8192", temperature=0, max_tokens=5000)
+    # but llama-3.3-70b-versatile will provide the highest quality analysis.
+    validation_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0, max_tokens=5000)
     validation_chain = validation_prompt | validation_llm | StrOutputParser()
     
     try:
@@ -781,7 +781,7 @@ def check_knockout_criteria_python(resume_json: dict, job_obj: dict) -> dict:
 
 # --- Main validation function (Orchestrator) ---
 MATCH_THRESHOLD = 70
-evaluation_llm = ChatGroq(model="llama3-70b-8192", temperature=0)
+evaluation_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 
 
 matching_prompt = ChatPromptTemplate.from_messages([
@@ -942,7 +942,7 @@ First, analyze the candidate's entire profile to identify their archetype and th
      "Job Description:\n{job_desc}\n\n"
      "Based on the protocols, provide a single, supportive paragraph of feedback.")
 ])
-feedback_llm = ChatGroq(model="llama3-70b-8192", temperature=0)
+feedback_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 feedback_chain = detailed_feedback_prompt | feedback_llm | parser
 # --- Define a custom exception for this task ---
 class FeedbackGenerationError(Exception):
@@ -1020,7 +1020,7 @@ Synthesize the candidate's skills, experience, and projects to explain *why* the
      "Job Description:\n{job_desc}\n\n"
      "Based on the protocol, provide the strategic reason for this hiring decision:")
 ])
-selection_reason_llm = ChatGroq(model="llama3-70b-8192", temperature=0)
+selection_reason_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 selection_reason_chain = selection_reason_prompt | selection_reason_llm | parser
 
 def generate_selection_reason(resume_json: dict, job_description: str, score: int) -> str:
@@ -1140,7 +1140,7 @@ Now, process the request according to these unbreakable rules.
 
 def generate_exam_llm(job_description: str) -> Optional[List[dict]]:
     """Generates exam questions using the LLM chain with improved JSON cleaning."""
-    exam_llm = ChatGroq(model="llama3-70b-8192", temperature=0.4)
+    exam_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.4)
     exam_generation_chain = exam_generation_prompt | exam_llm | StrOutputParser()
     max_retries = 3
     for attempt in range(max_retries):
@@ -1246,7 +1246,7 @@ Now analyse and grade accordingly.
 ])
 
 
-answer_evaluation_llm = ChatGroq(model="llama3-70b-8192", temperature=0)
+answer_evaluation_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 answer_evaluation_chain = answer_evaluation_prompt | answer_evaluation_llm | parser
 def evaluate_answer_llm(job_description: str, question: str, ideal_answer: str, answer: str) -> dict:
     """Evaluates a single answer using the LLM chain with strict JSON compliance and plagiarism detection."""
@@ -1310,7 +1310,7 @@ project_insights_prompt = ChatPromptTemplate.from_messages([
      "Return ONLY valid JSON enclosed within a markdown-style code block (```). No extra explanation."),
     ("human", "Project README Content:\n{readme_content}")
 ])
-project_insights_llm = ChatGroq(model="llama3-8b-8192", temperature=0.3)
+project_insights_llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.3)
 project_insights_chain = project_insights_prompt | project_insights_llm | parser
 
 def generate_project_insights(readme_content: str) -> Optional[dict]:
@@ -1617,7 +1617,7 @@ def get_resume_score_with_breakdown(resume_json: dict, job_description: str) -> 
 
     try:
         response = client.chat.completions.create(
-            model="llama3-70b-8192", # This model is specified in the prompt template for detailed reasoning
+            model="llama-3.3-70b-versatile", # This model is specified in the prompt template for detailed reasoning
             messages=evaluation_messages,
             temperature=0, # Low temperature for consistent, factual output
             max_tokens=1000, # Sufficient tokens for detailed reasoning
