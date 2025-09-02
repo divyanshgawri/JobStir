@@ -41,3 +41,4 @@ supabase==2.10.0
 # Your code imports these explicitly — make sure they’re present:
 pydantic==2.9.2
 groq==0.31.0
+numpy==1.26.4
