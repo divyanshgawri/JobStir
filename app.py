@@ -22,8 +22,6 @@ import logging
 from sentence_transformers import SentenceTransformer, util
 
 # --- Flask-Dance for Google OAuth ---
-from flask_dance.contrib.google import make_google_blueprint, google
-from flask_dance.consumer import oauth_authorized, oauth_error
 # LLM related imports
 from groq import RateLimitError, Groq
 from typing import Optional, List,Union
@@ -61,12 +59,12 @@ app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
 app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
 
 # --- Initialize Flask Extensions and Blueprints ---
-google_bp = make_google_blueprint(
-    client_id=app.config["GOOGLE_OAUTH_CLIENT_ID"],
-    client_secret=app.config["GOOGLE_OAUTH_CLIENT_SECRET"],
-    scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
-)
-app.register_blueprint(google_bp, url_prefix="/login")
+# google_bp = make_google_blueprint(
+#     client_id=app.config["GOOGLE_OAUTH_CLIENT_ID"],
+#     client_secret=app.config["GOOGLE_OAUTH_CLIENT_SECRET"],
+#     scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
+# )
+# app.register_blueprint(google_bp, url_prefix="/login")
 
 print("DEBUG: Initializing SentenceTransformer model...")
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
