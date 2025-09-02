@@ -9,9 +9,6 @@ from urllib.parse import urlparse
 import time
 from uuid import UUID, uuid4
 import re
-
-# Flask-Login and SQLAlchemy imports
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField,EmailField
