@@ -17,32 +17,54 @@ class JobAPIIntegration {
         return 'https://your-api-domain.com';
     }
 
-    // Enhanced fetch with retry logic and error handling
+    // Enhanced fetch with retry logic, authentication, and error handling
     async fetchWithRetry(url, options = {}, retries = this.retryAttempts) {
         try {
+            // Get session token if available
+            const session = localStorage.getItem('jobstir_session');
+            const authHeader = session ? { 'Authorization': `Bearer ${JSON.parse(session).token}` } : {};
+
             const response = await fetch(url, {
                 ...options,
                 headers: {
                     'Content-Type': 'application/json',
+                    ...authHeader,
                     ...options.headers
-                }
+                },
+                credentials: 'include' // Include cookies for session handling
             });
 
+            // Handle 401 Unauthorized
+            if (response.status === 401) {
+                localStorage.removeItem('jobstir_session');
+                window.location.href = '/login.html?session_expired=true';
+                throw new Error('Session expired. Please log in again.');
+            }
+
+            // Handle other error statuses
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const errorData = await response.json().catch(() => ({}));
+                const errorMessage = errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+                throw new Error(errorMessage);
             }
 
             return await response.json();
         } catch (error) {
-            console.error(`API request failed: ${error.message}`);
+            console.error(`API request to ${url} failed:`, error);
             
-            if (retries > 0 && (error.name === 'TypeError' || error.message.includes('fetch'))) {
-                console.log(`Retrying request... (${this.retryAttempts - retries + 1}/${this.retryAttempts})`);
-                await this.delay(this.retryDelay);
+            // Only retry on network errors or 5xx server errors
+            const isNetworkError = error.name === 'TypeError' || error.message.includes('fetch');
+            const isServerError = error.message.startsWith('5');
+            
+            if (retries > 0 && (isNetworkError || isServerError)) {
+                const attempt = this.retryAttempts - retries + 1;
+                console.log(`Retrying request (${attempt}/${this.retryAttempts})...`);
+                await this.delay(this.retryDelay * Math.pow(2, attempt - 1)); // Exponential backoff
                 return this.fetchWithRetry(url, options, retries - 1);
             }
             
-            throw error;
+            // For 4xx errors or final retry failure, rethrow with user-friendly message
+            throw new Error(this.getUserFriendlyError(error));
         }
     }
 
@@ -50,11 +72,20 @@ class JobAPIIntegration {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // Cache management
+    // Cache management with user isolation
     getCacheKey(url, params = {}) {
-        const paramString = Object.keys(params).length > 0 ? 
-            '?' + new URLSearchParams(params).toString() : '';
-        return url + paramString;
+        // Get user ID from session if available
+        const session = localStorage.getItem('jobstir_session');
+        const userId = session ? JSON.parse(session).userId || 'anonymous' : 'anonymous';
+        
+        // Create a stable string from params object
+        const paramString = Object.keys(params)
+            .sort() // Sort keys for consistent ordering
+            .map(key => `${key}=${String(params[key]).toLowerCase()}`)
+            .join('&');
+            
+        // Include user ID and URL in cache key
+        return `${userId}:${url}${paramString ? '?' + paramString : ''}`;
     }
 
     setCache(key, data) {

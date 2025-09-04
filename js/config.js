@@ -19,8 +19,8 @@ const CONFIG = {
     
     // Supabase Configuration
     SUPABASE: {
-        URL: 'https://your-project-id.supabase.co',
-        ANON_KEY: 'your-supabase-anon-key-here'
+        URL: null, // Set to null to disable Supabase for now
+        ANON_KEY: null // Set to null to disable Supabase for now
     },
     
     // Feature Flags
@@ -56,21 +56,18 @@ if (CONFIG.ENV === 'production') {
 
 // Validation
 function validateConfig() {
-    const errors = [];
+    const warnings = [];
     
-    if (!CONFIG.SUPABASE.URL || CONFIG.SUPABASE.URL.includes('your-project-id')) {
-        errors.push('Supabase URL not configured');
+    if (!CONFIG.SUPABASE.URL) {
+        warnings.push('Supabase URL not configured - running in local mode');
     }
     
-    if (!CONFIG.SUPABASE.ANON_KEY || CONFIG.SUPABASE.ANON_KEY.includes('your-supabase-anon-key')) {
-        errors.push('Supabase anonymous key not configured');
+    if (!CONFIG.SUPABASE.ANON_KEY) {
+        warnings.push('Supabase anonymous key not configured - running in local mode');
     }
     
-    if (errors.length > 0) {
-        console.warn('Configuration warnings:', errors);
-        if (CONFIG.ENV === 'production') {
-            throw new Error('Invalid production configuration: ' + errors.join(', '));
-        }
+    if (warnings.length > 0) {
+        console.info('Configuration info:', warnings);
     }
 }
 

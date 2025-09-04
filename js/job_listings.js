@@ -98,40 +98,110 @@ class JobListings {
     }
 
     async loadJobs() {
-        this.showLoading();
+        const loadingElement = document.getElementById('loading-indicator');
+        const errorElement = document.getElementById('error-message');
+        const jobListingsElement = document.getElementById('job-listings');
         
         try {
-            // Try to load jobs from API first
+            // Show loading state
+            this.showLoading();
+            if (loadingElement) loadingElement.style.display = 'block';
+            if (errorElement) errorElement.style.display = 'none';
+            if (jobListingsElement) jobListingsElement.innerHTML = '';
+            
+            // Try to load jobs from API if available
             if (window.jobAPI) {
-                const response = await window.jobAPI.getJobs();
-                if (response && response.jobs && Array.isArray(response.jobs)) {
-                    this.jobs = response.jobs;
-                    console.log(`Loaded ${this.jobs.length} jobs from API`);
+                const response = await window.jobAPI.getJobs(this.filters);
+                
+                if (response && Array.isArray(response.data)) {
+                    this.jobs = response.data.map(job => this.sanitizeJobObject(job));
+                    
+                    // Save to localStorage as fallback
+                    try {
+                        localStorage.setItem('jobstir_jobs_cache', JSON.stringify({
+                            data: this.jobs,
+                            timestamp: Date.now()
+                        }));
+                    } catch (e) {
+                        console.warn('Failed to cache jobs in localStorage:', e);
+                    }
                 } else {
-                    throw new Error('Invalid API response');
+                    throw new Error('Invalid API response format');
                 }
             } else {
                 throw new Error('API integration not available');
             }
         } catch (error) {
-            console.warn('Failed to load jobs from API, using fallback:', error.message);
+            console.warn('Failed to load jobs from API, trying cache...', error);
             
-            // Fallback to localStorage or demo jobs
-            this.jobs = JSON.parse(localStorage.getItem('jobstir_jobs') || '[]');
-            
-            if (this.jobs.length === 0) {
-                this.jobs = this.generateDemoJobs();
-                localStorage.setItem('jobstir_jobs', JSON.stringify(this.jobs));
+            // Try to load from cache if available
+            try {
+                const cached = localStorage.getItem('jobstir_jobs_cache');
+                if (cached) {
+                    const { data, timestamp } = JSON.parse(cached);
+                    const cacheAge = Date.now() - timestamp;
+                    const maxCacheAge = 24 * 60 * 60 * 1000; // 24 hours
+                    
+                    if (cacheAge < maxCacheAge && Array.isArray(data) && data.length > 0) {
+                        this.jobs = data.map(job => this.sanitizeJobObject(job));
+                        
+                        // Show warning about using cached data
+                        if (errorElement) {
+                            errorElement.textContent = 'Showing cached job listings. Some data may be outdated.';
+                            errorElement.style.display = 'block';
+                            errorElement.className = 'alert alert-warning';
+                        }
+                    } else {
+                        throw new Error('Cache expired or invalid');
+                    }
+                } else {
+                    throw new Error('No cache available');
+                }
+            } catch (cacheError) {
+                console.warn('Failed to load from cache, using fallback data...', cacheError);
+                
+                // Try to load from persistent storage or use demo data
+                try {
+                    this.jobs = JSON.parse(localStorage.getItem('jobstir_jobs') || '[]');
+                    
+                    if (this.jobs.length === 0) {
+                        this.jobs = this.generateDemoJobs();
+                        localStorage.setItem('jobstir_jobs', JSON.stringify(this.jobs));
+                    }
+                    
+                    // Show error to user
+                    if (errorElement) {
+                        errorElement.textContent = 'Using fallback job listings. Some features may be limited.';
+                        errorElement.style.display = 'block';
+                        errorElement.className = 'alert alert-warning';
+                    }
+                } catch (fallbackError) {
+                    console.error('Failed to load fallback jobs:', fallbackError);
+                    
+                    // Show error to user
+                    if (errorElement) {
+                        errorElement.textContent = 'Failed to load job listings. Please check your connection and try again.';
+                        errorElement.style.display = 'block';
+                        errorElement.className = 'alert alert-danger';
+                    }
+                    
+                    // Show demo data as last resort
+                    this.showDemoData();
+                }
             }
+        } finally {
+            // Ensure all job objects have required properties
+            this.jobs = this.jobs.map(job => this.sanitizeJobObject(job));
+            
+            // Update UI
+            this.filteredJobs = [...this.jobs];
+            this.updateResultsCount();
+            this.renderJobs();
+            
+            // Hide loading indicator
+            if (loadingElement) loadingElement.style.display = 'none';
+            this.hideLoading();
         }
-        
-        // Ensure all job objects have required properties
-        this.jobs = this.jobs.map(job => this.sanitizeJobObject(job));
-        
-        this.filteredJobs = [...this.jobs];
-        this.updateResultsCount();
-        this.renderJobs();
-        this.hideLoading();
     }
 
     generateDemoJobs() {

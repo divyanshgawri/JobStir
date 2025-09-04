@@ -36,9 +36,14 @@ function initializeSupabase() {
     if (window.__JOBSTIR_SUPABASE__) {
         return window.__JOBSTIR_SUPABASE__;
     }
-    if (SUPABASE_CONFIG.url === 'YOUR_SUPABASE_PROJECT_URL' ||
-        SUPABASE_CONFIG.anonKey === 'YOUR_SUPABASE_ANON_KEY') {
-        console.warn('⚠️ Supabase not configured. Please add your project URL and anon key to supabase-config.js');
+    
+    // Check if Supabase is configured
+    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey || 
+        SUPABASE_CONFIG.url === 'YOUR_SUPABASE_PROJECT_URL' ||
+        SUPABASE_CONFIG.anonKey === 'YOUR_SUPABASE_ANON_KEY' ||
+        SUPABASE_CONFIG.url.includes('your-project-id') ||
+        SUPABASE_CONFIG.anonKey.includes('your-supabase-anon-key')) {
+        console.info('ℹ️ Supabase not configured. Running in local mode.');
         return null;
     }
 
