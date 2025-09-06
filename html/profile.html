@@ -4,10 +4,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - JobStir</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stars Animation CSS -->
+    <link rel="stylesheet" href="assets/css/stars-animation.css">
     <link rel="stylesheet" href="../css/jobstir-unified.css">
     <link rel="stylesheet" href="../css/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <style>
+        /* Stars Background */
+        body {
+            background: linear-gradient(135deg, #e3ffe7 0%, #d9e7ff 50%, #ffe4e1 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Glass morphism effects */
+        .profile-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .profile-card, .tab-content, .profile-nav {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.25);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        
+        .profile-card:hover, .tab-content:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(31, 38, 135, 0.4);
+        }
+        
+        /* Avatar with star effects */
+        .avatar {
+            position: relative;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        .avatar::before {
+            content: '✨';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 1.2rem;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.2); }
+        }
+        
+        /* Star rating styles */
+        .star-rating {
+            display: flex;
+            gap: 3px;
+            margin-top: 8px;
+            justify-content: center;
+        }
+        
+        .star-rating .star {
+            color: #ffd700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+        
+        .star-rating .star:hover {
+            transform: scale(1.3);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+        
+        /* Gradient buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            color: #333;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border: none;
+        }
+        
+        /* Enhanced profile header */
+        .tab-header h2 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Profile badges with gradients */
+        .badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge.verified {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        /* Skills with star accents */
+        .skill-tag {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin: 3px;
+            position: relative;
+        }
+        
+        .skill-tag::after {
+            content: '⭐';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 0.7rem;
+        }
+        
+        /* Profile info enhancement */
+        #profile-name {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        /* Navigation links with hover effects */
+        .nav-link {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin: 5px 0;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        /* Floating profile icons */
+        .floating-icon {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: floatProfile 4s ease-in-out infinite;
+        }
+        
+        .floating-icon:nth-child(1) { top: 10px; left: 10px; animation-delay: 0s; }
+        .floating-icon:nth-child(2) { top: 10px; right: 10px; animation-delay: 1s; }
+        .floating-icon:nth-child(3) { bottom: 10px; left: 10px; animation-delay: 2s; }
+        .floating-icon:nth-child(4) { bottom: 10px; right: 10px; animation-delay: 3s; }
+        
+        @keyframes floatProfile {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+    </style>
 </head>
 <body>
     <header class="top-nav">
@@ -75,7 +280,13 @@
             <div class="profile-layout">
                 <!-- Profile Sidebar -->
                 <aside class="profile-sidebar">
-                    <div class="profile-card">
+                    <div class="profile-card position-relative">
+                        <!-- Floating icons -->
+                        <div class="floating-icon">💼</div>
+                        <div class="floating-icon">🏆</div>
+                        <div class="floating-icon">🚀</div>
+                        <div class="floating-icon">✨</div>
+                        
                         <div class="avatar-section">
                             <div class="avatar" id="user-avatar">
                                 <i data-feather="user"></i>
@@ -89,6 +300,13 @@
                         <div class="profile-info">
                             <h2 id="profile-name">Loading...</h2>
                             <p id="profile-email">Loading...</p>
+                            <div class="star-rating">
+                                <span class="star">⭐</span>
+                                <span class="star">⭐</span>
+                                <span class="star">⭐</span>
+                                <span class="star">⭐</span>
+                                <span class="star">⭐</span>
+                            </div>
                             <div class="profile-badges">
                                 <span class="badge" id="user-type-badge">Candidate</span>
                                 <span class="badge verified" id="verified-badge">
@@ -372,6 +590,62 @@
     <script>
         feather.replace();
     </script>
+    
+    <!-- Stars Animation JS -->
+    <script src="assets/js/stars-animation.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize stars animation for profile page
+        document.addEventListener('DOMContentLoaded', () => {
+            window.jobStirStars = StarsAnimation.createDefault();
+        });
+        
+        // Enhanced star interactions for profile page
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('star')) {
+                for (let i = 0; i < 7; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.innerHTML = ['✨', '🏆', '🚀', '💼', '🎆', '🔥', '🌟'][Math.floor(Math.random() * 7)];
+                    sparkle.style.cssText = `
+                        position: fixed;
+                        left: ${e.clientX + Math.random() * 50 - 25}px;
+                        top: ${e.clientY + Math.random() * 50 - 25}px;
+                        font-size: 1.1rem;
+                        pointer-events: none;
+                        animation: profileSparkle 1.5s ease-out forwards;
+                        z-index: 9999;
+                    `;
+                    document.body.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 1500);
+                }
+            }
+        });
+        
+        // Add hover effects to floating icons
+        document.querySelectorAll('.floating-icon').forEach(icon => {
+            icon.addEventListener('mouseenter', () => {
+                icon.style.transform = 'scale(1.2) rotate(15deg)';
+                icon.style.textShadow = '0 0 15px rgba(255, 215, 0, 0.8)';
+            });
+            icon.addEventListener('mouseleave', () => {
+                icon.style.transform = '';
+                icon.style.textShadow = '';
+            });
+        });
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes profileSparkle {
+                0% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 1; }
+                100% { transform: scale(0.1) translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(720deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
     <script src="../js/supabase-config.js"></script>
     <script src="../js/supabase-auth.js"></script>
     <script src="../js/supabase-database.js"></script>

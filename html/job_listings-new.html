@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Jobs - JobStir ✨</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Enhanced Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            padding: 120px 0 60px;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        /* Star Rating Component */
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .star {
+            font-size: 1.5rem;
+            color: #ffd700;
+            animation: starTwinkle 2s infinite;
+            cursor: pointer;
+        }
+        
+        .star:nth-child(2) { animation-delay: 0.2s; }
+        .star:nth-child(3) { animation-delay: 0.4s; }
+        .star:nth-child(4) { animation-delay: 0.6s; }
+        .star:nth-child(5) { animation-delay: 0.8s; }
+        
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+        
+        /* Search Section */
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: -50px auto 3rem;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            max-width: 1000px;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Job Cards */
+        .job-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .job-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .job-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .company-name {
+            color: #667eea;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .job-location {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .job-tag {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .job-salary {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+        
+        .job-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        
+        .btn-apply {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-apply:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-save {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-save:hover {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Filters Section */
+        .filters-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #2c3e50;
+        }
+        
+        .form-check-label {
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        /* Loading Animation */
+        .job-skeleton {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .job-skeleton::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-rocket me-2"></i>JobStir ✨
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="job_listings.html">Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="evaluate_resume.html">AI Resume</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+                <div class="navbar-nav ms-3">
+                    <a href="signin.html" class="btn btn-outline-primary me-2">Login</a>
+                    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Find Your Dream Job ⭐</h1>
+            <p class="hero-subtitle">Discover amazing opportunities from top companies worldwide</p>
+            <div class="star-rating">
+                <i class="fas fa-star star"></i>
+                <i class="fas fa-star star"></i>
+                <i class="fas fa-star star"></i>
+                <i class="fas fa-star star"></i>
+                <i class="fas fa-star star"></i>
+            </div>
+            <p class="mb-0" style="opacity: 0.8;">50,000+ jobs • 25,000+ companies • 95% success rate</p>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <div class="container">
+        <div class="search-section animate-on-scroll">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Job title or keyword..." id="searchInput">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Location..." id="locationInput">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control" id="categorySelect">
+                        <option value="">All Categories</option>
+                        <option value="technology">Technology</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="design">Design</option>
+                        <option value="sales">Sales</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" onclick="searchJobs()">
+                        <i class="fas fa-search me-2"></i>Search ⭐
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <small class="text-muted">
+                        Popular searches: 
+                        <a href="#" class="text-decoration-none" onclick="quickSearch('Software Engineer')">Software Engineer</a>, 
+                        <a href="#" class="text-decoration-none" onclick="quickSearch('Data Scientist')">Data Scientist</a>, 
+                        <a href="#" class="text-decoration-none" onclick="quickSearch('Product Manager')">Product Manager</a>, 
+                        <a href="#" class="text-decoration-none" onclick="quickSearch('UX Designer')">UX Designer</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="content-section">
+            <div class="row">
+                <!-- Filters Sidebar -->
+                <div class="col-lg-3">
+                    <div class="filters-section animate-on-scroll">
+                        <h5 class="mb-3">
+                            <i class="fas fa-filter me-2"></i>Filters
+                            <button class="btn btn-sm btn-outline-secondary float-end" onclick="clearFilters()">Clear All</button>
+                        </h5>
+                        
+                        <div class="filter-group">
+                            <div class="filter-title">Job Type</div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="fulltime" value="fulltime">
+                                <label class="form-check-label" for="fulltime">Full-time</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="parttime" value="parttime">
+                                <label class="form-check-label" for="parttime">Part-time</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="contract" value="contract">
+                                <label class="form-check-label" for="contract">Contract</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remote" value="remote">
+                                <label class="form-check-label" for="remote">Remote</label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <div class="filter-title">Experience Level</div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="entry" value="entry">
+                                <label class="form-check-label" for="entry">Entry Level</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="mid" value="mid">
+                                <label class="form-check-label" for="mid">Mid Level</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="senior" value="senior">
+                                <label class="form-check-label" for="senior">Senior Level</label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <div class="filter-title">Salary Range</div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="salary1" value="0-50k">
+                                <label class="form-check-label" for="salary1">$0 - $50,000</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="salary2" value="50-100k">
+                                <label class="form-check-label" for="salary2">$50,000 - $100,000</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="salary3" value="100k+">
+                                <label class="form-check-label" for="salary3">$100,000+</label>
+                            </div>
+                        </div>
+
+                        <div class="star-rating">
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Listings -->
+                <div class="col-lg-9">
+                    <!-- Results Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 animate-on-scroll">
+                        <div>
+                            <h4 class="mb-1">Job Opportunities ⭐</h4>
+                            <p class="text-muted mb-0" id="resultsCount">Loading amazing opportunities...</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <small class="text-muted">Sort by:</small>
+                            <select class="form-control" style="width: auto;" id="sortBy">
+                                <option value="relevance">Relevance</option>
+                                <option value="date">Date Posted</option>
+                                <option value="salary">Salary</option>
+                                <option value="company">Company</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Job Cards Container -->
+                    <div id="jobsContainer">
+                        <!-- Loading skeletons will be replaced with actual jobs -->
+                        <div class="job-skeleton"></div>
+                        <div class="job-skeleton"></div>
+                        <div class="job-skeleton"></div>
+                        <div class="job-skeleton"></div>
+                        <div class="job-skeleton"></div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center mt-4">
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Enhanced JavaScript -->
+    <script>
+        // Sample job data
+        const sampleJobs = [
+            {
+                id: 1,
+                title: "Senior Software Engineer",
+                company: "TechCorp",
+                location: "San Francisco, CA (Remote)",
+                salary: "$120,000 - $180,000",
+                type: "Full-time",
+                tags: ["JavaScript", "React", "Node.js", "AWS"],
+                description: "Join our innovative team building next-generation web applications...",
+                posted: "2 days ago",
+                logo: "TC"
+            },
+            {
+                id: 2,
+                title: "Product Manager",
+                company: "InnovateCo",
+                location: "New York, NY",
+                salary: "$110,000 - $150,000",
+                type: "Full-time",
+                tags: ["Product Strategy", "Analytics", "Agile", "Leadership"],
+                description: "Lead product development for our flagship SaaS platform...",
+                posted: "1 day ago",
+                logo: "IC"
+            },
+            {
+                id: 3,
+                title: "UX Designer",
+                company: "DesignStudio",
+                location: "Austin, TX (Hybrid)",
+                salary: "$80,000 - $120,000",
+                type: "Full-time",
+                tags: ["Figma", "User Research", "Prototyping", "Design Systems"],
+                description: "Create beautiful and intuitive user experiences...",
+                posted: "3 days ago",
+                logo: "DS"
+            },
+            {
+                id: 4,
+                title: "Data Scientist",
+                company: "DataDriven",
+                location: "Seattle, WA (Remote)",
+                salary: "$130,000 - $170,000",
+                type: "Full-time",
+                tags: ["Python", "Machine Learning", "SQL", "TensorFlow"],
+                description: "Apply advanced analytics to drive business insights...",
+                posted: "1 week ago",
+                logo: "DD"
+            },
+            {
+                id: 5,
+                title: "Marketing Manager",
+                company: "GrowthCorp",
+                location: "Chicago, IL",
+                salary: "$70,000 - $100,000",
+                type: "Full-time",
+                tags: ["Digital Marketing", "SEO", "Content Strategy", "Analytics"],
+                description: "Drive marketing initiatives and brand growth...",
+                posted: "5 days ago",
+                logo: "GC"
+            }
+        ];
+
+        let currentJobs = [...sampleJobs];
+
+        // Animate on Scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            elements.forEach(element => observer.observe(element));
+        }
+
+        // Load jobs
+        function loadJobs(jobs = currentJobs) {
+            const container = document.getElementById('jobsContainer');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            resultsCount.textContent = `${jobs.length} jobs found ⭐`;
+            
+            container.innerHTML = jobs.map(job => `
+                <div class="job-card animate-on-scroll">
+                    <div class="d-flex">
+                        <div class="company-logo">${job.logo}</div>
+                        <div class="flex-fill">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="job-title">${job.title}</div>
+                                    <div class="company-name">${job.company}</div>
+                                    <div class="job-location">
+                                        <i class="fas fa-map-marker-alt me-1"></i>${job.location}
+                                    </div>
+                                    <div class="job-tags">
+                                        ${job.tags.map(tag => `<span class="job-tag">${tag}</span>`).join('')}
+                                    </div>
+                                    <div class="job-salary">
+                                        <i class="fas fa-dollar-sign me-1"></i>${job.salary}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-end">
+                                        <small class="text-muted">${job.posted}</small>
+                                        <div class="star-rating mb-2">
+                                            <i class="fas fa-star star" style="font-size: 0.8rem;"></i>
+                                            <i class="fas fa-star star" style="font-size: 0.8rem;"></i>
+                                            <i class="fas fa-star star" style="font-size: 0.8rem;"></i>
+                                            <i class="fas fa-star star" style="font-size: 0.8rem;"></i>
+                                            <i class="fas fa-star star" style="font-size: 0.8rem;"></i>
+                                        </div>
+                                        <div class="job-actions">
+                                            <button class="btn btn-apply" onclick="applyToJob(${job.id})">
+                                                <i class="fas fa-paper-plane me-1"></i>Apply
+                                            </button>
+                                            <button class="btn btn-save" onclick="saveJob(${job.id})" title="Save job">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Re-initialize animations for new content
+            setTimeout(() => {
+                animateOnScroll();
+            }, 100);
+        }
+
+        // Search jobs
+        function searchJobs() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const location = document.getElementById('locationInput').value.toLowerCase();
+            const category = document.getElementById('categorySelect').value;
+            
+            let filteredJobs = sampleJobs.filter(job => {
+                const titleMatch = !searchTerm || job.title.toLowerCase().includes(searchTerm);
+                const locationMatch = !location || job.location.toLowerCase().includes(location);
+                const categoryMatch = !category || job.tags.some(tag => 
+                    tag.toLowerCase().includes(category) || 
+                    job.title.toLowerCase().includes(category)
+                );
+                
+                return titleMatch && locationMatch && categoryMatch;
+            });
+            
+            currentJobs = filteredJobs;
+            loadJobs(filteredJobs);
+            
+            // Show search feedback
+            if (filteredJobs.length === 0) {
+                document.getElementById('jobsContainer').innerHTML = `
+                    <div class="text-center py-5">
+                        <div style="font-size: 4rem; opacity: 0.3;">🔍</div>
+                        <h4>No jobs found</h4>
+                        <p class="text-muted">Try adjusting your search criteria or browse all jobs</p>
+                        <button class="btn btn-primary" onclick="clearSearch()">
+                            <i class="fas fa-refresh me-2"></i>View All Jobs
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Quick search
+        function quickSearch(term) {
+            document.getElementById('searchInput').value = term;
+            searchJobs();
+        }
+
+        // Clear search
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('locationInput').value = '';
+            document.getElementById('categorySelect').value = '';
+            currentJobs = [...sampleJobs];
+            loadJobs();
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.querySelectorAll('.filters-section input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+
+        // Apply to job
+        function applyToJob(jobId) {
+            const job = sampleJobs.find(j => j.id === jobId);
+            
+            // Create success effect
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.innerHTML = ['⭐', '✨', '🎉'][Math.floor(Math.random() * 3)];
+                sparkle.style.cssText = `
+                    position: fixed;
+                    left: ${Math.random() * 100}vw;
+                    top: ${Math.random() * 100}vh;
+                    font-size: 20px;
+                    pointer-events: none;
+                    animation: applySuccess 2s ease-out forwards;
+                    z-index: 9999;
+                `;
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 2000);
+            }
+            
+            setTimeout(() => {
+                alert(`🎉 Application submitted for ${job.title} at ${job.company}! We'll notify you about the status. ⭐`);
+            }, 500);
+        }
+
+        // Save job
+        function saveJob(jobId) {
+            const job = sampleJobs.find(j => j.id === jobId);
+            
+            // Visual feedback
+            const event = window.event;
+            const button = event.target.closest('.btn-save');
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.style.background = 'var(--gradient-success)';
+            button.style.color = 'white';
+            
+            setTimeout(() => {
+                alert(`💾 ${job.title} at ${job.company} saved to your favorites! ⭐`);
+            }, 200);
+        }
+
+        // Add apply success animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes applySuccess {
+                0% {
+                    transform: scale(0) rotate(0deg);
+                    opacity: 1;
+                }
+                50% {
+                    transform: scale(1.2) rotate(180deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(0.8) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Enhanced star interactions
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('star')) {
+                // Create sparkle effect
+                for (let i = 0; i < 5; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.innerHTML = '✨';
+                    sparkle.style.cssText = `
+                        position: absolute;
+                        left: ${e.clientX + Math.random() * 40 - 20}px;
+                        top: ${e.clientY + Math.random() * 40 - 20}px;
+                        font-size: 1rem;
+                        pointer-events: none;
+                        animation: sparkleExplode 1s ease-out forwards;
+                        z-index: 9999;
+                    `;
+                    document.body.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 1000);
+                }
+            }
+        });
+
+        // Add sparkle animation
+        const sparkleStyle = document.createElement('style');
+        sparkleStyle.textContent = `
+            @keyframes sparkleExplode {
+                0% {
+                    transform: scale(1) translate(0, 0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(0.5) translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(sparkleStyle);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load initial jobs after a short delay to simulate loading
+            setTimeout(() => {
+                loadJobs();
+                animateOnScroll();
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

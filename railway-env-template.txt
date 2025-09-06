@@ -1,0 +1,41 @@
+# Railway Environment Variables Template
+# Copy these variables to your Railway project dashboard
+
+NODE_ENV=production
+PORT=3000
+FRONTEND_URL=https://your-app-name.up.railway.app
+
+# Database Configuration (Supabase)
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Security Configuration
+JWT_SECRET=your-super-secure-jwt-secret-minimum-32-characters
+SESSION_SECRET=your-session-secret-minimum-32-characters
+
+# File Upload Configuration
+MAX_FILE_SIZE=5242880
+
+# Optional: Email Configuration
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=noreply@jobstir.com
+SMTP_PASS=your-email-password
+
+# Optional: Analytics
+GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+FORM_RATE_LIMIT_MAX=5
+
+# Features
+ENABLE_CORS=true
+ENABLE_HELMET=true
+ENABLE_COMPRESSION=true
+ENABLE_RATE_LIMITING=true
+
+DEBUG=false
+LOG_LEVEL=info

@@ -12,6 +12,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Stars Animation CSS -->
+    <link rel="stylesheet" href="assets/css/stars-animation.css">
+    
     <style>
         :root {
             --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -24,14 +27,8 @@
             overflow-x: hidden;
         }
         
-        /* Animated Background */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+        /* Stars background gradient overlay */
+        body {
             background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
@@ -41,6 +38,12 @@
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+        
+        /* Enhanced star interactions */
+        .star-rating .star:hover {
+            transform: scale(1.3);
+            filter: drop-shadow(0 0 10px #ffd700);
         }
         
         /* Enhanced Navbar */
@@ -175,8 +178,6 @@
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="animated-bg"></div>
 
     <!-- Enhanced Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
@@ -478,11 +479,18 @@
         </div>
     </footer>
 
+    <!-- Stars Animation JS -->
+    <script src="assets/js/stars-animation.js"></script>
+    
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Enhanced JavaScript -->
     <script>
+        // Initialize stars animation
+        document.addEventListener('DOMContentLoaded', () => {
+            window.jobStirStars = StarsAnimation.createFull();
+        });
         // Animate on Scroll
         function animateOnScroll() {
             const elements = document.querySelectorAll('.animate-on-scroll');
@@ -612,8 +620,9 @@
         `;
         document.head.appendChild(sparkleStyle);
 
-        // Initialize animations
+        // Update initialization to include both stars and scroll animations
         document.addEventListener('DOMContentLoaded', () => {
+            // Don't initialize stars here as it's already handled above
             animateOnScroll();
         });
     </script>

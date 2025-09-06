@@ -4,10 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Applications - JobStir</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stars Animation CSS -->
+    <link rel="stylesheet" href="assets/css/stars-animation.css">
     <link rel="stylesheet" href="../css/jobstir-unified.css">
     <link rel="stylesheet" href="../css/candidate_portal.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <style>
+        /* Stars Background */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Glass morphism effects */
+        .portal-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .stat-card, .application-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.25);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover, .application-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(31, 38, 135, 0.4);
+        }
+        
+        /* Star rating styles */
+        .star-rating {
+            display: flex;
+            gap: 3px;
+            margin-top: 5px;
+        }
+        
+        .star-rating .star {
+            color: #ffd700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+        
+        .star-rating .star:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+        
+        /* Gradient buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Enhanced text styling */
+        .portal-header h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        
+        .stat-number {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-content h3 {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+        
+        /* Status badges with gradients */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending { background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%); }
+        .status-reviewing { background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%); }
+        .status-interview { background: linear-gradient(135deg, #66bb6a 0%, #388e3c 100%); }
+        .status-offer { background: linear-gradient(135deg, #ab47bc 0%, #7b1fa2 100%); }
+        .status-rejected { background: linear-gradient(135deg, #ef5350 0%, #c62828 100%); }
+        
+        /* Application floating emoji */
+        .floating-emoji {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            font-size: 1.5rem;
+            animation: floatEmoji 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatEmoji {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
 </head>
 <body>
     <header class="top-nav">
@@ -86,40 +218,64 @@
 
             <!-- Application Stats -->
             <section class="stats-section">
-                <div class="stat-card">
+                <div class="stat-card position-relative">
+                    <div class="floating-emoji">📤</div>
                     <div class="stat-icon">
                         <i data-feather="send"></i>
                     </div>
                     <div class="stat-content">
                         <h3>Total Applications</h3>
                         <p class="stat-number" id="total-applications">0</p>
+                        <div class="star-rating">
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card position-relative">
+                    <div class="floating-emoji">⏳</div>
                     <div class="stat-icon">
                         <i data-feather="clock"></i>
                     </div>
                     <div class="stat-content">
                         <h3>Pending Review</h3>
                         <p class="stat-number" id="pending-applications">0</p>
+                        <div class="star-rating">
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card position-relative">
+                    <div class="floating-emoji">🎯</div>
                     <div class="stat-icon">
                         <i data-feather="check-circle"></i>
                     </div>
                     <div class="stat-content">
                         <h3>Interviews</h3>
                         <p class="stat-number" id="interview-applications">0</p>
+                        <div class="star-rating">
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card position-relative">
+                    <div class="floating-emoji">🎉</div>
                     <div class="stat-icon">
                         <i data-feather="thumbs-up"></i>
                     </div>
                     <div class="stat-content">
                         <h3>Offers</h3>
                         <p class="stat-number" id="offer-applications">0</p>
+                        <div class="star-rating">
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -159,6 +315,50 @@
     <script>
         feather.replace();
     </script>
+    
+    <!-- Stars Animation JS -->
+    <script src="assets/js/stars-animation.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize stars animation for candidate portal
+        document.addEventListener('DOMContentLoaded', () => {
+            window.jobStirStars = StarsAnimation.createDefault();
+        });
+        
+        // Enhanced star interactions for candidate portal
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('star')) {
+                for (let i = 0; i < 6; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.innerHTML = ['✨', '📈', '🚀', '🎆', '🏆', '🔥'][Math.floor(Math.random() * 6)];
+                    sparkle.style.cssText = `
+                        position: fixed;
+                        left: ${e.clientX + Math.random() * 40 - 20}px;
+                        top: ${e.clientY + Math.random() * 40 - 20}px;
+                        font-size: 1rem;
+                        pointer-events: none;
+                        animation: candidateSparkle 1.2s ease-out forwards;
+                        z-index: 9999;
+                    `;
+                    document.body.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 1200);
+                }
+            }
+        });
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes candidateSparkle {
+                0% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 1; }
+                100% { transform: scale(0.2) translate(${Math.random() * 80 - 40}px, ${Math.random() * 80 - 40}px) rotate(360deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
     <script src="../js/supabase-config.js"></script>
     <script src="../js/supabase-auth.js"></script>
     <script src="../js/supabase-database.js"></script>

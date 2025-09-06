@@ -1,0 +1,229 @@
+/* Stars Animation Background CSS */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle linear infinite;
+}
+
+.star:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Star sizes */
+.star.small {
+    width: 1px;
+    height: 1px;
+    animation-duration: 3s;
+}
+
+.star.medium {
+    width: 2px;
+    height: 2px;
+    animation-duration: 2s;
+}
+
+.star.large {
+    width: 3px;
+    height: 3px;
+    animation-duration: 1s;
+}
+
+/* Twinkling animation */
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Moving stars animation */
+.star.moving {
+    animation: moveAcrossScreen linear infinite;
+}
+
+@keyframes moveAcrossScreen {
+    0% {
+        transform: translateX(-10px) translateY(100vh);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(10px) translateY(-10vh);
+        opacity: 0;
+    }
+}
+
+/* Shooting stars */
+.shooting-star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: linear-gradient(45deg, #fff, transparent);
+    border-radius: 50%;
+    animation: shoot linear infinite;
+}
+
+@keyframes shoot {
+    0% {
+        transform: translateX(-100px) translateY(-100px);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100vw) translateY(100vh);
+        opacity: 0;
+    }
+}
+
+/* Constellation effect */
+.constellation {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: pulse 4s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+}
+
+/* Galaxy background effect */
+.galaxy-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    z-index: -2;
+    animation: rotateGalaxy 60s linear infinite;
+}
+
+@keyframes rotateGalaxy {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Nebula effect */
+.nebula {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle at 20% 30%, 
+        rgba(102, 126, 234, 0.05) 0%, 
+        transparent 40%
+    ),
+    radial-gradient(
+        circle at 80% 70%, 
+        rgba(240, 147, 251, 0.05) 0%, 
+        transparent 40%
+    ),
+    radial-gradient(
+        circle at 50% 50%, 
+        rgba(118, 75, 162, 0.03) 0%, 
+        transparent 50%
+    );
+    z-index: -3;
+    animation: driftNebula 120s linear infinite;
+}
+
+@keyframes driftNebula {
+    0% {
+        transform: translate(-2%, -2%) rotate(0deg);
+    }
+    25% {
+        transform: translate(-1%, -3%) rotate(90deg);
+    }
+    50% {
+        transform: translate(1%, -2%) rotate(180deg);
+    }
+    75% {
+        transform: translate(0%, -1%) rotate(270deg);
+    }
+    100% {
+        transform: translate(-2%, -2%) rotate(360deg);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .star.large {
+        width: 2px;
+        height: 2px;
+    }
+    
+    .star.medium {
+        width: 1.5px;
+        height: 1.5px;
+    }
+    
+    .galaxy-bg {
+        animation-duration: 40s;
+    }
+    
+    .nebula {
+        animation-duration: 80s;
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .star,
+    .shooting-star,
+    .constellation,
+    .galaxy-bg,
+    .nebula {
+        animation: none;
+    }
+    
+    .star {
+        opacity: 0.5;
+    }
+}
