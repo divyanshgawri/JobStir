@@ -5,34 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check authentication state and update UI
     updateAuthUI();
 
-    // --- Dark Mode Logic ---
-    const darkModeToggles = document.querySelectorAll('.dark-mode-toggle');
-    const currentTheme = localStorage.getItem('theme');
-
-    const applyTheme = (theme) => {
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-            darkModeToggles.forEach(toggle => toggle.checked = true);
-        } else {
-            document.documentElement.classList.remove('dark');
-            darkModeToggles.forEach(toggle => toggle.checked = false);
-        }
-        feather.replace(); // Re-initialize icons after theme change
-    };
-
-    if (currentTheme) {
-        applyTheme(currentTheme);
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        applyTheme('dark');
-    }
-
-    darkModeToggles.forEach(toggle => {
-        toggle.addEventListener('change', function() {
-            const theme = this.checked ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            applyTheme(theme);
+    // Theme management is now handled by theme-manager.js
+    // Just register callback for theme changes if needed
+    if (window.jobstirTheme) {
+        window.jobstirTheme.onThemeChange((newTheme, oldTheme) => {
+            console.log(`Home page: Theme changed from ${oldTheme} to ${newTheme}`);
+            // Any page-specific theme change logic can go here
         });
-    });
+    }
 
 
     // Mobile Menu Toggle Logic

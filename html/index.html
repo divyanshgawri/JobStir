@@ -1,288 +1,982 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobStir - The Smartest Way to Hire or Get Hired</title>
-    <link rel="stylesheet" href="../css/jobstir-unified.css">
-    <link rel="stylesheet" href="../css/home.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <!-- Three.js library for 3D graphics -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Three Globe library -->
-    <script src="https://unpkg.com/three-globe"></script>
-    <!-- Globe data -->
-    <script src="../js/globe-data.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Performance Optimizer -->
-    <script src="../js/performance-optimizer.js"></script>
+    <title>JobStir - AI-Powered Career Platform ✨</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Enhanced CSS -->
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --success-color: #4ecdc4;
+            --warning-color: #ffe066;
+            --danger-color: #ff6b6b;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            --shadow-light: 0 5px 15px rgba(0,0,0,0.08);
+            --shadow-medium: 0 10px 30px rgba(0,0,0,0.15);
+            --shadow-heavy: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Enhanced Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark-color) !important;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+            transform: translateY(-2px);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 100px 0 50px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        /* Animated Buttons */
+        .btn-enhanced {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary-enhanced {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-primary-enhanced:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .btn-outline-enhanced {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline-enhanced:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Features Section */
+        .features-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: var(--gradient-secondary);
+            animation-delay: 0.5s;
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            background: var(--gradient-success);
+            animation-delay: 1s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Statistics Section */
+        .stats-section {
+            background: var(--dark-color);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        /* Star Rating Component */
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .star {
+            font-size: 1.5rem;
+            color: #ffd700;
+            animation: starTwinkle 2s infinite;
+        }
+
+        .star:nth-child(2) { animation-delay: 0.2s; }
+        .star:nth-child(3) { animation-delay: 0.4s; }
+        .star:nth-child(4) { animation-delay: 0.6s; }
+        .star:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        /* Testimonials */
+        .testimonial-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 50px 0 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .btn-enhanced {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            .feature-card {
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-
 <body>
-
-    <header class="top-nav">
-        <div class="container nav-content">
-            <div class="logo">
-                <a href="index.html" class="site-title-main">JobStir</a>
-            </div>
-            <nav class="main-nav">
-                <ul class="nav-links">
-                    <li><a href="index.html" class="active">Home</a></li>
-                    <li><a href="job_listings.html">Browse Jobs</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="evaluate_resume.html" class="evaluate-link"><b>Evaluate Resume</b></a></li>
-                </ul>
-            </nav>
-            <div class="nav-buttons">
-                <div class="theme-switch-wrapper">
-                    <label class="theme-switch" for="dark-mode-toggle-desktop">
-                        <input type="checkbox" id="dark-mode-toggle-desktop" class="dark-mode-toggle" />
-                        <div class="slider round">
-                            <i data-feather="sun" class="sun-icon"></i>
-                            <i data-feather="moon" class="moon-icon"></i>
-                        </div>
-                    </label>
-                </div>
-                <a href="signin.html" class="btn btn-secondary">Log In</a>
-                <a href="signup.html" class="btn btn-primary">Sign Up</a>
-            </div>
-            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
-        </div>
-    </header>
-
-    <div class="mobile-nav" id="mobileNav">
-        <div class="mobile-nav-header">
-            <a href="index.html" class="site-title-main">JobStir</a>
-            <div class="mobile-header-right">
-                <div class="theme-switch-wrapper">
-                    <label class="theme-switch" for="dark-mode-toggle-mobile">
-                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
-                        <div class="slider round">
-                            <i data-feather="sun" class="sun-icon"></i>
-                            <i data-feather="moon" class="moon-icon"></i>
-                        </div>
-                    </label>
-                </div>
-                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
-            </div>
-        </div>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="job_listings.html">Browse Jobs</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="evaluate_resume.html"><b>Evaluate Resume</b></a></li>
-        </ul>
-        <div class="mobile-nav-buttons">
-            <a href="signin.html" class="btn btn-secondary">Log In</a>
-            <a href="signup.html" class="btn btn-primary">Sign Up</a>
-        </div>
+    <!-- Loading Screen -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
     </div>
 
-    <main>
-        <section class="hero">
-            <div class="container hero-container">
-                <div class="hero-content">
-                    <h1>The Smartest Way to Hire or Get Hired</h1>
-                    <p>AI-Powered Hiring for Modern Teams. We connect exceptional talent with the world's most
-                        innovative companies.</p>
-                    <!-- Quick Search Bar -->
-                    <div class="hero-search">
-                        <div class="search-bar-compact">
-                            <div class="search-input-wrapper">
-                                <i data-feather="search"></i>
-                                <input type="text" id="hero-job-search" placeholder="Search jobs, companies, or keywords...">
-                            </div>
-                            <div class="location-input-wrapper">
-                                <i data-feather="map-pin"></i>
-                                <input type="text" id="hero-location-search" placeholder="Location">
-                            </div>
-                            <button class="search-btn" id="hero-search-btn">
-                                <i data-feather="search"></i>
-                                Search
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="hero-buttons">
-                        <a href="evaluate_resume.html" class="btn btn-primary">Evaluate Your Resume Now!</a>
-                        <a href="job_listings.html" class="btn btn-secondary">Find Opportunities</a>
-                    </div>
-                </div>
-                <div class="hero-image" id="hero-animation-container">
-                    <!-- The 3D animation will be rendered here -->
-                </div>
-            </div>
-        </section>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
 
-        <section id="how-it-works" class="how-it-works">
-            <div class="container">
-                <div class="section-header">
-                    <h2>How It Works</h2>
-                    <p>A streamlined, three-step process to connect you with the right opportunities or candidates.</p>
-                </div>
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-icon"><i data-feather="edit-3"></i></div>
-                        <h3>1. Define Your Role or Profile</h3>
-                        <p>Employers post detailed job requirements. Candidates build comprehensive profiles showcasing
-                            their skills.</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-icon"><i data-feather="bar-chart-2"></i></div>
-                        <h3>2. AI-Powered Matching</h3>
-                        <p>Our intelligent engine analyzes data points to find the best-fit candidates and roles with a
-                            transparent match score.</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-icon"><i data-feather="link"></i></div>
-                        <h3>3. Connect Instantly</h3>
-                        <p>Use our integrated tools to schedule interviews, communicate with matches, and move forward
-                            with confidence.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="latest-jobs" class="latest-jobs">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Latest Job Postings</h2>
-                    <p>Explore fresh opportunities from top companies hiring right now.</p>
-                </div>
-                <div class="jobs-grid">
-                    <div class="job-card">
-                        <div class="job-card-header">
-                            <div class="company-logo logo1"></div>
-                            <div>
-                                <h3 class="job-title">Senior Frontend Developer</h3>
-                                <p class="company-name">Innovate Solutions</p>
-                            </div>
-                        </div>
-                        <p class="job-location"><i data-feather="map-pin"></i> Remote (Global)</p>
-                        <div class="job-tags"><span class="tag tag-blue">React</span><span
-                                class="tag tag-green">TypeScript</span><span class="tag tag-purple">GraphQL</span></div>
-                        <a href="job-detail.html?id=1" class="btn btn-job-details">View Details</a>
-                    </div>
-                    <div class="job-card">
-                        <div class="job-card-header">
-                            <div class="company-logo logo2"></div>
-                            <div>
-                                <h3 class="job-title">Product Marketing Manager</h3>
-                                <p class="company-name">QuantumLeap</p>
-                            </div>
-                        </div>
-                        <p class="job-location"><i data-feather="map-pin"></i> New York, NY</p>
-                        <div class="job-tags"><span class="tag tag-blue">SaaS</span><span
-                                class="tag tag-green">Marketing</span><span class="tag tag-purple">Strategy</span></div>
-                        <a href="job-detail.html?id=2" class="btn btn-job-details">View Details</a>
-                    </div>
-                    <div class="job-card">
-                        <div class="job-card-header">
-                            <div class="company-logo logo3"></div>
-                            <div>
-                                <h3 class="job-title">Cloud Infrastructure Engineer</h3>
-                                <p class="company-name">NextGen Systems</p>
-                            </div>
-                        </div>
-                        <p class="job-location"><i data-feather="map-pin"></i> London, UK</p>
-                        <div class="job-tags"><span class="tag tag-blue">AWS</span><span
-                                class="tag tag-green">Kubernetes</span><span class="tag tag-purple">DevOps</span></div>
-                        <a href="job-detail.html?id=3" class="btn btn-job-details">View Details</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="features" class="feature-highlights">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Feature Highlights</h2>
-                    <p>Powerful, intuitive features that make recruitment smarter for everyone involved.</p>
-                </div>
-                <div class="features-grid">
-                    <div class="feature-card"><i data-feather="award"></i>
-                        <h4>Intelligent Ranking Engine</h4>
-                        <p>Our AI ranks candidates based on over 50 data points.</p>
-                    </div>
-                    <div class="feature-card"><i data-feather="calendar"></i>
-                        <h4>1-Click Interview Scheduling</h4>
-                        <p>Sync your calendar and schedule interviews in a single click.</p>
-                    </div>
-                    <div class="feature-card"><i data-feather="message-square"></i>
-                        <h4>Private Collaboration Notes</h4>
-                        <p>Collaborate with your team with private notes and ratings.</p>
-                    </div>
-                    <div class="feature-card"><i data-feather="file-text"></i>
-                        <h4>Resume Quality Analyzer</h4>
-                        <p>Get instant, AI-driven feedback on resume quality.</p>
-                    </div>
-                    <div class="feature-card"><i data-feather="shield"></i>
-                        <h4>GDPR-Compliant Privacy</h4>
-                        <p>Your data is safe with our enterprise-grade security controls.</p>
-                    </div>
-                    <div class="feature-card"><i data-feather="pie-chart"></i>
-                        <h4>Dashboard Analytics</h4>
-                        <p>Track your hiring pipeline with advanced analytics.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="testimonials" class="social-proof">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Trusted by Leading Companies</h2>
-                    <p>See how JobStir is transforming hiring for teams and candidates alike.</p>
-                </div>
-                <div class="testimonials">
-                    <div class="testimonial">
-                        <p>"JobStir helped us reduce our time-to-hire by 50%. The AI-powered matching is a complete
-                            game-changer."</p><span>~ Paras Verma, Head of Innovify AI Solutions.</span>
-                    </div>
-                    <div class="testimonial">
-                        <p>"As a candidate, I appreciated the transparency and quick responses. It's the best platform
-                            I've used."</p><span>~ Roop Kamal Singh</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="cta">
-            <div class="container">
-                <h2>Start hiring smarter, not harder.</h2>
-                <p>Join the future of recruitment today. No credit card required.</p>
-                <div class="hero-buttons">
-                    <a href="hr_job_upload.html" class="btn btn-primary">Post a Job</a>
-                    <a href="job_listings.html" class="btn btn-secondary">Find Opportunities</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
+    <!-- Enhanced Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2025 JobStir. All rights reserved.</p>
-                <ul class="footer-links">
-                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                    <li><a href="terms-of-service.html">Terms of Service</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-rocket me-2"></i>JobStir ✨
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="job_listings.html">Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="evaluate_resume.html">AI Resume</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
                 </ul>
+                <div class="navbar-nav ms-3">
+                    <a href="signin.html" class="btn btn-outline-primary me-2">Login</a>
+                    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Find Your Dream Job with AI-Powered Precision
+                            <span style="font-size: 0.8em;">🚀</span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            Revolutionary career platform that uses advanced AI to match you with perfect opportunities, 
+                            evaluate your resume, and accelerate your professional growth.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="evaluate_resume.html" class="btn btn-enhanced btn-primary-enhanced">
+                                <i class="fas fa-brain me-2"></i>Try AI Resume Analysis
+                            </a>
+                            <a href="job_listings.html" class="btn btn-enhanced btn-outline-enhanced">
+                                <i class="fas fa-search me-2"></i>Browse Jobs
+                            </a>
+                        </div>
+                        <div class="star-rating mt-4">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                        <p class="mt-2 text-white-50">Rated 5/5 by 10,000+ professionals</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center">
+                        <div style="font-size: 15rem; opacity: 0.3;">🎯</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="text-center mb-5 animate-on-scroll">
+                <h2 class="display-4 fw-bold mb-3">
+                    Why Choose JobStir? <span style="font-size: 0.7em;">✨</span>
+                </h2>
+                <p class="lead text-muted">Advanced AI technology meets human insight for unparalleled career success</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 animate-on-scroll">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">AI-Powered Matching</h3>
+                        <p class="text-muted">
+                            Advanced algorithms analyze your skills, experience, and preferences to find perfect job matches with 95% accuracy.
+                        </p>
+                        <div class="star-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 animate-on-scroll">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Resume Optimization</h3>
+                        <p class="text-muted">
+                            Get instant feedback on your resume with ATS compatibility checks, salary estimates, and improvement suggestions.
+                        </p>
+                        <div class="star-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 animate-on-scroll">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Career Insights</h3>
+                        <p class="text-muted">
+                            Industry trends, salary benchmarks, and personalized career path recommendations from our expert network.
+                        </p>
+                        <div class="star-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 animate-on-scroll">
+                    <div class="stat-card">
+                        <span class="stat-number" data-count="50000">0</span>
+                        <div class="stat-label">Jobs Posted</div>
+                        <div class="star-rating mt-2">
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 animate-on-scroll">
+                    <div class="stat-card">
+                        <span class="stat-number" data-count="25000">0</span>
+                        <div class="stat-label">Happy Users</div>
+                        <div class="star-rating mt-2">
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 animate-on-scroll">
+                    <div class="stat-card">
+                        <span class="stat-number" data-count="95">0</span>
+                        <div class="stat-label">% Success Rate</div>
+                        <div class="star-rating mt-2">
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 animate-on-scroll">
+                    <div class="stat-card">
+                        <span class="stat-number" data-count="500">0</span>
+                        <div class="stat-label">Partner Companies</div>
+                        <div class="star-rating mt-2">
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5 animate-on-scroll">
+                <h2 class="display-5 fw-bold mb-3">What Our Users Say ⭐</h2>
+                <p class="lead text-muted">Real stories from professionals who found their dream jobs</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 animate-on-scroll">
+                    <div class="testimonial-card">
+                        <div class="testimonial-avatar">JS</div>
+                        <div class="star-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                        <p class="mb-3">"JobStir's AI analysis helped me increase my resume score from 60% to 95%. I got 3 job offers within a week!"</p>
+                        <h6 class="fw-bold">John Smith</h6>
+                        <small class="text-muted">Software Engineer at Google</small>
+                    </div>
+                </div>
+                <div class="col-lg-4 animate-on-scroll">
+                    <div class="testimonial-card">
+                        <div class="testimonial-avatar">MJ</div>
+                        <div class="star-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                        <p class="mb-3">"The salary insights were spot on! I negotiated a 30% increase thanks to their market data."</p>
+                        <h6 class="fw-bold">Maria Johnson</h6>
+                        <small class="text-muted">Data Scientist at Meta</small>
+                    </div>
+                </div>
+                <div class="col-lg-4 animate-on-scroll">
+                    <div class="testimonial-card">
+                        <div class="testimonial-avatar">DL</div>
+                        <div class="star-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                        <p class="mb-3">"Best career platform ever! The job matching is incredibly accurate and saved me months of searching."</p>
+                        <h6 class="fw-bold">David Lee</h6>
+                        <small class="text-muted">Product Manager at Amazon</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+        <div class="container text-center">
+            <div class="animate-on-scroll">
+                <h2 class="cta-title">Ready to Transform Your Career? 🚀</h2>
+                <p class="lead mb-4">Join thousands of professionals who found their dream jobs with JobStir</p>
+                <div class="star-rating mb-4">
+                    <i class="fas fa-star star" style="font-size: 2rem;"></i>
+                    <i class="fas fa-star star" style="font-size: 2rem;"></i>
+                    <i class="fas fa-star star" style="font-size: 2rem;"></i>
+                    <i class="fas fa-star star" style="font-size: 2rem;"></i>
+                    <i class="fas fa-star star" style="font-size: 2rem;"></i>
+                </div>
+                <a href="signup.html" class="btn btn-enhanced btn-outline-enhanced btn-lg me-3">
+                    <i class="fas fa-user-plus me-2"></i>Get Started Free
+                </a>
+                <a href="evaluate_resume.html" class="btn btn-enhanced btn-primary-enhanced btn-lg">
+                    <i class="fas fa-magic me-2"></i>Try AI Analysis
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-rocket me-2"></i>JobStir ✨
+                    </h5>
+                    <p class="text-light">AI-powered career platform helping professionals find their dream jobs and accelerate career growth.</p>
+                    <div class="star-rating">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="fw-bold mb-3">Platform</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="job_listings.html" class="text-light text-decoration-none">Find Jobs</a></li>
+                        <li><a href="evaluate_resume.html" class="text-light text-decoration-none">Resume AI</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Career Insights</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Salary Calculator</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="fw-bold mb-3">Company</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="about.html" class="text-light text-decoration-none">About</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Careers</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Press</a></li>
+                        <li><a href="contact.html" class="text-light text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="fw-bold mb-3">Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Help Center</a></li>
+                        <li><a href="privacy-policy.html" class="text-light text-decoration-none">Privacy</a></li>
+                        <li><a href="terms-of-service.html" class="text-light text-decoration-none">Terms</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">API</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="fw-bold mb-3">Follow Us</h6>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-light fs-4"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light fs-4"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-light fs-4"><i class="fab fa-github"></i></a>
+                        <a href="#" class="text-light fs-4"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="text-light mb-0">
+                    © 2024 JobStir ✨ - All rights reserved. Made with ❤️ for job seekers worldwide.
+                </p>
             </div>
         </div>
     </footer>
 
-    <script src="../js/supabase-config.js"></script>
-    <script src="../js/supabase-auth.js"></script>
-    <script src="../js/supabase-database.js"></script>
-    <script src="../js/navigation.js"></script>
-    <script src="../js/location-service.js"></script>
-    <script src="../js/home.js"></script>
-</body>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
 
+        // Floating Particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = (Math.random() * 10 + 5) + 'px';
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Animate on Scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            elements.forEach(element => observer.observe(element));
+        }
+
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.getAttribute('data-count'));
+                        const duration = 2000;
+                        const increment = target / (duration / 16);
+                        let current = 0;
+
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                counter.textContent = target.toLocaleString();
+                                clearInterval(timer);
+                            } else {
+                                counter.textContent = Math.floor(current).toLocaleString();
+                            }
+                        }, 16);
+
+                        observer.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counters.forEach(counter => observer.observe(counter));
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = '0 5px 15px rgba(0,0,0,0.08)';
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            animateOnScroll();
+            animateCounters();
+        });
+
+        // Add some interaction effects
+        document.querySelectorAll('.btn-enhanced').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Easter egg - click on stars for confetti effect
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', () => {
+                star.style.animation = 'none';
+                star.offsetHeight; // Trigger reflow
+                star.style.animation = 'starTwinkle 0.5s ease';
+                
+                // Create small celebration particles
+                for (let i = 0; i < 10; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.innerHTML = '✨';
+                    sparkle.style.position = 'absolute';
+                    sparkle.style.pointerEvents = 'none';
+                    sparkle.style.fontSize = '1rem';
+                    sparkle.style.left = star.getBoundingClientRect().left + 'px';
+                    sparkle.style.top = star.getBoundingClientRect().top + 'px';
+                    sparkle.style.animation = `sparkleExplode 1s ease-out forwards`;
+                    sparkle.style.animationDelay = (i * 0.1) + 's';
+                    document.body.appendChild(sparkle);
+                    
+                    setTimeout(() => sparkle.remove(), 1000);
+                }
+            });
+        });
+
+        // Add sparkle explosion animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes sparkleExplode {
+                0% {
+                    transform: scale(1) translate(0, 0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(0.5) translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
 </html>

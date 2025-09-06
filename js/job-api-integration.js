@@ -6,6 +6,7 @@ class JobAPIIntegration {
         this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
         this.retryAttempts = 3;
         this.retryDelay = 1000;
+        this.supabase = window.getSupabaseClient ? window.getSupabaseClient() : null;
     }
 
     getBaseURL() {
@@ -15,6 +16,43 @@ class JobAPIIntegration {
         }
         // For production, use the deployed API URL
         return 'https://your-api-domain.com';
+    }
+
+    // Supabase query method with fallback to fetch
+    async querySupabase(table, query = {}, select = '*', retries = this.retryAttempts) {
+        if (!this.supabase) {
+            throw new Error('Supabase client not initialized');
+        }
+
+        try {
+            let queryBuilder = this.supabase
+                .from(table)
+                .select(select);
+
+            // Apply filters if provided
+            if (Object.keys(query).length > 0) {
+                Object.entries(query).forEach(([key, value]) => {
+                    if (Array.isArray(value)) {
+                        queryBuilder = queryBuilder.in(key, value);
+                    } else {
+                        queryBuilder = queryBuilder.eq(key, value);
+                    }
+                });
+            }
+
+            const { data, error } = await queryBuilder;
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            if (retries <= 0) {
+                console.error('Supabase query failed after retries:', error);
+                throw error;
+            }
+            console.warn(`Supabase query failed, retrying (${retries} attempts left)...`);
+            await new Promise(resolve => setTimeout(resolve, this.retryDelay));
+            return this.querySupabase(table, query, select, retries - 1);
+        }
     }
 
     // Enhanced fetch with retry logic, authentication, and error handling

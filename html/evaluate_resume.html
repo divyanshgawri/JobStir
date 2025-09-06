@@ -5,9 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Resume Evaluator - JobStir</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/jobstir-unified.css">
     <link rel="stylesheet" href="../css/evaluate-resume-enhanced.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -499,7 +504,174 @@
     <script src="../js/salary-estimator.js"></script>
     <script src="../js/resume-evaluator-supabase.js"></script>
     <script src="../js/performance-benchmark.js"></script>
+    <script src="../js/theme-manager.js"></script>
+    <script src="../js/client-resume-evaluator.js"></script>
     <script src="../js/evaluate-resume.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Enhanced UI Script -->
+    <script>
+        // Add floating particles effect
+        function createFloatingElements() {
+            const container = document.createElement('div');
+            container.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                pointer-events: none; z-index: -1;
+            `;
+            
+            for (let i = 0; i < 20; i++) {
+                const element = document.createElement('div');
+                element.innerHTML = ['⭐', '✨', '💼', '🚀', '🎯'][Math.floor(Math.random() * 5)];
+                element.style.cssText = `
+                    position: absolute;
+                    left: ${Math.random() * 100}%;
+                    font-size: ${Math.random() * 20 + 10}px;
+                    opacity: 0.1;
+                    animation: float ${Math.random() * 20 + 15}s infinite linear;
+                    animation-delay: ${Math.random() * 10}s;
+                `;
+                container.appendChild(element);
+            }
+            
+            document.body.appendChild(container);
+        }
+        
+        // Enhanced button interactions
+        function enhanceButtons() {
+            const buttons = document.querySelectorAll('button, .btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '';
+                });
+            });
+        }
+        
+        // Add success animation for completed analysis
+        function addSuccessAnimation() {
+            const originalShowSuccess = window.resumeEvaluator?.showSuccessMessage;
+            if (originalShowSuccess) {
+                window.resumeEvaluator.showSuccessMessage = function(message) {
+                    // Create enhanced success notification
+                    const toast = document.createElement('div');
+                    toast.className = 'position-fixed top-0 end-0 p-3';
+                    toast.style.zIndex = '9999';
+                    toast.innerHTML = `
+                        <div class="toast show" role="alert">
+                            <div class="toast-header bg-success text-white">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <strong class="me-auto">Success!</strong>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                            </div>
+                            <div class="toast-body">
+                                ${message} ⭐
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+                    
+                    // Confetti effect
+                    for (let i = 0; i < 50; i++) {
+                        const confetti = document.createElement('div');
+                        confetti.innerHTML = ['🎉', '⭐', '✨', '🥳'][Math.floor(Math.random() * 4)];
+                        confetti.style.cssText = `
+                            position: fixed; left: 50%; top: 20%; z-index: 9998;
+                            font-size: 20px; pointer-events: none;
+                            animation: confetti 3s ease-out forwards;
+                            animation-delay: ${i * 0.02}s;
+                        `;
+                        document.body.appendChild(confetti);
+                        setTimeout(() => confetti.remove(), 3000);
+                    }
+                    
+                    setTimeout(() => toast.remove(), 5000);
+                    
+                    // Call original method
+                    return originalShowSuccess.call(this, message);
+                };
+            }
+        }
+        
+        // Add CSS for animations
+        const enhancedStyles = document.createElement('style');
+        enhancedStyles.textContent = `
+            @keyframes float {
+                0% { transform: translateY(100vh) rotate(0deg); }
+                100% { transform: translateY(-100vh) rotate(360deg); }
+            }
+            
+            @keyframes confetti {
+                0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 1; }
+                100% { transform: translateX(${Math.random() * 200 - 100}px) translateY(100px) rotate(720deg); opacity: 0; }
+            }
+            
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+                transition: all 0.3s ease;
+            }
+            
+            .progress-ring {
+                filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5));
+            }
+            
+            .star-rating {
+                display: flex;
+                gap: 2px;
+                justify-content: center;
+                margin: 10px 0;
+            }
+            
+            .star-rating .star {
+                color: #ffd700;
+                animation: starTwinkle 2s infinite;
+            }
+            
+            .star-rating .star:nth-child(2) { animation-delay: 0.2s; }
+            .star-rating .star:nth-child(3) { animation-delay: 0.4s; }
+            .star-rating .star:nth-child(4) { animation-delay: 0.6s; }
+            .star-rating .star:nth-child(5) { animation-delay: 0.8s; }
+            
+            @keyframes starTwinkle {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.7; transform: scale(1.2); }
+            }
+        `;
+        document.head.appendChild(enhancedStyles);
+        
+        // Initialize enhancements
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                createFloatingElements();
+                enhanceButtons();
+                addSuccessAnimation();
+                
+                // Add star ratings to results sections
+                const resultsSections = document.querySelectorAll('.results-card, .tab-content');
+                resultsSections.forEach(section => {
+                    if (!section.querySelector('.star-rating')) {
+                        const stars = document.createElement('div');
+                        stars.className = 'star-rating';
+                        stars.innerHTML = `
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        `;
+                        section.appendChild(stars);
+                    }
+                });
+            }, 1000);
+        });
+    </script>
 </body>
 
 </html>

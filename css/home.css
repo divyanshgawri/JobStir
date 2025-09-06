@@ -311,6 +311,7 @@ input:checked + .slider .moon-icon { opacity: 1; }
     padding: 60px 0;
     position: relative;
     overflow: hidden;
+    background: linear-gradient(180deg, #DADED8 0%, #FFFFFF 100%) !important;
 }
 
 .hero-container {
@@ -331,11 +332,12 @@ input:checked + .slider .moon-icon { opacity: 1; }
     font-weight: 800;
     margin-bottom: 1rem;
     line-height: 1.2;
+    color: #2C3424 !important;
 }
 
 .hero-content p {
     font-size: 1.25rem;
-    color: var(--text-light);
+    color: #4C583E !important;
     max-width: 500px;
     margin-bottom: 30px;
 }
@@ -347,14 +349,14 @@ input:checked + .slider .moon-icon { opacity: 1; }
 }
 
 .hero-buttons .btn-primary {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, #2C3424, #4C583E);
     color: white;
 }
 
 .hero-buttons .btn-secondary {
-    background: var(--card-bg);
-    color: var(--text-dark);
-    border: 1px solid var(--border-color);
+    background: #959581;
+    color: #2C3424;
+    border: 1px solid #768064;
 }
 
 .hero-buttons .btn-secondary:hover {

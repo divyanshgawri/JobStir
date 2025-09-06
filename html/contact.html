@@ -3,286 +3,619 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact JobStir - Get in Touch</title>
-    <link rel="stylesheet" href="../css/jobstir-unified.css">
-    <link rel="stylesheet" href="../css/contact.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <title>Contact Us - JobStir ✨</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Enhanced Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        /* Star Rating Component */
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .star {
+            font-size: 1.5rem;
+            color: #ffd700;
+            animation: starTwinkle 2s infinite;
+            cursor: pointer;
+        }
+        
+        .star:nth-child(2) { animation-delay: 0.2s; }
+        .star:nth-child(3) { animation-delay: 0.4s; }
+        .star:nth-child(4) { animation-delay: 0.6s; }
+        .star:nth-child(5) { animation-delay: 0.8s; }
+        
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+        
+        /* Contact Cards */
+        .contact-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .contact-card:nth-child(2) .contact-icon {
+            background: var(--gradient-secondary);
+        }
+        
+        .contact-card:nth-child(3) .contact-icon {
+            background: var(--gradient-success);
+        }
+        
+        /* Form Styling */
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 <body>
-    <header class="top-nav">
-        <div class="container nav-content">
-            <div class="logo">
-                <a href="index.html" class="site-title-main">JobStir</a>
-            </div>
-            <nav class="main-nav">
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="job_listings.html">Browse Jobs</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html" class="active">Contact</a></li>
-                    <li><a href="evaluate_resume.html" class="evaluate-link"><b>Evaluate Resume</b></a></li>
-                </ul>
-            </nav>
-            <div class="nav-buttons">
-                <div class="theme-switch-wrapper">
-                    <label class="theme-switch" for="dark-mode-toggle">
-                        <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
-                        <div class="slider round">
-                            <i data-feather="sun" class="sun-icon"></i>
-                            <i data-feather="moon" class="moon-icon"></i>
-                        </div>
-                    </label>
-                </div>
-                <a href="signin.html" class="btn btn-secondary">Log In</a>
-                <a href="signup.html" class="btn btn-primary">Sign Up</a>
-            </div>
-            <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
-        </div>
-    </header>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
 
-    <div class="mobile-nav" id="mobileNav">
-        <div class="mobile-nav-header">
-            <a href="index.html" class="site-title-main">JobStir</a>
-            <div class="mobile-header-right">
-                <div class="theme-switch-wrapper">
-                    <label class="theme-switch" for="dark-mode-toggle-mobile">
-                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
-                        <div class="slider round">
-                            <i data-feather="sun" class="sun-icon"></i>
-                            <i data-feather="moon" class="moon-icon"></i>
-                        </div>
-                    </label>
-                </div>
-                <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
-            </div>
-        </div>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="job_listings.html">Browse Jobs</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html" class="active">Contact</a></li>
-            <li><a href="evaluate_resume.html"><b>Evaluate Resume</b></a></li>
-        </ul>
-        <div class="mobile-nav-buttons">
-            <a href="signin.html" class="btn btn-secondary">Log In</a>
-            <a href="signup.html" class="btn btn-primary">Sign Up</a>
-        </div>
-    </div>
-
-    <main>
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="container">
-                <h1 class="hero-title">Contact JobStir</h1>
-                <p class="hero-subtitle">We'd love to hear from you! Whether you have questions, need support, or want to provide feedback.</p>
-                <a href="index.html" class="btn btn-secondary">Back to Home</a>
-            </div>
-        </section>
-
-        <!-- Contact Content -->
-        <section class="contact-section">
-            <div class="container">
-                <div class="contact-grid">
-                    <!-- Contact Information -->
-                    <div class="contact-info">
-                        <h2>Get in Touch</h2>
-                        <p>We're here to help and answer any questions you might have. We look forward to hearing from you.</p>
-                        
-                        <div class="contact-cards">
-                            <div class="contact-card">
-                                <div class="contact-icon">
-                                    <i data-feather="mail"></i>
-                                </div>
-                                <div class="contact-details">
-                                    <h3>General Inquiries</h3>
-                                    <p>Email: <a href="mailto:jobstirai@gmail.com">jobstirai@gmail.com</a></p>
-                                    <p>Phone: +91 12345 67890</p>
-                                </div>
-                            </div>
-
-                            <div class="contact-card">
-                                <div class="contact-icon">
-                                    <i data-feather="headphones"></i>
-                                </div>
-                                <div class="contact-details">
-                                    <h3>Technical Support</h3>
-                                    <p>Email: <a href="mailto:support@jobstir.tech">support@jobstir.tech</a></p>
-                                    <p>Phone: +1 (555) 987-6543</p>
-                                </div>
-                            </div>
-
-                            <div class="contact-card">
-                                <div class="contact-icon">
-                                    <i data-feather="map-pin"></i>
-                                </div>
-                                <div class="contact-details">
-                                    <h3>Our Office</h3>
-                                    <p>JobStir</p>
-                                    <p>Remotely Working</p>
-                                    <p>Amritsar City, PUNJAB, 143001</p>
-                                    <p>India</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contact Form -->
-                    <div class="contact-form-section">
-                        <div class="form-card">
-                            <h2>Send us a Message</h2>
-                            <p>Fill out the form below and we'll get back to you as soon as possible.</p>
-                            
-                            <div id="message-container" class="message-container hidden"></div>
-
-                            <form id="contact-form">
-                                <div class="form-group">
-                                    <label for="name" class="form-label">Name</label>
-                                    <div class="input-wrapper">
-                                        <i data-feather="user"></i>
-                                        <input type="text" id="name" name="name" required 
-                                               class="input-field" placeholder="Your full name">
-                                    </div>
-                                    <div class="error-message" id="name-error"></div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <div class="input-wrapper">
-                                        <i data-feather="mail"></i>
-                                        <input type="email" id="email" name="email" required 
-                                               class="input-field" placeholder="you@example.com">
-                                    </div>
-                                    <div class="error-message" id="email-error"></div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="subject" class="form-label">Subject</label>
-                                    <div class="input-wrapper">
-                                        <i data-feather="tag"></i>
-                                        <input type="text" id="subject" name="subject" required 
-                                               class="input-field" placeholder="What is this about?">
-                                    </div>
-                                    <div class="error-message" id="subject-error"></div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="message" class="form-label">Message</label>
-                                    <textarea id="message" name="message" rows="6" required 
-                                              class="input-field" placeholder="Tell us more about your inquiry..."></textarea>
-                                    <div class="error-message" id="message-error"></div>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary" id="submit-btn">
-                                    <span class="btn-text">
-                                        <i data-feather="send"></i>
-                                        Send Message
-                                    </span>
-                                    <div class="btn-spinner hidden"></div>
-                                </button>
-                            </form>
-
-                            <div id="success-message" class="success-message hidden">
-                                <div class="success-content">
-                                    <i data-feather="check-circle"></i>
-                                    <h3>Message Sent Successfully!</h3>
-                                    <p>Thank you for contacting us. We'll get back to you within 24 hours.</p>
-                                    <button id="send-another-btn" class="btn btn-secondary">Send Another Message</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section class="faq-section">
-            <div class="container">
-                <h2 class="section-title">Frequently Asked Questions</h2>
-                <div class="faq-grid">
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <h3>How does JobStir's AI matching work?</h3>
-                            <i data-feather="chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Our AI analyzes over 50 data points from job descriptions and candidate profiles to create accurate match scores. This includes skills, experience, education, and cultural fit indicators.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <h3>Is JobStir free to use?</h3>
-                            <i data-feather="chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>JobStir offers both free and premium plans. Job seekers can use basic features for free, while employers have access to advanced features with our premium plans.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <h3>How secure is my data on JobStir?</h3>
-                            <i data-feather="chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>We take data security seriously. JobStir is GDPR-compliant and uses enterprise-grade security measures to protect your personal and professional information.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <h3>Can I edit my profile after creating it?</h3>
-                            <i data-feather="chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Yes, you can update your profile, resume, and preferences at any time through your dashboard. We recommend keeping your profile updated for better matches.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
+    <!-- Enhanced Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2025 JobStir. All rights reserved.</p>
-                <ul class="footer-links">
-                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                    <li><a href="terms-of-service.html">Terms of Service</a></li>
-                    <li><a href="about.html">About Us</a></li>
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-rocket me-2"></i>JobStir ✨
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="job_listings.html">Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="evaluate_resume.html">AI Resume</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="contact.html">Contact</a>
+                    </li>
                 </ul>
+                <div class="navbar-nav ms-3">
+                    <a href="signin.html" class="btn btn-outline-primary me-2">Login</a>
+                    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-5" style="margin-top: 100px;">
+        <div class="container">
+            <div class="content-section text-center animate-on-scroll">
+                <h1 class="display-4 fw-bold mb-3">Get In Touch ✨</h1>
+                <p class="lead mb-4">We'd love to hear from you! Whether you have questions, feedback, or just want to say hello.</p>
+                <div class="star-rating">
+                    <i class="fas fa-star star"></i>
+                    <i class="fas fa-star star"></i>
+                    <i class="fas fa-star star"></i>
+                    <i class="fas fa-star star"></i>
+                    <i class="fas fa-star star"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Methods -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 animate-on-scroll">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Email Us</h3>
+                        <p class="text-muted mb-3">Send us an email and we'll get back to you within 24 hours</p>
+                        <a href="mailto:hello@jobstir.com" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>hello@jobstir.com
+                        </a>
+                        <div class="star-rating mt-3">
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 animate-on-scroll">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fab fa-linkedin"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Connect on LinkedIn</h3>
+                        <p class="text-muted mb-3">Follow us for updates and connect with our professional community</p>
+                        <a href="#" class="btn btn-primary">
+                            <i class="fab fa-linkedin me-2"></i>Follow JobStir
+                        </a>
+                        <div class="star-rating mt-3">
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 animate-on-scroll">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Live Chat</h3>
+                        <p class="text-muted mb-3">Get instant support through our live chat feature</p>
+                        <button class="btn btn-primary" onclick="startChat()">
+                            <i class="fas fa-comment-dots me-2"></i>Start Chat
+                        </button>
+                        <div class="star-rating mt-3">
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                            <i class="fas fa-star star" style="font-size: 1rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="py-5">
+        <div class="container">
+            <div class="content-section animate-on-scroll">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h2 class="h1 mb-4">Send us a Message 📧</h2>
+                        <p class="lead mb-4">Have a specific question or want to discuss partnership opportunities? Fill out the form and we'll respond promptly!</p>
+                        <div class="star-rating mb-4">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">Why choose JobStir?</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>AI-powered job matching</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Resume optimization tools</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Career insights & analytics</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>24/7 customer support</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <form id="contactForm" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Your Name *</label>
+                                <input type="text" class="form-control" id="name" required>
+                                <div class="invalid-feedback">Please provide your name.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" id="email" required>
+                                <div class="invalid-feedback">Please provide a valid email address.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject *</label>
+                                <select class="form-control" id="subject" required>
+                                    <option value="">Choose a subject...</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="support">Technical Support</option>
+                                    <option value="partnership">Partnership Opportunity</option>
+                                    <option value="feedback">Feedback & Suggestions</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a subject.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Your Message *</label>
+                                <textarea class="form-control" id="message" rows="5" required placeholder="Tell us how we can help you..."></textarea>
+                                <div class="invalid-feedback">Please provide your message.</div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="newsletter">
+                                    <label class="form-check-label" for="newsletter">
+                                        Subscribe to our newsletter for job market insights and platform updates
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message ⭐
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="content-section animate-on-scroll">
+                <h2 class="text-center mb-5">Frequently Asked Questions 🤔</h2>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        How does JobStir's AI matching work?
+                                    </button>
+                                </h2>
+                                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Our AI analyzes your resume, skills, and experience to match you with relevant opportunities. It considers compatibility scores, salary expectations, and career goals for precise matching.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        Is JobStir free to use?
+                                    </button>
+                                </h2>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Yes! JobStir offers a free tier with basic job search and resume evaluation features. Premium plans unlock advanced AI insights, salary data, and personalized career coaching.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        How accurate are the salary estimates?
+                                    </button>
+                                </h2>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Our salary estimates are based on real market data, location factors, and skill demand. We maintain 90%+ accuracy by continuously updating our database with current industry trends.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="text-center">
+                            <div style="font-size: 8rem; opacity: 0.3;">❓</div>
+                            <div class="star-rating mt-3">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                            <p class="text-muted">Still have questions? We're here to help!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-rocket me-2"></i>JobStir ✨
+                    </h5>
+                    <p>AI-powered career platform helping professionals find their dream jobs and accelerate career growth.</p>
+                    <div class="star-rating">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6 class="fw-bold mb-3">Platform</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="job_listings.html" class="text-light text-decoration-none">Find Jobs</a></li>
+                                <li><a href="evaluate_resume.html" class="text-light text-decoration-none">Resume AI</a></li>
+                                <li><a href="index.html" class="text-light text-decoration-none">Career Insights</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="fw-bold mb-3">Company</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="about.html" class="text-light text-decoration-none">About</a></li>
+                                <li><a href="contact.html" class="text-light text-decoration-none">Contact</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="fw-bold mb-3">Follow Us</h6>
+                            <div class="d-flex gap-3">
+                                <a href="#" class="text-light fs-4"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="text-light fs-4"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="text-light fs-4"><i class="fab fa-github"></i></a>
+                                <a href="#" class="text-light fs-4"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="mb-0">© 2024 JobStir ✨ - All rights reserved. Made with ❤️ for professionals worldwide.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Enhanced JavaScript -->
     <script>
-        feather.replace();
-        
-        function toggleFAQ(element) {
-            const faqItem = element.parentElement;
-            const answer = faqItem.querySelector('.faq-answer');
-            const icon = element.querySelector('i');
+        // Animate on Scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            elements.forEach(element => observer.observe(element));
+        }
+
+        // Form validation and submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            faqItem.classList.toggle('active');
-            
-            if (faqItem.classList.contains('active')) {
-                answer.style.maxHeight = answer.scrollHeight + 'px';
-                icon.setAttribute('data-feather', 'chevron-up');
-            } else {
-                answer.style.maxHeight = '0';
-                icon.setAttribute('data-feather', 'chevron-down');
+            if (this.checkValidity()) {
+                // Simulate form submission
+                const button = this.querySelector('button[type="submit"]');
+                const originalText = button.innerHTML;
+                
+                button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    // Show success message
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-success alert-dismissible fade show mt-3';
+                    alert.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Message sent successfully!</strong> We'll get back to you within 24 hours. ⭐
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    this.appendChild(alert);
+                    
+                    // Reset form
+                    this.reset();
+                    this.classList.remove('was-validated');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    
+                    // Confetti effect
+                    createConfetti();
+                }, 2000);
             }
             
-            feather.replace();
+            this.classList.add('was-validated');
+        });
+
+        // Start chat function
+        function startChat() {
+            alert('Chat feature coming soon! For now, please use our email contact. ✨');
         }
+
+        // Confetti effect
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.innerHTML = ['🎉', '⭐', '✨', '🚀'][Math.floor(Math.random() * 4)];
+                confetti.style.cssText = `
+                    position: fixed;
+                    left: ${Math.random() * 100}vw;
+                    top: -10px;
+                    font-size: 20px;
+                    pointer-events: none;
+                    animation: confettiFall 3s ease-out forwards;
+                    z-index: 9999;
+                `;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        // Add confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                0% {
+                    transform: translateY(-10px) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Enhanced star interactions
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', () => {
+                // Create sparkle effect
+                for (let i = 0; i < 10; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.innerHTML = '✨';
+                    sparkle.style.cssText = `
+                        position: absolute;
+                        left: ${star.getBoundingClientRect().left + Math.random() * 20}px;
+                        top: ${star.getBoundingClientRect().top + Math.random() * 20}px;
+                        font-size: 1rem;
+                        pointer-events: none;
+                        animation: sparkleExplode 1s ease-out forwards;
+                        z-index: 9999;
+                    `;
+                    document.body.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 1000);
+                }
+            });
+        });
+
+        // Add sparkle animation
+        const sparkleStyle = document.createElement('style');
+        sparkleStyle.textContent = `
+            @keyframes sparkleExplode {
+                0% {
+                    transform: scale(1) translate(0, 0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(0.5) translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(sparkleStyle);
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', () => {
+            animateOnScroll();
+        });
     </script>
-    <script src="../js/supabase-config.js"></script>
-    <script src="../js/supabase-auth.js"></script>
-    <script src="../js/supabase-database.js"></script>
-    <script src="../js/navigation.js"></script>
-    <script src="../js/contact.js"></script>
 </body>
 </html>

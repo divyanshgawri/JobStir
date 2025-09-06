@@ -106,101 +106,89 @@ class JobListings {
             // Show loading state
             this.showLoading();
             if (loadingElement) loadingElement.style.display = 'block';
-            if (errorElement) errorElement.style.display = 'none';
-            if (jobListingsElement) jobListingsElement.innerHTML = '';
             
-            // Try to load jobs from API if available
-            if (window.jobAPI) {
-                const response = await window.jobAPI.getJobs(this.filters);
-                
-                if (response && Array.isArray(response.data)) {
-                    this.jobs = response.data.map(job => this.sanitizeJobObject(job));
-                    
-                    // Save to localStorage as fallback
-                    try {
-                        localStorage.setItem('jobstir_jobs_cache', JSON.stringify({
-                            data: this.jobs,
-                            timestamp: Date.now()
-                        }));
-                    } catch (e) {
-                        console.warn('Failed to cache jobs in localStorage:', e);
-                    }
-                } else {
-                    throw new Error('Invalid API response format');
-                }
-            } else {
-                throw new Error('API integration not available');
-            }
-        } catch (error) {
-            console.warn('Failed to load jobs from API, trying cache...', error);
-            
-            // Try to load from cache if available
-            try {
-                const cached = localStorage.getItem('jobstir_jobs_cache');
-                if (cached) {
-                    const { data, timestamp } = JSON.parse(cached);
-                    const cacheAge = Date.now() - timestamp;
-                    const maxCacheAge = 24 * 60 * 60 * 1000; // 24 hours
-                    
-                    if (cacheAge < maxCacheAge && Array.isArray(data) && data.length > 0) {
-                        this.jobs = data.map(job => this.sanitizeJobObject(job));
-                        
-                        // Show warning about using cached data
-                        if (errorElement) {
-                            errorElement.textContent = 'Showing cached job listings. Some data may be outdated.';
-                            errorElement.style.display = 'block';
-                            errorElement.className = 'alert alert-warning';
-                        }
-                    } else {
-                        throw new Error('Cache expired or invalid');
-                    }
-                } else {
-                    throw new Error('No cache available');
-                }
-            } catch (cacheError) {
-                console.warn('Failed to load from cache, using fallback data...', cacheError);
-                
-                // Try to load from persistent storage or use demo data
+            // Try to fetch from Supabase if available
+            if (window.jobAPI?.supabase) {
                 try {
-                    this.jobs = JSON.parse(localStorage.getItem('jobstir_jobs') || '[]');
+                    const { data: jobs, error } = await window.jobAPI.supabase
+                        .from('jobs')
+                        .select('*')
+                        .order('created_at', { ascending: false });
                     
-                    if (this.jobs.length === 0) {
-                        this.jobs = this.generateDemoJobs();
-                        localStorage.setItem('jobstir_jobs', JSON.stringify(this.jobs));
+                    if (!error && jobs?.length > 0) {
+                        this.jobs = jobs.map(job => this.sanitizeJobObject(job));
+                        this.saveJobsToLocalStorage();
+                        this.renderJobListings();
+                        return;
                     }
-                    
-                    // Show error to user
-                    if (errorElement) {
-                        errorElement.textContent = 'Using fallback job listings. Some features may be limited.';
-                        errorElement.style.display = 'block';
-                        errorElement.className = 'alert alert-warning';
-                    }
-                } catch (fallbackError) {
-                    console.error('Failed to load fallback jobs:', fallbackError);
-                    
-                    // Show error to user
-                    if (errorElement) {
-                        errorElement.textContent = 'Failed to load job listings. Please check your connection and try again.';
-                        errorElement.style.display = 'block';
-                        errorElement.className = 'alert alert-danger';
-                    }
-                    
-                    // Show demo data as last resort
-                    this.showDemoData();
+                    console.warn('No jobs found in Supabase or error occurred:', error);
+                } catch (supabaseError) {
+                    console.warn('Supabase query failed, falling back to API:', supabaseError);
                 }
             }
+            
+            // Try to fetch from REST API if Supabase is not available
+            if (window.jobAPI) {
+                try {
+                    const data = await window.jobAPI.fetchJobs();
+                    if (data && data.jobs) {
+                        this.jobs = data.jobs.map(job => this.sanitizeJobObject(job));
+                        this.saveJobsToLocalStorage();
+                        this.renderJobListings();
+                        return;
+                    }
+                } catch (apiError) {
+                    console.warn('Failed to fetch jobs from API, falling back to localStorage', apiError);
+                }
+            }
+            
+            // Fallback to localStorage if both Supabase and API fail
+            this.loadJobsFromLocalStorage();
+            
+        } catch (error) {
+            console.error('Error loading jobs:', error);
+            this.showError('Failed to load job listings. Please try again later.');
         } finally {
-            // Ensure all job objects have required properties
-            this.jobs = this.jobs.map(job => this.sanitizeJobObject(job));
-            
-            // Update UI
-            this.filteredJobs = [...this.jobs];
-            this.updateResultsCount();
-            this.renderJobs();
-            
-            // Hide loading indicator
+            this.showLoading(false);
             if (loadingElement) loadingElement.style.display = 'none';
-            this.hideLoading();
+        }
+    }
+
+    loadJobsFromLocalStorage() {
+        try {
+            const cached = localStorage.getItem('jobstir_jobs_cache');
+            if (cached) {
+                const { data, timestamp } = JSON.parse(cached);
+                const cacheAge = Date.now() - timestamp;
+                const maxCacheAge = 24 * 60 * 60 * 1000; // 24 hours
+                
+                if (cacheAge < maxCacheAge && Array.isArray(data) && data.length > 0) {
+                    this.jobs = data.map(job => this.sanitizeJobObject(job));
+                    this.renderJobListings();
+                    return;
+                }
+            }
+            
+            // Fallback to demo data
+            this.jobs = this.generateDemoJobs();
+            this.saveJobsToLocalStorage();
+            this.renderJobListings();
+        } catch (error) {
+            console.error('Error loading from localStorage:', error);
+            this.jobs = this.generateDemoJobs();
+            this.renderJobListings();
+        }
+    }
+
+    saveJobsToLocalStorage() {
+        try {
+            const cacheData = {
+                data: this.jobs,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('jobstir_jobs_cache', JSON.stringify(cacheData));
+        } catch (error) {
+            console.warn('Failed to save jobs to localStorage:', error);
         }
     }
 

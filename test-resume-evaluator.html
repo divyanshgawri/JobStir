@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Evaluator Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            background-color: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .test-result {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.25rem;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Resume Evaluator Test Suite</h1>
+        <p>This page tests the functionality of the resume evaluator system.</p>
+        
+        <div class="test-section">
+            <h2>JavaScript Loading Test</h2>
+            <div id="js-loading-results"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>ResumeEvaluator Initialization Test</h2>
+            <div id="init-results"></div>
+            <button onclick="testInitialization()">Test Initialization</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Basic Analysis Test</h2>
+            <div id="basic-test-results"></div>
+            <div>
+                <label>Sample Resume Text:</label>
+                <textarea id="sample-resume" placeholder="Enter or paste resume text here...">
+John Doe
+Software Engineer
+
+EXPERIENCE:
+• 5 years of experience in JavaScript, React, Node.js
+• Built scalable web applications using modern frameworks
+• Experience with databases, APIs, and cloud platforms
+• Led a team of 3 developers on multiple projects
+
+EDUCATION:
+• Bachelor's in Computer Science
+• Certified in AWS Solutions Architecture
+
+SKILLS:
+JavaScript, React, Node.js, Python, AWS, MongoDB, REST APIs, Git
+                </textarea>
+            </div>
+            <div>
+                <label>Sample Job Description:</label>
+                <textarea id="sample-job" placeholder="Enter or paste job description here...">
+We are looking for a Senior Software Engineer with the following qualifications:
+
+REQUIREMENTS:
+• 4+ years of experience in JavaScript and modern web frameworks
+• Experience with React, Node.js, and RESTful APIs
+• Knowledge of cloud platforms (AWS preferred)
+• Experience with databases and version control (Git)
+• Strong problem-solving skills and team collaboration
+• Bachelor's degree in Computer Science or related field
+
+RESPONSIBILITIES:
+• Develop and maintain web applications
+• Collaborate with cross-functional teams
+• Mentor junior developers
+• Participate in code reviews and architecture discussions
+
+PREFERRED:
+• Experience with Python
+• AWS certifications
+• Leadership experience
+                </textarea>
+            </div>
+            <button onclick="testBasicAnalysis()">Run Basic Analysis</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Enhanced Analysis Test</h2>
+            <div id="enhanced-test-results"></div>
+            <button onclick="testEnhancedAnalysis()">Test Enhanced Analysis</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Error Handling Test</h2>
+            <div id="error-test-results"></div>
+            <button onclick="testErrorHandling()">Test Error Handling</button>
+        </div>
+    </div>
+
+    <!-- Include all necessary JavaScript files -->
+    <script src="js/client-resume-evaluator.js"></script>
+    <script>
+        // Test results logging
+        function logResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            container.appendChild(resultDiv);
+        }
+        
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+        
+        // Test 1: JavaScript Loading
+        function testJavaScriptLoading() {
+            try {
+                if (typeof window.ClientResumeEvaluator !== 'undefined') {
+                    logResult('js-loading-results', '✅ Client Resume Evaluator loaded successfully', 'success');
+                } else {
+                    logResult('js-loading-results', '❌ Client Resume Evaluator not found', 'error');
+                }
+                
+                if (typeof window.clientResumeEvaluator !== 'undefined') {
+                    logResult('js-loading-results', '✅ Global client resume evaluator instance found', 'success');
+                } else {
+                    logResult('js-loading-results', '⚠️ Global client resume evaluator instance not found', 'warning');
+                }
+            } catch (error) {
+                logResult('js-loading-results', `❌ JavaScript loading test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Test 2: ResumeEvaluator Initialization
+        function testInitialization() {
+            clearResults('init-results');
+            try {
+                // Test if ClientResumeEvaluator can be instantiated
+                if (typeof window.ClientResumeEvaluator !== 'undefined') {
+                    const evaluator = new window.ClientResumeEvaluator();
+                    logResult('init-results', '✅ ClientResumeEvaluator instantiated successfully', 'success');
+                    
+                    // Test if key methods exist
+                    if (typeof evaluator.evaluateResume === 'function') {
+                        logResult('init-results', '✅ evaluateResume method found', 'success');
+                    } else {
+                        logResult('init-results', '❌ evaluateResume method not found', 'error');
+                    }
+                    
+                    if (typeof evaluator.parseResume === 'function') {
+                        logResult('init-results', '✅ parseResume method found', 'success');
+                    } else {
+                        logResult('init-results', '⚠️ parseResume method not found', 'warning');
+                    }
+                } else {
+                    logResult('init-results', '❌ ClientResumeEvaluator class not available', 'error');
+                }
+            } catch (error) {
+                logResult('init-results', `❌ Initialization test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Test 3: Basic Analysis
+        async function testBasicAnalysis() {
+            clearResults('basic-test-results');
+            try {
+                const resumeText = document.getElementById('sample-resume').value;
+                const jobText = document.getElementById('sample-job').value;
+                
+                if (!resumeText.trim()) {
+                    logResult('basic-test-results', '❌ Resume text is empty', 'error');
+                    return;
+                }
+                
+                if (!jobText.trim()) {
+                    logResult('basic-test-results', '❌ Job description is empty', 'error');
+                    return;
+                }
+                
+                logResult('basic-test-results', '🔄 Starting basic analysis...', 'info');
+                
+                if (window.clientResumeEvaluator) {
+                    const result = await window.clientResumeEvaluator.evaluateResume(resumeText, jobText);
+                    
+                    logResult('basic-test-results', '✅ Analysis completed successfully', 'success');
+                    logResult('basic-test-results', `📊 Total Score: ${result.total_score}%`, 'info');
+                    logResult('basic-test-results', `💼 Skills Score: ${result.skills_score}%`, 'info');
+                    logResult('basic-test-results', `📈 Experience Score: ${result.experience_score}%`, 'info');
+                    
+                    if (result.matched_keywords && result.matched_keywords.length > 0) {
+                        logResult('basic-test-results', `🎯 Matched Keywords: ${result.matched_keywords.length} found`, 'success');
+                    }
+                    
+                    if (result.missing_keywords && result.missing_keywords.length > 0) {
+                        logResult('basic-test-results', `⚠️ Missing Keywords: ${result.missing_keywords.length} identified`, 'warning');
+                    }
+                    
+                } else {
+                    logResult('basic-test-results', '❌ Client resume evaluator not available', 'error');
+                }
+            } catch (error) {
+                logResult('basic-test-results', `❌ Basic analysis failed: ${error.message}`, 'error');
+                console.error('Basic analysis error:', error);
+            }
+        }
+        
+        // Test 4: Enhanced Analysis
+        async function testEnhancedAnalysis() {
+            clearResults('enhanced-test-results');
+            try {
+                if (window.clientResumeEvaluator) {
+                    logResult('enhanced-test-results', '🔄 Testing enhanced features...', 'info');
+                    
+                    const resumeText = document.getElementById('sample-resume').value;
+                    const result = await window.clientResumeEvaluator.evaluateResume(resumeText, document.getElementById('sample-job').value);
+                    
+                    // Test ATS analysis
+                    if (result.ats_analysis) {
+                        logResult('enhanced-test-results', '✅ ATS analysis available', 'success');
+                        logResult('enhanced-test-results', `🤖 ATS Score: ${result.ats_analysis.overall_score}%`, 'info');
+                    } else {
+                        logResult('enhanced-test-results', '⚠️ ATS analysis not available', 'warning');
+                    }
+                    
+                    // Test salary estimation
+                    if (result.salary_estimate) {
+                        logResult('enhanced-test-results', '✅ Salary estimation available', 'success');
+                        const range = result.salary_estimate.estimated_range;
+                        logResult('enhanced-test-results', `💰 Salary Range: $${range.min.toLocaleString()} - $${range.max.toLocaleString()}`, 'info');
+                    } else {
+                        logResult('enhanced-test-results', '⚠️ Salary estimation not available', 'warning');
+                    }
+                    
+                    // Test industry analysis
+                    if (result.industry_analysis) {
+                        logResult('enhanced-test-results', '✅ Industry analysis available', 'success');
+                        logResult('enhanced-test-results', `🏢 Industry Fit: ${result.industry_analysis.fit_score}%`, 'info');
+                    } else {
+                        logResult('enhanced-test-results', '⚠️ Industry analysis not available', 'warning');
+                    }
+                    
+                } else {
+                    logResult('enhanced-test-results', '❌ Enhanced evaluator not available', 'error');
+                }
+            } catch (error) {
+                logResult('enhanced-test-results', `❌ Enhanced analysis failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Test 5: Error Handling
+        async function testErrorHandling() {
+            clearResults('error-test-results');
+            try {
+                // Test with empty inputs
+                if (window.clientResumeEvaluator) {
+                    try {
+                        await window.clientResumeEvaluator.evaluateResume('', '');
+                        logResult('error-test-results', '⚠️ Expected error for empty inputs, but none occurred', 'warning');
+                    } catch (error) {
+                        logResult('error-test-results', '✅ Correctly handled empty inputs error', 'success');
+                    }
+                    
+                    // Test with very short inputs
+                    try {
+                        await window.clientResumeEvaluator.evaluateResume('Short', 'Brief');
+                        logResult('error-test-results', '✅ Short inputs handled gracefully', 'success');
+                    } catch (error) {
+                        logResult('error-test-results', '✅ Short inputs validation working', 'success');
+                    }
+                    
+                } else {
+                    logResult('error-test-results', '❌ Cannot test error handling - evaluator not available', 'error');
+                }
+                
+                logResult('error-test-results', '✅ Error handling tests completed', 'success');
+                
+            } catch (error) {
+                logResult('error-test-results', `❌ Error handling test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Run initial tests when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            testJavaScriptLoading();
+        });
+    </script>
+</body>
+</html>

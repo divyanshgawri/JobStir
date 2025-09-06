@@ -264,9 +264,11 @@ class ResumeEvaluator {
     }
 
     async analyzeResume() {
-        if (this.isProcessing || !this.evaluatorEngine) return;
+        if (this.isProcessing) {
+            console.warn('Analysis already in progress');
+            return;
+        }
 
-        // Enhanced validation
         const resumeContent = this.resumeText.value.trim();
         const jobContent = this.jobDescription.value.trim();
 
@@ -280,8 +282,8 @@ class ResumeEvaluator {
             return;
         }
 
-        if (jobContent.length < 100) {
-            this.showError('Job description seems too short. Please provide a complete job description.');
+        if (jobContent.length < 50) {
+            this.showError('Job description seems too short. Please provide more details.');
             return;
         }
 
@@ -291,59 +293,77 @@ class ResumeEvaluator {
 
         try {
             const startTime = performance.now();
+            console.log('🚀 Starting advanced resume analysis...');
             
-            // Enhanced analysis with multiple engines
-            const [basicResult, careerInsights, atsCompatibility, salaryEstimate] = await Promise.all([
-                this.evaluatorEngine.evaluateResume(resumeContent, jobContent),
-                this.careerInsights?.analyzeCareerPath(resumeContent, jobContent),
-                this.atsChecker?.checkCompatibility(resumeContent),
-                this.salaryEstimator?.estimateSalary(resumeContent, jobContent)
-            ]);
+            let result;
             
-            // Combine all analysis results
+            // Priority 1: Use enhanced client-side evaluator
+            if (window.clientResumeEvaluator) {
+                console.log('🤖 Using enhanced client-side evaluator with advanced features');
+                result = await window.clientResumeEvaluator.evaluateResume(resumeContent, jobContent);
+            }
+            // Priority 2: Use backend API if available
+            else if (window.jobAPI) {
+                console.log('🌐 Using backend API evaluator');
+                result = await window.jobAPI.evaluateResume(resumeContent, jobContent);
+            }
+            // Priority 3: Use existing evaluator engine
+            else if (this.evaluatorEngine) {
+                console.log('⚡ Using existing evaluator engine');
+                result = await this.evaluatorEngine.evaluateResume(resumeContent, jobContent);
+            }
+            // Priority 4: Basic fallback analysis
+            else {
+                console.log('📋 Using basic analysis');
+                result = this.performBasicAnalysis(resumeContent, jobContent);
+            }
+
+            const processingTime = performance.now() - startTime;
+            console.log(`✅ Analysis completed in ${processingTime.toFixed(2)}ms`);
+            
+            // Enhance result with metadata
             const enhancedResult = {
-                ...basicResult,
-                career_insights: careerInsights,
-                ats_compatibility: atsCompatibility,
-                salary_estimate: salaryEstimate,
+                ...result,
                 analysis_timestamp: new Date().toISOString(),
-                processing_time: performance.now() - startTime
+                processing_time: processingTime,
+                client_side: !!window.clientResumeEvaluator
             };
             
-            console.log(`Enhanced resume analysis completed in ${enhancedResult.processing_time.toFixed(2)}ms`);
-            
             // Save to analysis history
+            if (!this.analysisHistory) this.analysisHistory = [];
             this.analysisHistory.unshift(enhancedResult);
             if (this.analysisHistory.length > 10) {
                 this.analysisHistory = this.analysisHistory.slice(0, 10);
             }
             
-            // Auto-save if enabled
+            // Auto-save if enabled and available
             if (this.autoSaveEnabled && window.resumeEvaluatorSupabase) {
                 try {
                     await window.resumeEvaluatorSupabase.saveEvaluationResult(enhancedResult, resumeContent, jobContent);
-                    
-                    // Update user profile with extracted resume data
                     if (enhancedResult.parsed_resume) {
                         await window.resumeEvaluatorSupabase.updateUserProfileFromResume(enhancedResult.parsed_resume);
                     }
+                    console.log('💾 Analysis saved to database');
                 } catch (supabaseError) {
-                    console.warn('Failed to save to Supabase:', supabaseError);
+                    console.warn('Failed to save to database:', supabaseError);
                 }
             }
             
-            // Track enhanced analytics
+            // Track analytics
             if (window.trackConversion) {
-                window.trackConversion('enhanced_resume_analysis', enhancedResult.total_score);
+                window.trackConversion('resume_analysis', enhancedResult.total_score);
             }
             
             this.currentAnalysis = enhancedResult;
             this.displayEnhancedResults(enhancedResult);
             this.updateHistoryUI();
             
+            // Show success message
+            this.showSuccessMessage('Analysis completed successfully!');
+            
         } catch (error) {
-            console.error('Enhanced analysis error:', error);
-            this.showError('Failed to analyze resume. Please try again.');
+            console.error('❌ Analysis error:', error);
+            this.showError(`Analysis failed: ${error.message}. Please check your input and try again.`);
         } finally {
             this.isProcessing = false;
             this.hideLoader();
@@ -1079,6 +1099,81 @@ loadHistoryAnalysis(analysis) {
         console.error('Error loading historical analysis:', error);
         this.showError('Failed to load historical analysis');
     }
+}
+
+performBasicAnalysis(resumeText, jobDescription) {
+    const wordCount = resumeText.split(/\s+/).length;
+    const jobWords = jobDescription.toLowerCase().split(/\s+/);
+    const resumeWords = resumeText.toLowerCase().split(/\s+/);
+    
+    let matchCount = 0;
+    jobWords.forEach(word => {
+        if (word.length > 3 && resumeWords.includes(word)) {
+            matchCount++;
+        }
+    });
+    
+    const score = Math.min((matchCount / Math.max(jobWords.length * 0.1, 10)) * 100, 100);
+    
+    return {
+        total_score: Math.round(score),
+        skills_score: Math.round(score * 0.35),
+        experience_score: Math.round(score * 0.25),
+        education_score: Math.round(score * 0.20),
+        project_score: Math.round(score * 0.20),
+        matched_keywords: [`Found ${matchCount} matching terms`],
+        missing_keywords: ['Unable to perform detailed analysis'],
+        quick_suggestions: [
+            'Enable JavaScript for full analysis',
+            'Try the enhanced client-side evaluator',
+            'Upload your resume for better results'
+        ],
+        strengths: ['Resume provided for analysis'],
+        improvements: ['Use advanced analyzer for detailed feedback'],
+        reasoning: {
+            skills_reasoning: `Basic analysis found ${matchCount} matching terms`,
+            experience_reasoning: `Resume contains approximately ${wordCount} words`,
+            education_reasoning: 'Basic analysis - full evaluation not available',
+            project_reasoning: 'Basic analysis - detailed project analysis not available',
+            overall_assessment: `Basic compatibility analysis shows ${Math.round(score)}% similarity`
+        },
+        summary: `Basic analysis completed with ${Math.round(score)}% compatibility score`,
+        job_recommendations: [],
+        evaluation_method: 'basic-fallback',
+        timestamp: new Date().toISOString()
+    };
+}
+
+showEnhancedLoader() {
+    if (this.loader) {
+        this.loader.style.display = 'block';
+        this.loader.innerHTML = `
+            <div class="spinner"></div>
+            <div class="loader-text">Analyzing resume with AI-powered insights...</div>
+            <div class="loader-features">
+                <div class="feature-item">✓ Skills & Experience Analysis</div>
+                <div class="feature-item">✓ ATS Compatibility Check</div>
+                <div class="feature-item">✓ Salary Range Estimation</div>
+                <div class="feature-item">✓ Industry Fit Assessment</div>
+            </div>
+        `;
+    }
+}
+
+showSuccessMessage(message) {
+    console.log('✅', message);
+    // Create and show a success toast
+    const toast = document.createElement('div');
+    toast.className = 'success-toast';
+    toast.style.cssText = `
+        position: fixed; top: 20px; right: 20px; z-index: 10000;
+        background: var(--olive); color: white; padding: 12px 20px;
+        border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        font-weight: 500; animation: slideIn 0.3s ease;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
 }
 }
 

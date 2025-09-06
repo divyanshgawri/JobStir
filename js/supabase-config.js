@@ -1,17 +1,9 @@
-// Supabase configuration - Load from config.js
-const SUPABASE_URL = window.APP_CONFIG?.SUPABASE?.URL || 'https://your-project-id.supabase.co';
-const SUPABASE_ANON_KEY = window.APP_CONFIG?.SUPABASE?.ANON_KEY || 'your-supabase-anon-key-here';
-
-// Supabase Configuration for JobStir
-// Replace these with your actual Supabase project credentials
-
+// Supabase configuration for JobStir
 const SUPABASE_CONFIG = {
-    // 🔑 ADD YOUR SUPABASE PROJECT URL HERE
-    url: SUPABASE_URL,
-
-    // 🔑 ADD YOUR SUPABASE ANON KEY HERE  
-    anonKey: SUPABASE_ANON_KEY,
-
+    // Load from environment variables or use defaults for development
+    url: import.meta.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project-id.supabase.co',
+    anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-supabase-anon-key-here',
+    
     // Optional: Custom configuration
     options: {
         auth: {
