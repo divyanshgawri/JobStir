@@ -25,15 +25,6 @@
                 </ul>
             </nav>
             <div class="nav-buttons">
-                <div class="theme-switch-wrapper">
-                    <label class="theme-switch" for="dark-mode-toggle">
-                        <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
-                        <div class="slider round">
-                            <i data-feather="sun" class="sun-icon"></i>
-                            <i data-feather="moon" class="moon-icon"></i>
-                        </div>
-                    </label>
-                </div>
                 <a href="signin.html" class="btn btn-secondary">Log In</a>
                 <a href="signup.html" class="btn btn-primary">Sign Up</a>
             </div>
@@ -45,15 +36,6 @@
         <div class="mobile-nav-header">
             <a href="index.html" class="site-title-main">JobStir</a>
             <div class="mobile-header-right">
-                <div class="theme-switch-wrapper">
-                    <label class="theme-switch" for="dark-mode-toggle-mobile">
-                        <input type="checkbox" id="dark-mode-toggle-mobile" class="dark-mode-toggle" />
-                        <div class="slider round">
-                            <i data-feather="sun" class="sun-icon"></i>
-                            <i data-feather="moon" class="moon-icon"></i>
-                        </div>
-                    </label>
-                </div>
                 <button class="close-menu" id="closeMenu"><i data-feather="x"></i></button>
             </div>
         </div>
@@ -237,6 +219,13 @@
     </footer>
 
     <script>
+        // Theme Reader - applies theme set from main page
+        const body = document.body;
+        const savedTheme = localStorage.getItem('jobstir-theme') || 'light';
+        if (savedTheme === 'dark') {
+            body.classList.add('dark');
+        }
+        
         feather.replace();
     </script>
     <script src="../js/navigation.js"></script>

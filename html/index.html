@@ -47,11 +47,64 @@
         
         /* Dark Mode */
         .dark {
-            --primary-color: var(--cedar);
-            --secondary-color: var(--olive);
-            --dark-color: var(--aloe);
+            --primary-color: var(--olive);
+            --secondary-color: var(--cedar);
+            --dark-color: var(--white);
             --light-color: var(--moss);
             --hero-gradient: linear-gradient(135deg, var(--moss) 0%, #1a1f16 50%, var(--cypress) 100%);
+        }
+        
+        .dark .navbar {
+            background: rgba(44, 52, 36, 0.95) !important;
+        }
+        
+        .dark .nav-link {
+            color: var(--white) !important;
+        }
+        
+        .dark .navbar-brand {
+            background: linear-gradient(135deg, var(--aloe) 0%, var(--white) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .dark .hero-title {
+            background: linear-gradient(135deg, var(--white) 0%, var(--aloe) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .dark .hero-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .dark .feature-card {
+            background: rgba(76, 88, 62, 0.4);
+            color: var(--white);
+            border: 1px solid rgba(149, 149, 129, 0.3);
+        }
+        
+        .dark .feature-card h3 {
+            color: var(--white);
+        }
+        
+        .dark .feature-card p {
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .dark .text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        
+        .dark .display-4 {
+            color: var(--white);
+        }
+        
+        .dark .lead {
+            color: rgba(255, 255, 255, 0.8);
         }
 
         * {
@@ -488,6 +541,95 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Theme Switch */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            margin: 0 6px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.3);
+            transition: .4s;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .slider:hover {
+            background-color: rgba(255,255,255,0.4);
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(28px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .theme-toggle-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-switch input:checked ~ .theme-toggle-label:last-of-type {
+            color: rgba(255, 255, 255, 1);
+            font-weight: 600;
+        }
+        
+        .theme-switch input:not(:checked) ~ .theme-toggle-label:first-of-type {
+            color: rgba(255, 255, 255, 0.6);
+        }
     </style>
 </head>
 <body>
@@ -517,7 +659,7 @@
                         <a class="nav-link" href="#home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
+                        <a class="nav-link" href="about.html">About</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="job_listings.html">Jobs</a>
@@ -526,10 +668,18 @@
                         <a class="nav-link" href="evaluate_resume.html">AI Resume</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
+                        <a class="nav-link" href="contact.html">Contact</a>
                     </li>
                 </ul>
                 <div class="navbar-nav ms-3">
+                    <div class="theme-switch-wrapper">
+                        <span class="theme-toggle-label">🌙</span>
+                        <label class="theme-switch" for="dark-mode-toggle">
+                            <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
+                            <div class="slider round"></div>
+                        </label>
+                        <span class="theme-toggle-label">☀️</span>
+                    </div>
                     <a href="signin.html" class="btn btn-outline-primary me-2">Login</a>
                     <a href="signup.html" class="btn btn-primary">Sign Up</a>
                 </div>
@@ -846,6 +996,50 @@
     
     <!-- Custom JavaScript -->
     <script>
+        // Theme Toggle Functionality - MASTER CONTROL for entire site
+        function initializeThemeToggle() {
+            const themeToggle = document.getElementById('dark-mode-toggle');
+            const body = document.body;
+            
+            if (!themeToggle) {
+                console.error('Theme toggle element not found!');
+                return;
+            }
+            
+            console.log('Theme toggle initialized');
+            
+            // Load saved theme or default to light
+            const savedTheme = localStorage.getItem('jobstir-theme') || 'light';
+            console.log('Saved theme:', savedTheme);
+            
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.checked = true;
+                console.log('Applied DARK theme on load');
+            } else {
+                body.classList.remove('dark');
+                themeToggle.checked = false;
+                console.log('Applied LIGHT theme on load');
+            }
+            
+            // Handle theme toggle
+            themeToggle.addEventListener('change', () => {
+                if (themeToggle.checked) {
+                    body.classList.add('dark');
+                    localStorage.setItem('jobstir-theme', 'dark');
+                    console.log('🌙 Theme switched to DARK mode');
+                    // Temporary visual feedback
+                    document.querySelector('.theme-switch-wrapper').style.background = 'rgba(118, 128, 100, 0.4)';
+                } else {
+                    body.classList.remove('dark');
+                    localStorage.setItem('jobstir-theme', 'light');
+                    console.log('☀️ Theme switched to LIGHT mode');
+                    // Temporary visual feedback
+                    document.querySelector('.theme-switch-wrapper').style.background = 'rgba(0, 0, 0, 0.3)';
+                }
+            });
+        }
+        
         // Loading Screen
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -944,6 +1138,7 @@
 
         // Initialize everything
         document.addEventListener('DOMContentLoaded', () => {
+            initializeThemeToggle();
             createParticles();
             animateOnScroll();
             animateCounters();

@@ -275,16 +275,6 @@
     </style>
 </head>
 <body>
-    <!-- Theme Toggle -->
-    <div class="theme-switch-wrapper">
-        <label class="theme-switch" for="dark-mode-toggle">
-            <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
-            <div class="slider round">
-                <i data-feather="sun" class="sun-icon"></i>
-                <i data-feather="moon" class="moon-icon"></i>
-            </div>
-        </label>
-    </div>
     
     <!-- Floating Icons -->
     <div class="floating-icons" id="floatingIcons"></div>
@@ -397,27 +387,12 @@
     
     <!-- Enhanced JavaScript -->
     <script>
-        // Theme Toggle Functionality
-        const themeToggle = document.getElementById('dark-mode-toggle');
+        // Theme Reader - applies theme set from main page
         const body = document.body;
-        
-        // Load saved theme or default to light
         const savedTheme = localStorage.getItem('jobstir-theme') || 'light';
         if (savedTheme === 'dark') {
             body.classList.add('dark');
-            themeToggle.checked = true;
         }
-        
-        // Handle theme toggle
-        themeToggle.addEventListener('change', () => {
-            if (themeToggle.checked) {
-                body.classList.add('dark');
-                localStorage.setItem('jobstir-theme', 'dark');
-            } else {
-                body.classList.remove('dark');
-                localStorage.setItem('jobstir-theme', 'light');
-            }
-        });
         
         // Create floating icons
         function createFloatingIcons() {
