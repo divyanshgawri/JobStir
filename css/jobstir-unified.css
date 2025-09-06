@@ -69,16 +69,16 @@
     --border-color: var(--cedar);
 }
 
-/* DARK THEME - Role Reversal with Perfect Contrast */
+/* DARK THEME - Enhanced for Perfect Readability */
 .dark {
     /* Dark Theme - 60-30-10 Rule with Role Reversal */
     --bg-primary: var(--moss);          /* 60% - Main dark background */
     --bg-secondary: var(--cypress);     /* 30% - Cards, sections */
     --bg-accent: var(--olive);          /* 10% - CTAs (same for consistency) */
     
-    --text-primary: var(--aloe);        /* High contrast on dark */
-    --text-secondary: var(--cedar);     /* Softer text */
-    --text-muted: var(--cedar-30);      /* Very subtle text */
+    --text-primary: #FFFFFF;            /* Pure white for maximum contrast */
+    --text-secondary: #F5F5F5;          /* Very light gray for readable secondary text */
+    --text-muted: #E0E0E0;              /* Light gray for muted text but still readable */
     --text-on-accent: var(--moss);      /* Dark text on olive */
     
     --border-subtle: var(--cypress-20); /* Subtle dark borders */
@@ -90,10 +90,10 @@
     
     /* Component Colors for Dark Mode */
     --btn-primary-bg: var(--olive);
-    --btn-primary-text: var(--moss);    /* Dark text on olive */
+    --btn-primary-text: #FFFFFF;        /* White text on olive for better contrast */
     --btn-primary-hover: var(--cedar);
     --btn-secondary-bg: var(--cypress-50);
-    --btn-secondary-text: var(--aloe);
+    --btn-secondary-text: #FFFFFF;      /* White text for secondary buttons */
     --btn-secondary-hover: var(--cedar);
     
     --header-bg: linear-gradient(135deg, var(--moss), var(--cypress));
@@ -107,8 +107,8 @@
     --primary-color: var(--olive);
     --background-color: var(--moss);
     --card-bg: var(--cypress);
-    --text-dark: var(--aloe);
-    --text-light: var(--cedar);
+    --text-dark: #FFFFFF;               /* White text for dark backgrounds */
+    --text-light: #F0F0F0;              /* Light gray for secondary text */
     --border-color: var(--cypress-50);
 }
 
@@ -867,6 +867,126 @@ html, body, * {
 
 .dark html, .dark body, .dark * {
     scrollbar-color: var(--olive) var(--moss-light) !important;
+}
+
+/* =============================================
+   ENHANCED DARK MODE TEXT CONTRAST
+   ============================================= */
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: #FFFFFF !important;
+    font-weight: 600;
+}
+
+.dark p, .dark span, .dark div {
+    color: #F5F5F5 !important;
+}
+
+.dark .text-muted {
+    color: #E0E0E0 !important;
+}
+
+.dark a {
+    color: #FFFFFF !important;
+}
+
+.dark a:hover {
+    color: var(--aloe) !important;
+}
+
+.dark .nav-link, .dark .nav-links a {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.dark .nav-link:hover, .dark .nav-links a:hover {
+    color: #FFFFFF !important;
+}
+
+.dark .btn {
+    color: #FFFFFF !important;
+}
+
+.dark .btn-primary {
+    background: var(--olive) !important;
+    color: #FFFFFF !important;
+}
+
+.dark .btn-secondary {
+    background: var(--cypress-50) !important;
+    color: #FFFFFF !important;
+    border: 1px solid var(--cedar) !important;
+}
+
+.dark .card-title, .dark .card-header {
+    color: #FFFFFF !important;
+}
+
+.dark .card-text {
+    color: #F5F5F5 !important;
+}
+
+.dark .hero-title {
+    color: #FFFFFF !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.dark .hero-subtitle, .dark .hero-content p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.dark .section-header h2 {
+    color: #FFFFFF !important;
+}
+
+.dark .section-header p {
+    color: #F0F0F0 !important;
+}
+
+.dark .form-label {
+    color: #FFFFFF !important;
+    font-weight: 500;
+}
+
+.dark .form-control, .dark .textarea-input {
+    background: var(--cypress) !important;
+    color: #FFFFFF !important;
+    border-color: var(--cedar) !important;
+}
+
+.dark .form-control::placeholder, .dark .textarea-input::placeholder {
+    color: #C0C0C0 !important;
+}
+
+.dark .breadcrumb a {
+    color: #FFFFFF !important;
+}
+
+.dark .breadcrumb span {
+    color: #E0E0E0 !important;
+}
+
+.dark .job-title, .dark .company-name {
+    color: #FFFFFF !important;
+}
+
+.dark .job-location, .dark .job-meta span {
+    color: #E0E0E0 !important;
+}
+
+.dark .sidebar-card h3 {
+    color: #FFFFFF !important;
+}
+
+.dark .sidebar-card p {
+    color: #F0F0F0 !important;
+}
+
+.dark .stat-label {
+    color: #E0E0E0 !important;
+}
+
+.dark .stat-value {
+    color: #FFFFFF !important;
+    font-weight: 600;
 }
 
 /* =============================================

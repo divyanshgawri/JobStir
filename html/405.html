@@ -184,6 +184,125 @@
             }
         }
         
+        /* Dark Mode */
+        .dark {
+            --moss: #2C3424;
+            --cypress: #4C583E;
+            --olive: #768064;
+            --cedar: #959581;
+            --aloe: #DADED8;
+            --white: #FFFFFF;
+            --hero-gradient: linear-gradient(135deg, var(--moss) 0%, #1a1f16 50%, var(--cypress) 100%);
+        }
+        
+        .dark body {
+            background: var(--hero-gradient);
+            color: #FFFFFF;
+        }
+        
+        .dark .error-container {
+            background: rgba(76, 88, 62, 0.9);
+            border: 1px solid rgba(149, 149, 129, 0.3);
+        }
+        
+        .dark .error-title {
+            color: #FFFFFF;
+        }
+        
+        .dark .error-message {
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .dark .text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        
+        /* Theme Toggle */
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.2);
+            transition: .4s;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--olive);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        .slider.round {
+            border-radius: 34px;
+        }
+        
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        
+        .slider .sun-icon, .slider .moon-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .sun-icon { 
+            left: 5px; 
+            opacity: 1; 
+        }
+        
+        .moon-icon { 
+            right: 5px; 
+            opacity: 0; 
+        }
+        
+        input:checked + .slider .sun-icon { 
+            opacity: 0; 
+        }
+        
+        input:checked + .slider .moon-icon { 
+            opacity: 1; 
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .error-code {
@@ -197,10 +316,26 @@
             .error-container {
                 padding: 3rem 2rem;
             }
+            
+            .theme-switch-wrapper {
+                top: 15px;
+                right: 15px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Theme Toggle -->
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="dark-mode-toggle">
+            <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
+            <div class="slider round">
+                <i class="fas fa-sun sun-icon"></i>
+                <i class="fas fa-moon moon-icon"></i>
+            </div>
+        </label>
+    </div>
+    
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 col-xl-6">
@@ -304,6 +439,28 @@
             shieldIcon.style.animation = 'none';
             shieldIcon.offsetHeight; // Trigger reflow
             shieldIcon.style.animation = 'shield-pulse 0.5s ease, float 3s ease-in-out infinite';
+        });
+        
+        // Theme toggle functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            html.classList.add('dark');
+            darkModeToggle.checked = true;
+        }
+        
+        // Toggle theme
+        darkModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
         });
     </script>
 </body>
