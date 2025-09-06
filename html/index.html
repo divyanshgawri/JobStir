@@ -15,20 +15,43 @@
     <!-- Custom Enhanced CSS -->
     <style>
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --success-color: #4ecdc4;
-            --warning-color: #ffe066;
-            --danger-color: #ff6b6b;
-            --dark-color: #2c3e50;
-            --light-color: #f8f9fa;
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --gradient-success: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-            --shadow-light: 0 5px 15px rgba(0,0,0,0.08);
-            --shadow-medium: 0 10px 30px rgba(0,0,0,0.15);
-            --shadow-heavy: 0 20px 60px rgba(0,0,0,0.25);
+            /* Earthy Color Palette */
+            --moss: #2C3424;
+            --cypress: #4C583E;
+            --olive: #768064;
+            --cedar: #959581;
+            --aloe: #DADED8;
+            --white: #FFFFFF;
+            
+            /* Theme Variables */
+            --primary-color: var(--olive);
+            --secondary-color: var(--cypress);
+            --accent-color: var(--cedar);
+            --success-color: var(--olive);
+            --warning-color: #D4AF37;
+            --danger-color: #8B4513;
+            --dark-color: var(--moss);
+            --light-color: var(--aloe);
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--cedar) 0%, var(--olive) 100%);
+            --gradient-success: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
+            --hero-gradient: linear-gradient(135deg, var(--moss) 0%, var(--cypress) 50%, var(--olive) 100%);
+            
+            /* Shadows */
+            --shadow-light: 0 5px 15px rgba(44, 52, 36, 0.08);
+            --shadow-medium: 0 10px 30px rgba(44, 52, 36, 0.15);
+            --shadow-heavy: 0 20px 60px rgba(44, 52, 36, 0.25);
+        }
+        
+        /* Dark Mode */
+        .dark {
+            --primary-color: var(--cedar);
+            --secondary-color: var(--olive);
+            --dark-color: var(--aloe);
+            --light-color: var(--moss);
+            --hero-gradient: linear-gradient(135deg, var(--moss) 0%, #1a1f16 50%, var(--cypress) 100%);
         }
 
         * {
@@ -52,7 +75,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background: var(--hero-gradient);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
         }

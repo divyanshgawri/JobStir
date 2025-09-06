@@ -1,45 +1,49 @@
-/* JobStir Custom Color Scheme */
+/* JobStir Earthy Color Scheme */
 /* Color Palette:
-   Navy: #2F4156 - Primary/Headers
-   Teal: #567C8D - Secondary/Accents
-   Sky Blue: #C8D9E6 - Light backgrounds/Borders
-   Beige: #F5EFEB - Neutral backgrounds
+   Moss: #2C3424 - Primary/Headers/Text
+   Cypress: #4C583E - Secondary/Accents
+   Olive: #768064 - CTAs/Highlights
+   Cedar: #959581 - Mid-tones/Borders
+   Aloe: #DADED8 - Light backgrounds
    White: #FFFFFF - Content backgrounds
 */
 
 :root {
-    /* Primary Colors */
-    --navy: #2F4156;
-    --teal: #567C8D;
-    --sky-blue: #C8D9E6;
-    --beige: #F5EFEB;
+    /* Earthy Primary Colors */
+    --moss: #2C3424;
+    --cypress: #4C583E;
+    --olive: #768064;
+    --cedar: #959581;
+    --aloe: #DADED8;
     --white: #FFFFFF;
     
     /* Color Variations */
-    --navy-light: rgba(47, 65, 86, 0.1);
-    --navy-medium: rgba(47, 65, 86, 0.7);
-    --teal-light: rgba(86, 124, 141, 0.1);
-    --teal-medium: rgba(86, 124, 141, 0.7);
-    --sky-blue-light: rgba(200, 217, 230, 0.3);
-    --beige-light: rgba(245, 239, 235, 0.5);
+    --moss-light: rgba(44, 52, 36, 0.1);
+    --moss-medium: rgba(44, 52, 36, 0.7);
+    --cypress-light: rgba(76, 88, 62, 0.1);
+    --cypress-medium: rgba(76, 88, 62, 0.7);
+    --olive-light: rgba(118, 128, 100, 0.1);
+    --olive-medium: rgba(118, 128, 100, 0.7);
+    --cedar-light: rgba(149, 149, 129, 0.3);
+    --aloe-light: rgba(218, 222, 216, 0.5);
     
     /* Semantic Colors */
-    --primary: var(--navy);
-    --secondary: var(--teal);
-    --accent: var(--sky-blue);
-    --background: var(--beige);
+    --primary: var(--olive);
+    --secondary: var(--cypress);
+    --accent: var(--cedar);
+    --background: var(--aloe);
     --surface: var(--white);
-    --text-primary: var(--navy);
-    --text-secondary: var(--teal);
-    --text-muted: var(--teal-medium);
-    --border: var(--sky-blue);
-    --border-light: var(--sky-blue-light);
+    --text-primary: var(--moss);
+    --text-secondary: var(--cypress);
+    --text-muted: var(--cedar);
+    --border: var(--cedar);
+    --border-light: var(--cedar-light);
     
-    /* Status Colors (using palette variations) */
-    --success: #4a7c59; /* Darker teal variant */
-    --warning: #8b7355; /* Darker beige variant */
-    --error: #7d4f4f; /* Navy with red tint */
-    --info: var(--teal);
+    /* Status Colors (using earthy variations) */
+    --success: var(--olive);
+    --warning: #D4AF37; /* Golden */
+    --error: #8B4513; /* Saddle brown */
+    --info: var(--cypress);
 }
 
 /* =============================================
@@ -57,7 +61,7 @@ body {
    ============================================= */
 
 .navbar, .top-nav {
-    background: linear-gradient(135deg, var(--navy), var(--teal));
+    background: linear-gradient(135deg, var(--moss), var(--cypress));
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(10px);
 }
@@ -96,40 +100,40 @@ body {
    ============================================= */
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--navy), var(--teal));
+    background: linear-gradient(135deg, var(--olive), var(--cypress));
     border: none;
-    /* color: var(--white); */
+    color: var(--white);
     font-weight: 500;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, var(--teal), var(--navy));
+    background: linear-gradient(135deg, var(--cypress), var(--olive));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(47, 65, 86, 0.3);
+    box-shadow: 0 4px 12px rgba(44, 52, 36, 0.3);
 }
 
 .btn-secondary {
-    background: var(--sky-blue);
-    border: 1px solid var(--teal);
-    color: var(--navy);
+    background: var(--cedar);
+    border: 1px solid var(--cypress);
+    color: var(--moss);
     font-weight: 500;
 }
 
 .btn-secondary:hover {
-    background: var(--teal);
+    background: var(--cypress);
     color: var(--white);
     transform: translateY(-2px);
 }
 
 .btn-outline-primary {
-    border: 2px solid var(--navy);
-    color: var(--navy);
+    border: 2px solid var(--olive);
+    color: var(--olive);
     background: transparent;
 }
 
 .btn-outline-primary:hover {
-    background: var(--navy);
+    background: var(--olive);
     color: var(--white);
 }
 

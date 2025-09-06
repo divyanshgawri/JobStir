@@ -12,25 +12,31 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Stars Animation CSS -->
-    <link rel="stylesheet" href="assets/css/stars-animation.css">
-    
     <style>
         :root {
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            /* Earthy Color Palette */
+            --moss: #2C3424;
+            --cypress: #4C583E;
+            --olive: #768064;
+            --cedar: #959581;
+            --aloe: #DADED8;
+            --white: #FFFFFF;
+            --gradient-primary: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--cedar) 0%, var(--olive) 100%);
+            --gradient-warning: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            --hero-gradient: linear-gradient(135deg, var(--moss) 0%, var(--cypress) 50%, var(--olive) 100%);
         }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(-45deg, #ff6b6b, #ee5a24, #667eea, #764ba2);
+            background: var(--hero-gradient);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             display: flex;
             align-items: center;
             overflow-x: hidden;
+            color: var(--moss);
         }
         
         @keyframes gradientShift {

@@ -12,24 +12,62 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Stars Animation CSS -->
-    <link rel="stylesheet" href="assets/css/stars-animation.css">
-    
     <style>
         :root {
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --gradient-success: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            /* Earthy Color Palette */
+            --moss: #2C3424;
+            --cypress: #4C583E;
+            --olive: #768064;
+            --cedar: #959581;
+            --aloe: #DADED8;
+            --white: #FFFFFF;
+            
+            /* Theme Variables */
+            --primary-color: var(--olive);
+            --secondary-color: var(--cypress);
+            --accent-color: var(--cedar);
+            --success-color: var(--olive);
+            --warning-color: #D4AF37;
+            --danger-color: #8B4513;
+            --dark-color: var(--moss);
+            --light-color: var(--aloe);
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--cedar) 0%, var(--olive) 100%);
+            --gradient-success: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
+            --hero-gradient: linear-gradient(135deg, var(--moss) 0%, var(--cypress) 50%, var(--olive) 100%);
+            
+            /* Shadows */
+            --shadow-light: 0 5px 15px rgba(44, 52, 36, 0.08);
+            --shadow-medium: 0 10px 30px rgba(44, 52, 36, 0.15);
+            --shadow-heavy: 0 20px 60px rgba(44, 52, 36, 0.25);
+        }
+        
+        /* Dark Mode */
+        .dark {
+            --primary-color: var(--cedar);
+            --secondary-color: var(--olive);
+            --dark-color: var(--aloe);
+            --light-color: var(--moss);
+            --hero-gradient: linear-gradient(135deg, var(--moss) 0%, #1a1f16 50%, var(--cypress) 100%);
         }
         
         body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            color: var(--dark-color);
         }
         
-        /* Stars background gradient overlay */
-        body {
-            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--hero-gradient);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
         }
@@ -50,7 +88,7 @@
         .navbar {
             background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(20px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-light);
         }
         
         .navbar-brand {
@@ -61,6 +99,34 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark-color) !important;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
         }
         
         /* Content Sections */
@@ -139,14 +205,15 @@
         /* Form Styling */
         .form-control {
             border-radius: 10px;
-            border: 1px solid #dee2e6;
+            border: 1px solid rgba(118, 128, 100, 0.3);
             padding: 0.75rem 1rem;
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
         }
         
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(118, 128, 100, 0.25);
             transform: translateY(-2px);
         }
         
@@ -161,7 +228,17 @@
         
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
         }
         
         /* Animations */
@@ -175,9 +252,95 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        /* Theme Switch */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.3);
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .slider .sun-icon, .slider .moon-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            width: 16px;
+            height: 16px;
+        }
+
+        .sun-icon { 
+            left: 5px; 
+            opacity: 1; 
+        }
+
+        .moon-icon { 
+            right: 5px; 
+            opacity: 0; 
+        }
+
+        input:checked + .slider .sun-icon { 
+            opacity: 0; 
+        }
+
+        input:checked + .slider .moon-icon { 
+            opacity: 1; 
+        }
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
 
     <!-- Enhanced Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
@@ -207,6 +370,15 @@
                     </li>
                 </ul>
                 <div class="navbar-nav ms-3">
+                    <div class="theme-switch-wrapper me-3">
+                        <label class="theme-switch" for="dark-mode-toggle">
+                            <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle" />
+                            <div class="slider round">
+                                <i data-feather="sun" class="sun-icon"></i>
+                                <i data-feather="moon" class="moon-icon"></i>
+                            </div>
+                        </label>
+                    </div>
                     <a href="signin.html" class="btn btn-outline-primary me-2">Login</a>
                     <a href="signup.html" class="btn btn-primary">Sign Up</a>
                 </div>
@@ -479,17 +651,31 @@
         </div>
     </footer>
 
-    <!-- Stars Animation JS -->
-    <script src="assets/js/stars-animation.js"></script>
-    
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Enhanced JavaScript -->
     <script>
-        // Initialize stars animation
-        document.addEventListener('DOMContentLoaded', () => {
-            window.jobStirStars = StarsAnimation.createFull();
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('dark-mode-toggle');
+        const body = document.body;
+        
+        // Load saved theme or default to light
+        const savedTheme = localStorage.getItem('jobstir-theme') || 'light';
+        if (savedTheme === 'dark') {
+            body.classList.add('dark');
+            themeToggle.checked = true;
+        }
+        
+        // Handle theme toggle
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                body.classList.add('dark');
+                localStorage.setItem('jobstir-theme', 'dark');
+            } else {
+                body.classList.remove('dark');
+                localStorage.setItem('jobstir-theme', 'light');
+            }
         });
         // Animate on Scroll
         function animateOnScroll() {
@@ -620,9 +806,8 @@
         `;
         document.head.appendChild(sparkleStyle);
 
-        // Update initialization to include both stars and scroll animations
+        // Initialize animations
         document.addEventListener('DOMContentLoaded', () => {
-            // Don't initialize stars here as it's already handled above
             animateOnScroll();
         });
     </script>

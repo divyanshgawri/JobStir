@@ -8,17 +8,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Stars Animation CSS -->
-    <link rel="stylesheet" href="assets/css/stars-animation.css">
     <link rel="stylesheet" href="../css/jobstir-unified.css">
     <link rel="stylesheet" href="../css/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     
     <style>
-        /* Stars Background */
+        /* Earthy Background */
         body {
-            background: linear-gradient(135deg, #e3ffe7 0%, #d9e7ff 50%, #ffe4e1 100%);
+            background: linear-gradient(135deg, var(--moss) 0%, var(--cypress) 50%, var(--olive) 100%);
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
@@ -97,34 +95,34 @@
         
         /* Gradient buttons */
         .btn-primary {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
             border: none;
             border-radius: 25px;
             padding: 10px 25px;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+            box-shadow: 0 4px 15px rgba(118, 128, 100, 0.3);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+            box-shadow: 0 6px 20px rgba(118, 128, 100, 0.4);
         }
         
         .btn-secondary {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            background: linear-gradient(135deg, var(--cedar) 0%, var(--aloe) 100%);
             border: none;
-            color: #333;
+            color: var(--moss);
         }
         
         .btn-danger {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
             border: none;
         }
         
         /* Enhanced profile header */
         .tab-header h2 {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -135,7 +133,7 @@
         
         /* Profile badges with gradients */
         .badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
             color: white;
             padding: 5px 15px;
             border-radius: 20px;
@@ -144,13 +142,13 @@
         }
         
         .badge.verified {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
         }
         
         /* Skills with star accents */
         .skill-tag {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            color: #333;
+            background: linear-gradient(135deg, var(--aloe) 0%, var(--cedar) 100%);
+            color: var(--moss);
             padding: 5px 12px;
             border-radius: 15px;
             font-size: 0.9rem;
@@ -169,7 +167,7 @@
         
         /* Profile info enhancement */
         #profile-name {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -192,7 +190,7 @@
         }
         
         .nav-link.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
             color: white;
         }
         

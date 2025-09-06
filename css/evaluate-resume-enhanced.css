@@ -1,25 +1,101 @@
-/* Enhanced Resume Evaluator Styles */
+/* Enhanced Resume Evaluator Styles - Using Main Theme Colors */
 
-/* Ensure JobStir color variables are available */
-:root {
-    --navy: #2F4156;
-    --teal: #567C8D;
-    --sky-blue: #C8D9E6;
-    --beige: #F5EFEB;
-    --white: #FFFFFF;
-    --surface: var(--white);
-    --border: var(--sky-blue);
-    --text-primary: var(--navy);
-    --text-secondary: var(--teal);
-    --text-muted: rgba(86, 124, 141, 0.7);
+/* =============================================
+   HERO SECTION - CONSISTENT WITH MAIN THEME
+   ============================================= */
+.hero-section {
+    background: var(--hero-bg);
+    padding: 80px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-.dark {
-    --surface: var(--navy);
-    --border: rgba(86, 124, 141, 0.3);
-    --text-primary: var(--white);
-    --text-secondary: var(--sky-blue);
-    --text-muted: rgba(200, 217, 230, 0.7);
+.hero-title {
+    color: var(--text-primary);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+.star-rating {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 2rem 0 1rem;
+}
+
+.star {
+    font-size: 1.5rem;
+    color: var(--olive);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.star:hover {
+    transform: scale(1.2);
+    color: var(--cypress);
+}
+
+.features-bar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: var(--bg-accent);
+    color: var(--text-on-accent);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 60px 0;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .features-bar {
+        gap: 1rem;
+    }
+    
+    .feature-item {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+    }
 }
 
 /* =============================================
@@ -32,7 +108,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(47, 65, 86, 0.9);
+    background: var(--moss-70);
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
@@ -42,24 +118,24 @@
 }
 
 .upgrade-modal {
-    background: var(--white);
+    background: var(--bg-primary);
     border-radius: 16px;
     padding: 2rem;
     max-width: 500px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px var(--shadow-medium);
     animation: slideUp 0.3s ease;
 }
 
 .upgrade-modal h3 {
-    color: var(--navy);
+    color: var(--text-primary);
     margin-bottom: 1rem;
     font-size: 1.5rem;
 }
 
 .upgrade-modal p {
-    color: var(--teal);
+    color: var(--text-secondary);
     margin-bottom: 1.5rem;
 }
 
@@ -67,13 +143,13 @@
     text-align: left;
     margin: 1.5rem 0;
     padding: 1rem;
-    background: var(--beige);
+    background: var(--bg-secondary);
     border-radius: 8px;
 }
 
 .upgrade-features .feature {
     margin: 0.5rem 0;
-    color: var(--navy);
+    color: var(--text-primary);
     font-weight: 500;
 }
 
@@ -128,13 +204,13 @@
 .category-name {
     min-width: 140px;
     font-weight: 600;
-    color: var(--navy);
+    color: var(--text-primary);
 }
 
 .score-bar {
     flex: 1;
     height: 24px;
-    background: var(--sky-blue);
+    background: var(--bg-secondary);
     border-radius: 12px;
     position: relative;
     overflow: hidden;
@@ -142,7 +218,7 @@
 
 .score-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--navy), var(--teal));
+    background: linear-gradient(90deg, var(--olive), var(--cypress));
     border-radius: 12px;
     width: 0%;
     transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
@@ -196,14 +272,14 @@
 
 .reasoning-item {
     padding: 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(47, 65, 86, 0.05);
+    box-shadow: 0 2px 8px var(--shadow-light);
 }
 
 .reasoning-item h5 {
-    color: var(--navy);
+    color: var(--text-primary);
     margin-bottom: 0.75rem;
     font-weight: 600;
     display: flex;
@@ -217,7 +293,7 @@
 }
 
 .reasoning-item p {
-    color: var(--teal);
+    color: var(--text-secondary);
     line-height: 1.6;
     margin: 0;
 }
@@ -237,17 +313,17 @@
 .improvements-section {
     padding: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(47, 65, 86, 0.05);
+    box-shadow: 0 2px 8px var(--shadow-light);
 }
 
 .strengths-section {
-    background: linear-gradient(135deg, var(--sky-blue), var(--beige));
-    border-left: 4px solid var(--navy);
+    background: linear-gradient(135deg, var(--bg-secondary), var(--aloe-50));
+    border-left: 4px solid var(--olive);
 }
 
 .improvements-section {
-    background: linear-gradient(135deg, var(--beige), var(--sky-blue));
-    border-left: 4px solid var(--teal);
+    background: linear-gradient(135deg, var(--aloe-50), var(--bg-secondary));
+    border-left: 4px solid var(--cypress);
 }
 
 .insights-list {
@@ -286,15 +362,15 @@
 
 .overall-assessment {
     padding: 2rem;
-    background: linear-gradient(135deg, var(--beige), var(--sky-blue-light));
+    background: linear-gradient(135deg, var(--bg-secondary), var(--aloe-50));
     border-radius: 12px;
-    border: 1px solid var(--sky-blue);
+    border: 1px solid var(--border-subtle);
 }
 
 .assessment-text {
     font-size: 1.1rem;
     line-height: 1.7;
-    color: var(--navy);
+    color: var(--text-primary);
     margin-bottom: 1.5rem;
 }
 
@@ -303,14 +379,14 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: var(--surface);
+    background: var(--bg-primary);
     border-radius: 8px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-subtle);
 }
 
 .recommendation-label {
     font-weight: 600;
-    color: var(--navy);
+    color: var(--text-primary);
 }
 
 .recommendation-value {
@@ -353,19 +429,19 @@
 }
 
 .job-recommendation-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(47, 65, 86, 0.05);
+    box-shadow: 0 2px 8px var(--shadow-light);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
 .job-recommendation-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(47, 65, 86, 0.15);
-    border-color: var(--teal);
+    box-shadow: 0 8px 25px var(--shadow-medium);
+    border-color: var(--border-focus);
 }
 
 .job-recommendation-card::before {
@@ -375,7 +451,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(135deg, var(--navy), var(--teal));
+    background: linear-gradient(135deg, var(--olive), var(--cypress));
     border-radius: 2px 0 0 2px;
 }
 
@@ -387,14 +463,14 @@
 }
 
 .job-title {
-    color: var(--navy);
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 1.2rem;
     margin: 0;
 }
 
 .match-score {
-    background: linear-gradient(135deg, var(--navy), var(--teal));
+    background: linear-gradient(135deg, var(--olive), var(--cypress));
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
@@ -403,7 +479,7 @@
 }
 
 .company-name {
-    color: var(--teal);
+    color: var(--text-secondary);
     font-weight: 500;
     margin: 0.5rem 0;
 }
@@ -422,13 +498,13 @@
 }
 
 .match-reason {
-    color: var(--navy);
+    color: var(--text-primary);
     font-style: italic;
     margin: 1rem 0;
     padding: 1rem;
-    background: var(--beige);
+    background: var(--bg-secondary);
     border-radius: 8px;
-    border-left: 3px solid var(--teal);
+    border-left: 3px solid var(--cypress);
 }
 
 .job-actions {
@@ -454,13 +530,13 @@
 .quick-suggestions-section {
     margin-top: 2rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, var(--beige), var(--sky-blue-light));
+    background: linear-gradient(135deg, var(--bg-secondary), var(--aloe-50));
     border-radius: 12px;
-    border: 1px solid var(--sky-blue);
+    border: 1px solid var(--border-subtle);
 }
 
 .quick-suggestions-section .section-title {
-    color: var(--navy);
+    color: var(--text-primary);
     margin-bottom: 1rem;
 }
 
@@ -472,11 +548,11 @@
 
 .suggestions-list li {
     padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(86, 124, 141, 0.2);
+    border-bottom: 1px solid var(--border-subtle);
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    color: var(--navy);
+    color: var(--text-primary);
 }
 
 .suggestions-list li:last-child {
@@ -497,7 +573,7 @@
     display: inline-block;
     padding: 0.5rem 1rem;
     margin: 0.25rem;
-    background: linear-gradient(135deg, var(--navy), var(--teal));
+    background: linear-gradient(135deg, var(--olive), var(--cypress));
     color: white;
     border-radius: 20px;
     font-size: 0.875rem;
@@ -507,16 +583,16 @@
 
 .keyword-tag:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(47, 65, 86, 0.2);
+    box-shadow: 0 4px 8px var(--shadow-light);
 }
 
 .missing .keyword-tag {
-    background: linear-gradient(135deg, var(--teal), #8b7355);
+    background: linear-gradient(135deg, var(--cedar), var(--cypress));
     color: var(--white);
 }
 
 .matched .keyword-tag {
-    background: linear-gradient(135deg, var(--navy), var(--teal));
+    background: linear-gradient(135deg, var(--olive), var(--cypress));
     color: var(--white);
 }
 
@@ -528,11 +604,11 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #28a745, #20c997);
+    background: linear-gradient(135deg, var(--olive), var(--cypress));
     color: white;
     padding: 1rem 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 4px 12px var(--shadow-medium);
     z-index: 10000;
     font-weight: 500;
     animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -700,120 +776,8 @@
     border: 1px dashed var(--border);
 }
 
-/* =============================================
-   COMPREHENSIVE DARK MODE FIXES
-   ============================================= */
-
-.dark .reasoning-item {
-    background: var(--card-bg);
-    border-color: var(--border-color);
-    color: var(--text-dark);
-}
-
-.dark .reasoning-item h5 {
-    color: var(--text-dark);
-}
-
-.dark .reasoning-item p {
-    color: var(--text-light);
-}
-
-.dark .strengths-section,
-.dark .improvements-section {
-    background: rgba(47, 65, 86, 0.4);
-    border-left-color: var(--teal);
-}
-
-.dark .overall-assessment {
-    background: rgba(47, 65, 86, 0.4);
-    border-color: var(--border-color);
-}
-
-.dark .assessment-text {
-    color: var(--text-dark);
-}
-
-.dark .hiring-recommendation {
-    background: var(--card-bg);
-    border-color: var(--border-color);
-}
-
-.dark .recommendation-label {
-    color: var(--text-dark);
-}
-
-.dark .job-recommendation-card {
-    background: var(--card-bg);
-    border-color: var(--border-color);
-}
-
-.dark .job-title {
-    color: var(--text-dark);
-}
-
-.dark .company-name {
-    color: var(--text-light);
-}
-
-.dark .job-location {
-    color: var(--text-light);
-}
-
-.dark .match-reason {
-    background: rgba(47, 65, 86, 0.4);
-    border-left-color: var(--teal);
-    color: var(--text-dark);
-}
-
-.dark .quick-suggestions-section {
-    background: rgba(47, 65, 86, 0.4);
-    border-color: var(--border-color);
-}
-
-.dark .quick-suggestions-section .section-title {
-    color: var(--text-dark);
-}
-
-.dark .suggestions-list li {
-    color: var(--text-dark);
-    border-bottom-color: var(--border-color);
-}
-
-.dark .insights-list li {
-    color: var(--text-dark);
-    border-bottom-color: var(--border-color);
-}
-
-.dark .no-items {
-    background: rgba(47, 65, 86, 0.3);
-    border-color: var(--border-color);
-    color: var(--text-light);
-}
-
-.dark .upgrade-modal {
-    background: var(--card-bg);
-    color: var(--text-dark);
-}
-
-.dark .upgrade-modal h3 {
-    color: var(--text-dark);
-}
-
-.dark .upgrade-modal p {
-    color: var(--text-light);
-}
-
-.dark .upgrade-features {
-    background: rgba(47, 65, 86, 0.4);
-}
-
-.dark .upgrade-features .feature {
-    color: var(--text-dark);
-}
-
-.dark .success-notification {
-    background: linear-gradient(135deg, var(--navy), var(--teal));
-}
+/* Dark mode inherits from main theme CSS variables automatically
+   All components will use the correct dark theme colors */
 /* =
 ============================================
    MAIN RESUME EVALUATOR STYLES
@@ -829,11 +793,11 @@
 
 .resume-card,
 .jd-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
     padding: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px -1px var(--shadow-light);
     transition: all 0.3s ease;
 }
 
@@ -846,16 +810,16 @@
 .upload-area {
     text-align: center;
     padding: 20px;
-    border: 2px dashed var(--border);
+    border: 2px dashed var(--border-subtle);
     border-radius: 12px;
     margin-bottom: 20px;
-    background: var(--beige);
+    background: var(--bg-primary);
 }
 
 .btn-upload {
     cursor: pointer;
-    background: var(--sky-blue);
-    color: var(--navy);
+    background: var(--bg-accent);
+    color: var(--text-on-accent);
     font-weight: 600;
     padding: 12px 24px;
     border-radius: 8px;
@@ -868,8 +832,8 @@
 }
 
 .btn-upload:hover {
-    background: var(--teal);
-    color: white;
+    background: var(--btn-primary-hover);
+    color: var(--text-on-accent);
     transform: translateY(-1px);
 }
 
@@ -894,10 +858,10 @@
     gap: 2rem;
     margin: 2rem 0;
     padding: 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(47, 65, 86, 0.05);
+    box-shadow: 0 2px 8px var(--shadow-light);
 }
 
 .analysis-controls {
@@ -924,7 +888,7 @@
     position: relative;
     width: 44px;
     height: 24px;
-    background: var(--border);
+    background: var(--border-subtle);
     border-radius: 12px;
     transition: all 0.3s ease;
 }
@@ -943,7 +907,7 @@
 }
 
 input[type="checkbox"]:checked + .toggle-slider {
-    background: var(--teal);
+    background: var(--bg-accent);
 }
 
 input[type="checkbox"]:checked + .toggle-slider::before {
@@ -969,8 +933,8 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 
 /* Action Center */
 .btn-primary {
-    background: linear-gradient(135deg, var(--navy), var(--teal));
-    color: white;
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
     font-weight: 600;
     padding: 14px 28px;
     border: none;
@@ -981,14 +945,15 @@ input[type="checkbox"]:checked + .toggle-slider::before {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 4px 15px rgba(47, 65, 86, 0.2);
+    box-shadow: 0 4px 15px var(--shadow-medium);
     min-width: 160px;
     justify-content: center;
 }
 
 .btn-primary:hover {
+    background: var(--btn-primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(47, 65, 86, 0.3);
+    box-shadow: 0 6px 20px var(--shadow-medium);
 }
 
 .btn-primary:disabled {
@@ -999,12 +964,12 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 
 /* Results Section */
 .results-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
     padding: 2rem;
     margin-top: 2rem;
-    box-shadow: 0 4px 12px rgba(47, 65, 86, 0.1);
+    box-shadow: 0 4px 12px var(--shadow-light);
 }
 
 .results-header {
@@ -1012,7 +977,7 @@ input[type="checkbox"]:checked + .toggle-slider::before {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-subtle);
     padding-bottom: 1.5rem;
 }
 
@@ -1029,11 +994,11 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 }
 
 .btn-secondary {
-    background: var(--sky-blue);
-    color: var(--navy);
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
     font-weight: 600;
     padding: 12px 20px;
-    border: none;
+    border: 1px solid var(--border-strong);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
@@ -1046,8 +1011,8 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 }
 
 .btn-secondary:hover {
-    background: var(--teal);
-    color: white;
+    background: var(--btn-secondary-hover);
+    color: var(--text-on-accent);
     transform: translateY(-1px);
 }
 
@@ -1063,9 +1028,10 @@ input[type="checkbox"]:checked + .toggle-slider::before {
     grid-template-columns: 1fr 2fr;
     gap: 2rem;
     margin-bottom: 2rem;
-    background: var(--beige);
+    background: var(--bg-primary);
     padding: 2rem;
     border-radius: 12px;
+    border: 1px solid var(--border-subtle);
 }
 
 @media (max-width: 480px) {
@@ -1093,13 +1059,13 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 
 .progress-ring-bg {
     fill: none;
-    stroke: var(--border);
+    stroke: var(--border-subtle);
     stroke-width: 14;
 }
 
 .progress-ring-fg {
     fill: none;
-    stroke: var(--navy);
+    stroke: var(--olive);
     stroke-width: 14;
     stroke-linecap: round;
     transform: rotate(-90deg);
@@ -1129,7 +1095,7 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 
 .tab-navigation {
     display: flex;
-    border-bottom: 2px solid var(--border);
+    border-bottom: 2px solid var(--border-subtle);
     margin-bottom: 1.5rem;
 }
 
@@ -1150,12 +1116,12 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 }
 
 .tab-button:hover {
-    color: var(--navy);
+    color: var(--text-primary);
 }
 
 .tab-button.active {
-    color: var(--navy);
-    border-bottom-color: var(--navy);
+    color: var(--text-primary);
+    border-bottom-color: var(--olive);
 }
 
 .tab-content {
@@ -1214,8 +1180,8 @@ input[type="checkbox"]:checked + .toggle-slider::before {
     font-size: 0.9rem;
     padding: 6px 14px;
     border-radius: 20px;
-    background: var(--sky-blue);
-    color: var(--navy);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 /* Loader */
@@ -1227,8 +1193,8 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 .spinner {
     width: 50px;
     height: 50px;
-    border: 5px solid var(--border);
-    border-top-color: var(--navy);
+    border: 5px solid var(--border-subtle);
+    border-top-color: var(--olive);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 1.5rem;
@@ -1260,52 +1226,7 @@ input[type="checkbox"]:checked + .toggle-slider::before {
     display: block;
 }
 
-/* Dark Mode Overrides */
-.dark .resume-card,
-.dark .jd-card,
-.dark .results-card {
-    background: var(--surface);
-    border-color: var(--border);
-    color: var(--text-primary);
-}
-
-.dark .upload-area {
-    background: rgba(47, 65, 86, 0.3);
-    border-color: var(--border);
-}
-
-.dark .btn-upload {
-    background: var(--teal);
-    color: white;
-}
-
-.dark .btn-upload:hover {
-    background: var(--sky-blue);
-    color: var(--navy);
-}
-
-.dark .controls-section {
-    background: var(--surface);
-    border-color: var(--border);
-}
-
-.dark .toggle-slider {
-    background: rgba(86, 124, 141, 0.3);
-}
-
-.dark .toggle-label {
-    color: var(--text-primary);
-}
-
-.dark .summary-grid {
-    background: rgba(47, 65, 86, 0.3);
-}
-
-.dark .error-box {
-    background: rgba(125, 79, 79, 0.2);
-    border-color: rgba(125, 79, 79, 0.5);
-    color: #ff6b6b;
-}
+/* Dark Mode - Inherits from main theme variables automatically */
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -1366,8 +1287,8 @@ input[type="checkbox"]:checked + .toggle-slider::before {
 /* 
 Enhanced Job Recommendations */
 .job-recommendation-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 16px;
@@ -1376,8 +1297,8 @@ Enhanced Job Recommendations */
 
 .job-recommendation-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    border-color: var(--teal);
+    box-shadow: 0 8px 25px var(--shadow-light);
+    border-color: var(--border-focus);
 }
 
 .job-header {
@@ -1392,7 +1313,7 @@ Enhanced Job Recommendations */
 }
 
 .job-title {
-    color: var(--navy);
+    color: var(--text-primary);
     margin: 0 0 8px 0;
     font-size: 1.2rem;
     font-weight: 600;
@@ -1418,8 +1339,8 @@ Enhanced Job Recommendations */
 }
 
 .remote-badge {
-    background: var(--sky-blue);
-    color: var(--navy);
+    background: var(--bg-accent);
+    color: var(--text-on-accent);
     padding: 2px 8px;
     border-radius: 12px;
     font-size: 0.8rem;
@@ -1447,7 +1368,7 @@ Enhanced Job Recommendations */
 }
 
 .match-score.good {
-    background: var(--teal);
+    background: var(--cypress);
     color: white;
 }
 
@@ -1474,14 +1395,14 @@ Enhanced Job Recommendations */
 }
 
 .match-reasons {
-    background: var(--sky-blue);
+    background: var(--bg-secondary);
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 16px;
 }
 
 .match-reasons strong {
-    color: var(--navy);
+    color: var(--text-primary);
     font-size: 0.9rem;
     display: block;
     margin-bottom: 8px;
@@ -1490,7 +1411,7 @@ Enhanced Job Recommendations */
 .match-reasons ul {
     margin: 0;
     padding-left: 16px;
-    color: var(--navy);
+    color: var(--text-primary);
 }
 
 .match-reasons li {
@@ -1503,7 +1424,7 @@ Enhanced Job Recommendations */
 }
 
 .matched-skills strong {
-    color: var(--navy);
+    color: var(--text-primary);
     font-size: 0.9rem;
     display: block;
     margin-bottom: 8px;
@@ -1523,12 +1444,12 @@ Enhanced Job Recommendations */
 }
 
 .skill-tag.matched {
-    background: var(--teal);
+    background: var(--cypress);
     color: white;
 }
 
 .skill-tag:not(.matched) {
-    background: var(--border-color);
+    background: var(--border-subtle);
     color: var(--text-secondary);
 }
 
@@ -1552,27 +1473,27 @@ Enhanced Job Recommendations */
 }
 
 .btn-apply {
-    background: var(--teal);
-    color: white;
+    background: var(--bg-accent);
+    color: var(--text-on-accent);
     flex: 1;
 }
 
 .btn-apply:hover {
-    background: var(--navy);
+    background: var(--btn-primary-hover);
     transform: translateY(-1px);
 }
 
 .btn-save {
     background: transparent;
     color: var(--text-secondary);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-subtle);
     padding: 10px;
 }
 
 .btn-save:hover {
-    background: var(--sky-blue);
-    color: var(--navy);
-    border-color: var(--teal);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-focus);
 }
 
 .btn-apply i, .btn-save i {
