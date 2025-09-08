@@ -37,7 +37,8 @@ class ResumeEvaluator {
             console.log('   - Engine: Ready with AI enhancements');
             console.log('   - Real-time Analysis: ' + (this.realTimeMode ? 'Enabled' : 'Disabled'));
             console.log('   - Database: ' + (window.resumeEvaluatorSupabase ? 'Connected' : 'Offline'));
-            console.log('   - Analysis History: ' + this.analysisHistory.length + ' records');
+            const historyCount = Array.isArray(this.analysisHistory) ? this.analysisHistory.length : 0;
+            console.log('   - Analysis History: ' + historyCount + ' records');
             console.log('   - Auto-save: ' + (this.autoSaveEnabled ? 'Enabled' : 'Disabled'));
             console.log('   - Web Workers: ' + (typeof Worker !== 'undefined' ? 'Available' : 'Not supported'));
             
@@ -114,6 +115,7 @@ class ResumeEvaluator {
         // Status elements
         this.pdfStatus = document.getElementById('pdf-status');
         this.charCount = document.getElementById('char-count');
+        if (!Array.isArray(this.analysisHistory)) this.analysisHistory = [];
         this.loader = document.getElementById('loader');
         this.errorBox = document.getElementById('error-box');
         this.errorMessage = document.getElementById('error-message');

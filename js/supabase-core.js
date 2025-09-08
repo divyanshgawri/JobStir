@@ -107,6 +107,12 @@ class JobStirCore {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
             this.currentUser = session?.user || null;
             this.saveSession();
+            if (this.currentUser) {
+                // Ensure a profile row exists for OAuth users (Google/GitHub/LinkedIn)
+                this.upsertProfileFromAuth(this.currentUser).catch(err => {
+                    console.warn('Profile upsert failed:', err?.message || err);
+                });
+            }
         } else if (event === 'SIGNED_OUT') {
             this.currentUser = null;
             this.clearSession();
@@ -180,9 +186,7 @@ class JobStirCore {
         try {
             const { data, error } = await this.supabase.auth.signInWithOAuth({
                 provider: 'google',
-                options: {
-                    redirectTo: window.location.origin
-                }
+                options: { redirectTo: window.location.origin }
             });
             
             if (error) throw error;
@@ -190,6 +194,26 @@ class JobStirCore {
         } catch (error) {
             throw new Error(error.message || 'Google sign-in failed');
         }
+    }
+
+    async signInWithGithub() {
+        if (!this.supabase) throw new Error('GitHub sign-in requires Supabase configuration');
+        const { data, error } = await this.supabase.auth.signInWithOAuth({
+            provider: 'github',
+            options: { redirectTo: window.location.origin }
+        });
+        if (error) throw new Error(error.message || 'GitHub sign-in failed');
+        return { success: true, data };
+    }
+
+    async signInWithLinkedIn() {
+        if (!this.supabase) throw new Error('LinkedIn sign-in requires Supabase configuration');
+        const { data, error } = await this.supabase.auth.signInWithOAuth({
+            provider: 'linkedin_oidc',
+            options: { redirectTo: window.location.origin }
+        });
+        if (error) throw new Error(error.message || 'LinkedIn sign-in failed');
+        return { success: true, data };
     }
 
     async signOut() {
@@ -279,6 +303,43 @@ class JobStirCore {
         } catch (error) {
             console.error('Error updating user profile:', error);
             return this.fallbackUpdateUserProfile(this.currentUser.id, updates);
+        }
+    }
+
+    // Create or update profile row based on OAuth user metadata
+    async upsertProfileFromAuth(user) {
+        try {
+            const meta = user?.user_metadata || {};
+            const fullName = meta.full_name || meta.name || `${meta.given_name || ''} ${meta.family_name || ''}`.trim();
+            const firstName = meta.given_name || (fullName ? fullName.split(' ')[0] : '');
+            const lastName = meta.family_name || (fullName ? fullName.split(' ').slice(1).join(' ') : '');
+            const avatarUrl = meta.avatar_url || meta.picture || '';
+            const provider = user?.app_metadata?.provider || meta.provider || null;
+
+            const profileRow = {
+                id: user.id,
+                email: user.email,
+                first_name: firstName,
+                last_name: lastName,
+                full_name: fullName || null,
+                avatar_url: avatarUrl || null,
+                auth_provider: provider,
+                updated_at: new Date().toISOString()
+            };
+
+            if (this.supabase) {
+                const { error } = await this.supabase
+                    .from('user_profiles')
+                    .upsert(profileRow, { onConflict: 'id' });
+                if (error) throw error;
+            } else {
+                // localStorage fallback
+                const profiles = JSON.parse(localStorage.getItem('jobstir_profiles') || '{}');
+                profiles[user.id] = { ...(profiles[user.id] || {}), ...profileRow };
+                localStorage.setItem('jobstir_profiles', JSON.stringify(profiles));
+            }
+        } catch (error) {
+            console.warn('upsertProfileFromAuth error:', error?.message || error);
         }
     }
 
