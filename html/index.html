@@ -11,8 +11,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Three.js -->
+    <!-- Three.js and ThreeGlobe -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r132/three.min.js"></script>
+    <script src="https://unpkg.com/three-globe@2.27.6"></script>
+    <script src="../js/theme-manager.js"></script>
     <style>
         :root {
             /* Earthy Color Palette */
@@ -298,24 +300,18 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #768064 0%, #4C583E 50%, #2C3424 100%);
+            background: radial-gradient(circle at 30% 30%, #1a4d80 0%, #143d68 50%, #0f2e4d 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 
-                0 0 50px rgba(118, 128, 100, 0.4),
+                0 0 50px rgba(41, 98, 170, 0.4),
                 inset 0 0 50px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
         }
         
-        #globeViz::before {
-            content: "🌍";
-            font-size: 120px;
-            animation: rotate 8s linear infinite;
-            color: white;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
-        }
+        /* Remove emoji overlay; real globe will render here */
         
         #globeViz canvas {
             border-radius: 50%;
@@ -323,7 +319,7 @@
 
         body.dark #globeViz {
             box-shadow: 
-                0 0 60px rgba(118, 128, 100, 0.6),
+                0 0 60px rgba(41, 98, 170, 0.6),
                 inset 0 0 30px rgba(0, 0, 0, 0.4);
         }
 
@@ -938,31 +934,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // ===== SIMPLE & RELIABLE THEME TOGGLE =====
-        function initializeTheme() {
-            const toggle = document.getElementById('dark-mode-toggle');
-            const body = document.body;
-            
-            // Check saved theme
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                body.classList.add('dark');
-                toggle.checked = true;
-            }
-            
-            // Theme toggle handler
-            toggle.addEventListener('change', function() {
-                if (this.checked) {
-                    body.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    body.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                }
-                updateStarsTheme();
-                updateGlobeTheme();
-            });
-        }
+        // Theme is handled by theme-manager.js. We only respond to changes if needed.
 
         // ===== FLOATING STARS ANIMATION =====
         function createStars() {
@@ -1004,182 +976,116 @@
             // Stars automatically update via CSS based on body.dark class
         }
 
-        // ===== THREE.JS GITHUB GLOBE =====
-        let scene, camera, renderer, globe;
-        
-        function initializeGlobe() {
+        // ===== THREE.JS GITHUB-LIKE GLOBE (ThreeGlobe) =====
+        let scene, camera, renderer, globe, isGlobeInitialized = false;
+
+        async function initializeGlobe() {
             const container = document.getElementById('globeViz');
-            if (!container) return;
-            
+            if (!container || isGlobeInitialized) return;
+
             try {
-                // Scene setup
+                container.innerHTML = '';
+                container.style.background = 'transparent';
+
                 scene = new THREE.Scene();
-                
-                // Camera setup
-                camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-                camera.position.z = 300;
-                
-                // Renderer setup
-                renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-                renderer.setSize(400, 400);
+                camera = new THREE.PerspectiveCamera(50, 1, 180, 1800);
+                camera.position.z = 400;
+
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(container.clientWidth || 400, container.clientHeight || 400);
+                renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setClearColor(0x000000, 0);
-                container.innerHTML = ''; // Clear fallback
                 container.appendChild(renderer.domElement);
-                
-                // Create Earth globe
-                const geometry = new THREE.SphereGeometry(100, 64, 64);
-                
-                // Create Earth texture
-                const canvas = document.createElement('canvas');
-                canvas.width = 1024;
-                canvas.height = 512;
-                const ctx = canvas.getContext('2d');
-                
-                // Create earth-like texture
-                const gradient = ctx.createRadialGradient(300, 150, 0, 300, 150, 400);
-                gradient.addColorStop(0, '#4CAF50');
-                gradient.addColorStop(0.3, '#2E7D32');
-                gradient.addColorStop(0.7, '#1B5E20');
-                gradient.addColorStop(1, '#0D2818');
-                
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, 1024, 512);
-                
-                // Add continents-like shapes
-                ctx.fillStyle = '#2E7D32';
-                for (let i = 0; i < 100; i++) {
-                    ctx.beginPath();
-                    ctx.arc(Math.random() * 1024, Math.random() * 512, Math.random() * 50 + 10, 0, Math.PI * 2);
-                    ctx.fill();
+
+                const countries = await fetch('data/globe.json').then(r => r.json()).catch(() => null);
+
+                globe = new ThreeGlobe()
+                    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+                    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png');
+
+                if (countries && countries.features) {
+                    globe
+                        .hexPolygonsData(countries.features)
+                        .hexPolygonResolution(3)
+                        .hexPolygonMargin(0.7)
+                        .showAtmosphere(true)
+                        .atmosphereColor('#ffffff')
+                        .atmosphereAltitude(0.1)
+                        .hexPolygonColor(() => 'rgba(255,255,255,0.7)');
+                } else {
+                    globe
+                        .showAtmosphere(true)
+                        .atmosphereColor('#ffffff')
+                        .atmosphereAltitude(0.1);
                 }
-                
-                const texture = new THREE.CanvasTexture(canvas);
-                
-                const material = new THREE.MeshPhongMaterial({
-                    map: texture,
-                    transparent: true,
-                    opacity: 0.9
+
+                const sampleArcs = [
+                    { startLat: 40.7128, startLng: -74.0060, endLat: 51.5074, endLng: -0.1278, color: '#ff6b6b', order: 1, arcAlt: 0.3 },
+                    { startLat: 37.7749, startLng: -122.4194, endLat: 35.6762, endLng: 139.6503, color: '#4ecdc4', order: 2, arcAlt: 0.4 },
+                    { startLat: 51.5074, startLng: -0.1278, endLat: -33.8688, endLng: 151.2093, color: '#45b7d1', order: 3, arcAlt: 0.5 }
+                ];
+
+                globe
+                    .arcsData(sampleArcs)
+                    .arcStartLat(d => d.startLat)
+                    .arcStartLng(d => d.startLng)
+                    .arcEndLat(d => d.endLat)
+                    .arcEndLng(d => d.endLng)
+                    .arcColor(d => d.color)
+                    .arcAltitude(d => d.arcAlt)
+                    .arcStroke(() => [0.32, 0.28, 0.3][Math.round(Math.random() * 2)])
+                    .arcDashLength(0.9)
+                    .arcDashInitialGap(d => d.order)
+                    .arcDashGap(15)
+                    .arcDashAnimateTime(() => 2000);
+
+                // Points at arc endpoints
+                const points = [...new Set(sampleArcs.flatMap(a => [
+                    `${a.startLat},${a.startLng}`,
+                    `${a.endLat},${a.endLng}`
+                ]))].map(key => {
+                    const [lat, lng] = key.split(',').map(Number);
+                    return { lat, lng, size: 1, color: '#ffffff' };
                 });
-                
-                globe = new THREE.Mesh(geometry, material);
+
+                globe
+                    .pointsData(points)
+                    .pointColor(d => d.color)
+                    .pointsMerge(true)
+                    .pointAltitude(0.0)
+                    .pointRadius(2);
+
                 scene.add(globe);
-                
-                // Add city points
-                addCityPoints();
-                
-                // Lighting
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-                scene.add(ambientLight);
-                
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-                directionalLight.position.set(200, 200, 100);
-                scene.add(directionalLight);
-                
-                // Start animation
+
+                // Lights similar to GitHub globe
+                scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+                const dir1 = new THREE.DirectionalLight(0xffffff, 0.8);
+                dir1.position.set(-400, 100, 400);
+                scene.add(dir1);
+                const dir2 = new THREE.DirectionalLight(0xffffff, 0.8);
+                dir2.position.set(-200, 500, 200);
+                scene.add(dir2);
+
+                isGlobeInitialized = true;
                 animate();
-                
-                // Add click interaction
-                const globeContainer = document.getElementById('hero-github-globe');
-                globeContainer.addEventListener('click', createSparkleEffect);
-                
-                console.log('GitHub globe initialized successfully');
-                
+
+                // Handle resize
+                window.addEventListener('resize', () => {
+                    const size = Math.min(container.clientWidth || 400, container.clientHeight || 400);
+                    camera.aspect = 1;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(size, size);
+                });
             } catch (error) {
                 console.error('Globe failed to initialize:', error);
-                // Fallback will show
             }
-        }
-        
-        function addCityPoints() {
-            const cities = [
-                { lat: 37.7749, lng: -122.4194, name: 'San Francisco' },
-                { lat: 40.7128, lng: -74.0060, name: 'New York' },
-                { lat: 51.5074, lng: -0.1278, name: 'London' },
-                { lat: 35.6762, lng: 139.6503, name: 'Tokyo' },
-                { lat: -33.8688, lng: 151.2093, name: 'Sydney' }
-            ];
-            
-            cities.forEach(city => {
-                const phi = (90 - city.lat) * (Math.PI / 180);
-                const theta = (city.lng + 180) * (Math.PI / 180);
-                
-                const x = -100 * Math.sin(phi) * Math.cos(theta);
-                const y = 100 * Math.cos(phi);
-                const z = 100 * Math.sin(phi) * Math.sin(theta);
-                
-                const pointGeometry = new THREE.SphereGeometry(3, 8, 8);
-                const pointMaterial = new THREE.MeshBasicMaterial({ 
-                    color: 0xffffff,
-                    transparent: true,
-                    opacity: 0.9
-                });
-                const point = new THREE.Mesh(pointGeometry, pointMaterial);
-                point.position.set(x, y, z);
-                scene.add(point);
-            });
-        }
-        
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            if (globe) {
-                globe.rotation.y += 0.005;
-            }
-            
-            if (renderer && scene && camera) {
-                renderer.render(scene, camera);
-            }
-        }
-        
-        function createSparkleEffect() {
-            const globeContainer = document.getElementById('hero-github-globe');
-            
-            // Create sparkle effect
-            for (let i = 0; i < 20; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.innerHTML = ['✨', '⭐', '🌟', '💫', '🚀'][Math.floor(Math.random() * 5)];
-                sparkle.style.position = 'fixed';
-                sparkle.style.pointerEvents = 'none';
-                sparkle.style.fontSize = '1.5rem';
-                sparkle.style.zIndex = '1000';
-                
-                const rect = globeContainer.getBoundingClientRect();
-                sparkle.style.left = (rect.left + Math.random() * 400) + 'px';
-                sparkle.style.top = (rect.top + Math.random() * 400) + 'px';
-                
-                sparkle.style.animation = 'sparkleEffect 2s ease-out forwards';
-                document.body.appendChild(sparkle);
-                
-                setTimeout(() => sparkle.remove(), 2000);
-            }
-            
-            // Globe pulse effect
-            globeContainer.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                globeContainer.style.transform = 'scale(1)';
-            }, 200);
-        }
-        
-        function updateGlobeTheme() {
-            // Theme updates are handled by CSS for the fallback
-            // Three.js globe will maintain its own colors
         }
 
-        // Add sparkle animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes sparkleEffect {
-                0% {
-                    transform: scale(1) translate(0, 0);
-                    opacity: 1;
-                }
-                100% {
-                    transform: scale(0.5) translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        function animate() {
+            requestAnimationFrame(animate);
+            if (globe) globe.rotation.y += 0.002;
+            if (renderer && scene && camera) renderer.render(scene, camera);
+        }
 
         // ===== INITIALIZE EVERYTHING =====
         document.addEventListener('DOMContentLoaded', function() {
@@ -1187,20 +1093,8 @@
             initializeTheme();
             createStars();
             
-            // Initialize globe with proper error handling
-            if (typeof THREE !== 'undefined') {
-                console.log('Three.js loaded successfully');
-                setTimeout(() => {
-                    console.log('Attempting to initialize globe...');
-                    initializeGlobe();
-                }, 500);
-            } else {
-                console.error('Three.js failed to load');
-                // Show fallback message
-                const globeContainer = document.getElementById('globeViz');
-                if (globeContainer) {
-                    globeContainer.innerHTML = '<div style="width: 400px; height: 400px; border-radius: 50%; background: linear-gradient(45deg, #768064, #4C583E); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold;">🌍 Global Jobs</div>';
-                }
+            if (typeof THREE !== 'undefined' && typeof ThreeGlobe !== 'undefined') {
+                initializeGlobe();
             }
         });
     </script>

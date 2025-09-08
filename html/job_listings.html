@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/theme-manager.js"></script>
     <title>Browse Jobs - JobStir ✨</title>
     
     <!-- Bootstrap CSS -->
@@ -11,7 +12,50 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/theme-overrides.css">
     
+    <style>
+    /* Dark mode glass blur */
+    body.dark .job-card,
+    body.dark .filters,
+    body.dark .content-section,
+    body.dark .search-panel {
+        background: rgba(26, 31, 46, 0.5);
+        border: 1px solid rgba(218, 222, 216, 0.18);
+        color: #f5f7fa;
+        backdrop-filter: blur(18px) saturate(120%);
+        -webkit-backdrop-filter: blur(18px) saturate(120%);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    /* Include hero and search sections */
+    body.dark .hero-content,
+    body.dark .search-section,
+    body.dark .filters-section { 
+        background: rgba(26, 31, 46, 0.5);
+        border: 1px solid rgba(218, 222, 216, 0.18);
+        color: #f5f7fa;
+        backdrop-filter: blur(18px) saturate(120%);
+        -webkit-backdrop-filter: blur(18px) saturate(120%);
+    }
+
+    /* Headings and muted text in dark */
+    body.dark h1, body.dark h2, body.dark h3, body.dark h4, body.dark h5, body.dark h6 { color: #ffffff; }
+    body.dark .text-muted { color: #d7dde3 !important; }
+
+    /* Input/select focus and background in dark */
+    body.dark .form-control,
+    body.dark .form-select,
+    body.dark .input-group-text {
+        background-color: rgba(47, 65, 86, 0.7);
+        border-color: rgba(200, 217, 230, 0.25);
+        color: #ffffff;
+    }
+    body.dark .form-control::placeholder { color: #c9d2dc; }
+    body.dark .form-control:focus, body.dark .form-select:focus { 
+        border-color: #C8D9E6; 
+        box-shadow: 0 0 0 0.2rem rgba(200, 217, 230, 0.25);
+    }
+    </style>
     <style>
         :root {
             /* Earthy Color Palette */

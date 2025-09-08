@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/theme-manager.js"></script>
     <title>Sign In - JobStir ✨</title>
     
     <!-- Bootstrap CSS -->
@@ -299,14 +300,14 @@
                     </div>
 
                     <!-- Sign In Form -->
-                    <form id="signinForm" class="needs-validation" novalidate>
+                    <form id="signinForm" class="needs-validation" novalidate autocomplete="on">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Address</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-envelope"></i>
                                 </span>
-                                <input type="email" class="form-control" id="email" required>
+                                <input type="email" class="form-control" id="email" name="email" autocomplete="email" required>
                                 <div class="invalid-feedback">Please provide a valid email address.</div>
                             </div>
                         </div>
@@ -317,7 +318,7 @@
                                 <span class="input-group-text">
                                     <i class="fas fa-lock"></i>
                                 </span>
-                                <input type="password" class="form-control" id="password" required>
+                                <input type="password" class="form-control" id="password" name="current-password" autocomplete="current-password" required>
                                 <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
                                     <i class="fas fa-eye" id="passwordToggle"></i>
                                 </button>
@@ -327,7 +328,7 @@
 
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" name="remember" autocomplete="on">
                                 <label class="form-check-label" for="rememberMe">
                                     Remember me
                                 </label>

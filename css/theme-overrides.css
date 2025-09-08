@@ -1,0 +1,71 @@
+/* Dark mode high-contrast overrides applied after page-specific styles */
+
+.dark .content-section,
+.dark .hero-content,
+.dark .team-card,
+.dark .stat-card,
+.dark .testimonial-card,
+.dark .card,
+.dark .panel,
+.dark .section-card,
+.dark .bg-white,
+.dark .bg-light {
+	background: var(--card-bg) !important;
+	color: var(--text-dark) !important;
+	border: 1px solid var(--border-color) !important;
+}
+
+.dark .timeline-item::before {
+	background: rgba(47, 65, 86, 0.9) !important;
+	color: #ffd700 !important;
+	box-shadow: none !important;
+}
+
+.dark .timeline::before {
+	background: var(--primary-color) !important;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+	color: var(--text-dark) !important;
+}
+
+.dark p, .dark span, .dark li, .dark div {
+	color: var(--text-dark) !important;
+}
+
+.dark .text-muted { color: var(--text-light) !important; }
+
+/* Buttons inside content blocks */
+.dark .content-section .btn,
+.dark .hero-content .btn,
+.dark .card .btn {
+	background: var(--card-bg) !important;
+	color: var(--text-dark) !important;
+	border-color: var(--border-color) !important;
+}
+
+/* Global dark navbar to match home page */
+.dark .navbar { background: rgba(44, 52, 36, 0.95) !important; }
+.dark .navbar .navbar-brand { color: #DADED8 !important; -webkit-text-fill-color: initial; background: none; }
+.dark .navbar .nav-link { color: #ffffff !important; }
+.dark .navbar .nav-link:hover { color: #DADED8 !important; }
+
+/* Dark form controls */
+.dark .form-control,
+.dark .form-select,
+.dark .input-group-text,
+.dark textarea {
+    background-color: rgba(47, 65, 86, 0.7) !important;
+    border-color: rgba(200, 217, 230, 0.25) !important;
+    color: #ffffff !important;
+}
+.dark .form-control::placeholder,
+.dark textarea::placeholder { color: #c9d2dc !important; }
+.dark .form-control:focus,
+.dark .form-select:focus,
+.dark textarea:focus { 
+    border-color: #C8D9E6 !important; 
+    box-shadow: 0 0 0 0.2rem rgba(200, 217, 230, 0.25) !important;
+}
+
+

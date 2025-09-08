@@ -7,6 +7,28 @@
     box-sizing: border-box;
 }
 
+.dark .content-section,
+.dark .hero-content,
+.dark .team-card,
+.dark .stat-card,
+.dark .testimonial-card,
+.dark .panel,
+.dark .section-card {
+    background: var(--card-bg) !important;
+    color: var(--text-dark) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.dark .timeline-item::before {
+    background: rgba(47, 65, 86, 0.9) !important;
+    color: #ffd700 !important;
+    box-shadow: none !important;
+}
+
+.dark .timeline::before {
+    background: var(--primary-color) !important;
+}
+
 .dark .card,
 .dark .modal-content,
 .dark .dropdown-menu,

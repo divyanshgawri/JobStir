@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/theme-manager.js"></script>
     <title>About Us - JobStir ✨</title>
     
     <!-- Bootstrap CSS -->
@@ -11,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/theme-overrides.css">
     
     <style>
         :root {
@@ -436,6 +438,45 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
         
+        /* ===== PAGE-SPECIFIC DARK MODE FIXES ===== */
+        body.dark .hero-content,
+        body.dark .content-section,
+        body.dark .team-card,
+        body.dark .stat-card,
+        body.dark .testimonial-card {
+            background: rgba(26, 31, 46, 0.45);
+            border: 1px solid rgba(200, 217, 230, 0.18);
+            color: #ffffff;
+            backdrop-filter: blur(16px) saturate(120%);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        body.dark .content-section h1,
+        body.dark .content-section h2,
+        body.dark .content-section h3,
+        body.dark .content-section h4,
+        body.dark .content-section h5,
+        body.dark .content-section h6,
+        body.dark .team-card h3,
+        body.dark .stat-number {
+            color: #ffffff !important;
+            -webkit-text-fill-color: initial;
+            background: none;
+        }
+
+        body.dark .text-muted { color: #E0E0E0 !important; }
+
+        body.dark .timeline::before { background: #C8D9E6; }
+        body.dark .timeline-item::before {
+            background: rgba(47, 65, 86, 0.85);
+            color: #ffd700;
+            box-shadow: none;
+        }
+
+        body.dark .stat-number { color: #C8D9E6 !important; }
+        body.dark .stat-label { color: #E0E0E0 !important; }
+
         /* Animations */
         .animate-on-scroll {
             opacity: 0;
