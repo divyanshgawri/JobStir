@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globe Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r132/three.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #globeContainer {
+            width: 400px;
+            height: 400px;
+            border: 2px solid #768064;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #768064, #4C583E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        #globeContainer::before {
+            content: "🌍";
+            font-size: 80px;
+            animation: rotate 5s linear infinite;
+        }
+        #globeContainer:has(canvas)::before {
+            display: none;
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="globeContainer"></div>
+    
+    <script>
+        console.log('Starting globe test...');
+        console.log('THREE version:', THREE.REVISION);
+        
+        // Test basic Three.js functionality
+        try {
+            const container = document.getElementById('globeContainer');
+            
+            // Create scene
+            const scene = new THREE.Scene();
+            
+            // Create camera
+            const camera = new THREE.PerspectiveCamera(50, 1, 1, 1000);
+            camera.position.z = 200;
+            
+            // Create renderer
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(400, 400);
+            renderer.setClearColor(0x000000, 0);
+            
+            // Create a simple sphere
+            const geometry = new THREE.SphereGeometry(80, 32, 32);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x768064,
+                transparent: true,
+                opacity: 0.8
+            });
+            const globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
+            
+            // Add light
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(100, 100, 100);
+            scene.add(light);
+            
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+            
+            // Add to container
+            container.innerHTML = '';
+            container.appendChild(renderer.domElement);
+            
+            // Animate
+            function animate() {
+                requestAnimationFrame(animate);
+                globe.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            console.log('Globe test successful!');
+            
+        } catch (error) {
+            console.error('Globe test failed:', error);
+        }
+    </script>
+</body>
+</html>

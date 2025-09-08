@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r132/three.min.js"></script>
     <style>
         :root {
             /* Earthy Color Palette */
@@ -279,10 +280,10 @@
             color: #F5F5F5;
         }
 
-        /* ===== GITHUB GLOBE ===== */
+        /* ===== THREE.JS GLOBE ===== */
         .hero-globe-container {
-            width: 350px;
-            height: 350px;
+            width: 400px;
+            height: 400px;
             margin: 0 auto;
             position: relative;
             cursor: pointer;
@@ -293,87 +294,140 @@
             transform: scale(1.05);
         }
 
-        .github-globe-outer {
+        #globeViz {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: linear-gradient(145deg, #768064 0%, #4C583E 50%, #2C3424 100%);
-            position: relative;
-            animation: rotate 30s linear infinite;
+            background: radial-gradient(circle at 30% 30%, #768064 0%, #4C583E 50%, #2C3424 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             box-shadow: 
                 0 0 50px rgba(118, 128, 100, 0.4),
                 inset 0 0 50px rgba(0, 0, 0, 0.2);
+            position: relative;
             overflow: hidden;
         }
+        
+        #globeViz::before {
+            content: "🌍";
+            font-size: 120px;
+            animation: rotate 8s linear infinite;
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+        }
+        
+        #globeViz canvas {
+            border-radius: 50%;
+        }
 
-        body.dark .github-globe-outer {
+        body.dark #globeViz {
             box-shadow: 
                 0 0 60px rgba(118, 128, 100, 0.6),
                 inset 0 0 30px rgba(0, 0, 0, 0.4);
         }
 
-        .github-globe-inner {
-            position: absolute;
-            top: 15%;
-            left: 15%;
-            width: 70%;
-            height: 70%;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, 
-                rgba(255,255,255,0.3) 0%, 
-                rgba(255,255,255,0.1) 40%,
-                transparent 70%);
+        /* ===== JOB POSTINGS SECTION ===== */
+        .job-posting-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(149, 149, 129, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
             overflow: hidden;
         }
 
-        .globe-light {
+        body.dark .job-posting-card {
+            background: rgba(76, 88, 62, 0.3);
+            border-color: rgba(149, 149, 129, 0.2);
+        }
+
+        .job-posting-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark .job-posting-card:hover {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .job-posting-card::before {
+            content: '';
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            animation: twinkle 2s infinite ease-in-out;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #768064, #4C583E);
         }
 
-        body.dark .globe-light {
-            background: rgba(255, 255, 255, 1);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+        .company-logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #768064, #4C583E);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
 
-        .globe-ring {
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
-            border: 2px solid rgba(118, 128, 100, 0.3);
-            border-radius: 50%;
-            animation: rotate 45s linear infinite reverse;
+        .job-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #768064;
+            margin-top: 0.5rem;
         }
 
-        body.dark .globe-ring {
-            border-color: rgba(218, 222, 216, 0.4);
+        body.dark .job-meta {
+            color: #E0E0E0;
         }
 
-        .globe-orbit {
-            position: absolute;
-            top: -40px;
-            left: -40px;
-            right: -40px;
-            bottom: -40px;
-            border: 1px solid rgba(218, 222, 216, 0.2);
-            border-radius: 50%;
-            animation: rotate 60s linear infinite;
+        .job-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
         }
 
-        body.dark .globe-orbit {
-            border-color: rgba(255, 255, 255, 0.3);
+        .job-tag {
+            background: rgba(118, 128, 100, 0.2);
+            color: #4C583E;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
         }
 
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        body.dark .job-tag {
+            background: rgba(149, 149, 129, 0.2);
+            color: #F5F5F5;
+        }
+
+        .salary-range {
+            color: #768064;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        body.dark .salary-range {
+            color: #DADED8;
+        }
+
+        .job-type-badge {
+            background: linear-gradient(135deg, #768064, #4C583E);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* ===== BUTTONS ===== */
@@ -576,34 +630,13 @@
                                 <i class="fas fa-search me-2"></i>Browse Jobs
                             </a>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <div class="me-3">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <span class="text-muted">Rated 5/5 by 10,000+ professionals</span>
-                        </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="text-center position-relative">
-                        <!-- Interactive GitHub Globe -->
+                        <!-- Interactive Three.js Globe -->
                         <div id="hero-github-globe" class="hero-globe-container">
-                            <div class="github-globe-outer">
-                                <div class="github-globe-inner">
-                                    <div class="globe-light" style="top: 25%; left: 30%;"></div>
-                                    <div class="globe-light" style="top: 45%; left: 15%;"></div>
-                                    <div class="globe-light" style="top: 65%; left: 55%;"></div>
-                                    <div class="globe-light" style="top: 35%; left: 70%;"></div>
-                                    <div class="globe-light" style="top: 55%; left: 25%;"></div>
-                                    <div class="globe-light" style="top: 75%; left: 40%;"></div>
-                                </div>
-                                <div class="globe-ring"></div>
-                                <div class="globe-orbit"></div>
-                            </div>
+                            <div id="globeViz"></div>
                         </div>
                     </div>
                 </div>
@@ -654,6 +687,217 @@
                         </p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Job Postings Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">
+                    Latest Job Opportunities <span style="font-size: 0.7em;">💼</span>
+                </h2>
+                <p class="lead text-muted">Discover exciting career opportunities from top companies</p>
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="job-posting-card">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="company-logo me-3">
+                                G
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold mb-1">Senior Software Engineer</h5>
+                                <div class="text-muted">Google Inc.</div>
+                                <div class="job-meta">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i>Mountain View, CA</span>
+                                    <span class="job-type-badge">Full-time</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-3">
+                            Join our team building next-generation cloud infrastructure. Work with cutting-edge technologies and shape the future of computing.
+                        </p>
+                        <div class="salary-range mb-3">
+                            $150,000 - $200,000 / year
+                        </div>
+                        <div class="job-tags">
+                            <span class="job-tag">Python</span>
+                            <span class="job-tag">Cloud</span>
+                            <span class="job-tag">Kubernetes</span>
+                            <span class="job-tag">AI/ML</span>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>Posted 2 days ago</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="job-posting-card">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="company-logo me-3">
+                                M
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold mb-1">Product Designer</h5>
+                                <div class="text-muted">Microsoft</div>
+                                <div class="job-meta">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i>Seattle, WA</span>
+                                    <span class="job-type-badge">Full-time</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-3">
+                            Create intuitive and delightful user experiences for millions of users worldwide. Lead design thinking across multiple product teams.
+                        </p>
+                        <div class="salary-range mb-3">
+                            $130,000 - $180,000 / year
+                        </div>
+                        <div class="job-tags">
+                            <span class="job-tag">UX Design</span>
+                            <span class="job-tag">Figma</span>
+                            <span class="job-tag">Research</span>
+                            <span class="job-tag">Prototyping</span>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>Posted 1 day ago</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="job-posting-card">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="company-logo me-3">
+                                A
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold mb-1">Data Scientist</h5>
+                                <div class="text-muted">Amazon</div>
+                                <div class="job-meta">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i>New York, NY</span>
+                                    <span class="job-type-badge">Full-time</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-3">
+                            Drive insights from massive datasets to improve customer experience. Build machine learning models that power recommendation systems.
+                        </p>
+                        <div class="salary-range mb-3">
+                            $140,000 - $190,000 / year
+                        </div>
+                        <div class="job-tags">
+                            <span class="job-tag">Python</span>
+                            <span class="job-tag">ML</span>
+                            <span class="job-tag">TensorFlow</span>
+                            <span class="job-tag">AWS</span>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>Posted 3 days ago</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="job-posting-card">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="company-logo me-3">
+                                N
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold mb-1">DevOps Engineer</h5>
+                                <div class="text-muted">Netflix</div>
+                                <div class="job-meta">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i>Los Gatos, CA</span>
+                                    <span class="job-type-badge">Full-time</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-3">
+                            Scale infrastructure to serve 230M+ global subscribers. Build tools and automation to ensure 99.99% uptime worldwide.
+                        </p>
+                        <div class="salary-range mb-3">
+                            $160,000 - $220,000 / year
+                        </div>
+                        <div class="job-tags">
+                            <span class="job-tag">Docker</span>
+                            <span class="job-tag">Kubernetes</span>
+                            <span class="job-tag">AWS</span>
+                            <span class="job-tag">Terraform</span>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>Posted 1 day ago</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="job-posting-card">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="company-logo me-3">
+                                S
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold mb-1">Frontend Developer</h5>
+                                <div class="text-muted">Spotify</div>
+                                <div class="job-meta">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i>Stockholm, Sweden</span>
+                                    <span class="job-type-badge">Remote</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-3">
+                            Build engaging user interfaces for music streaming platform used by 500M+ listeners. Work with React and modern web technologies.
+                        </p>
+                        <div class="salary-range mb-3">
+                            $120,000 - $160,000 / year
+                        </div>
+                        <div class="job-tags">
+                            <span class="job-tag">React</span>
+                            <span class="job-tag">TypeScript</span>
+                            <span class="job-tag">GraphQL</span>
+                            <span class="job-tag">Node.js</span>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>Posted 4 days ago</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="job-posting-card">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="company-logo me-3">
+                                T
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold mb-1">AI Research Scientist</h5>
+                                <div class="text-muted">Tesla</div>
+                                <div class="job-meta">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i>Palo Alto, CA</span>
+                                    <span class="job-type-badge">Full-time</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-3">
+                            Develop cutting-edge AI systems for autonomous driving. Work on computer vision, deep learning, and neural network optimization.
+                        </p>
+                        <div class="salary-range mb-3">
+                            $180,000 - $250,000 / year
+                        </div>
+                        <div class="job-tags">
+                            <span class="job-tag">PyTorch</span>
+                            <span class="job-tag">Computer Vision</span>
+                            <span class="job-tag">Deep Learning</span>
+                            <span class="job-tag">CUDA</span>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>Posted 2 days ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="job_listings.html" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>View All Jobs
+                </a>
             </div>
         </div>
     </section>
@@ -716,6 +960,7 @@
                     localStorage.setItem('theme', 'light');
                 }
                 updateStarsTheme();
+                updateGlobeTheme();
             });
         }
 
@@ -759,36 +1004,165 @@
             // Stars automatically update via CSS based on body.dark class
         }
 
-        // ===== GITHUB GLOBE INTERACTION =====
+        // ===== THREE.JS GITHUB GLOBE =====
+        let scene, camera, renderer, globe;
+        
         function initializeGlobe() {
-            const globe = document.getElementById('hero-github-globe');
+            const container = document.getElementById('globeViz');
+            if (!container) return;
             
-            globe.addEventListener('click', function() {
-                // Create sparkle effect
-                for (let i = 0; i < 20; i++) {
-                    const sparkle = document.createElement('div');
-                    sparkle.innerHTML = ['✨', '⭐', '🌟', '💫', '🚀'][Math.floor(Math.random() * 5)];
-                    sparkle.style.position = 'fixed';
-                    sparkle.style.pointerEvents = 'none';
-                    sparkle.style.fontSize = '1.5rem';
-                    sparkle.style.zIndex = '1000';
-                    
-                    const rect = globe.getBoundingClientRect();
-                    sparkle.style.left = (rect.left + Math.random() * 350) + 'px';
-                    sparkle.style.top = (rect.top + Math.random() * 350) + 'px';
-                    
-                    sparkle.style.animation = 'sparkleEffect 2s ease-out forwards';
-                    document.body.appendChild(sparkle);
-                    
-                    setTimeout(() => sparkle.remove(), 2000);
+            try {
+                // Scene setup
+                scene = new THREE.Scene();
+                
+                // Camera setup
+                camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+                camera.position.z = 300;
+                
+                // Renderer setup
+                renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setSize(400, 400);
+                renderer.setClearColor(0x000000, 0);
+                container.innerHTML = ''; // Clear fallback
+                container.appendChild(renderer.domElement);
+                
+                // Create Earth globe
+                const geometry = new THREE.SphereGeometry(100, 64, 64);
+                
+                // Create Earth texture
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024;
+                canvas.height = 512;
+                const ctx = canvas.getContext('2d');
+                
+                // Create earth-like texture
+                const gradient = ctx.createRadialGradient(300, 150, 0, 300, 150, 400);
+                gradient.addColorStop(0, '#4CAF50');
+                gradient.addColorStop(0.3, '#2E7D32');
+                gradient.addColorStop(0.7, '#1B5E20');
+                gradient.addColorStop(1, '#0D2818');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 1024, 512);
+                
+                // Add continents-like shapes
+                ctx.fillStyle = '#2E7D32';
+                for (let i = 0; i < 100; i++) {
+                    ctx.beginPath();
+                    ctx.arc(Math.random() * 1024, Math.random() * 512, Math.random() * 50 + 10, 0, Math.PI * 2);
+                    ctx.fill();
                 }
                 
-                // Globe pulse effect
-                globe.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    globe.style.transform = 'scale(1)';
-                }, 200);
+                const texture = new THREE.CanvasTexture(canvas);
+                
+                const material = new THREE.MeshPhongMaterial({
+                    map: texture,
+                    transparent: true,
+                    opacity: 0.9
+                });
+                
+                globe = new THREE.Mesh(geometry, material);
+                scene.add(globe);
+                
+                // Add city points
+                addCityPoints();
+                
+                // Lighting
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+                scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(200, 200, 100);
+                scene.add(directionalLight);
+                
+                // Start animation
+                animate();
+                
+                // Add click interaction
+                const globeContainer = document.getElementById('hero-github-globe');
+                globeContainer.addEventListener('click', createSparkleEffect);
+                
+                console.log('GitHub globe initialized successfully');
+                
+            } catch (error) {
+                console.error('Globe failed to initialize:', error);
+                // Fallback will show
+            }
+        }
+        
+        function addCityPoints() {
+            const cities = [
+                { lat: 37.7749, lng: -122.4194, name: 'San Francisco' },
+                { lat: 40.7128, lng: -74.0060, name: 'New York' },
+                { lat: 51.5074, lng: -0.1278, name: 'London' },
+                { lat: 35.6762, lng: 139.6503, name: 'Tokyo' },
+                { lat: -33.8688, lng: 151.2093, name: 'Sydney' }
+            ];
+            
+            cities.forEach(city => {
+                const phi = (90 - city.lat) * (Math.PI / 180);
+                const theta = (city.lng + 180) * (Math.PI / 180);
+                
+                const x = -100 * Math.sin(phi) * Math.cos(theta);
+                const y = 100 * Math.cos(phi);
+                const z = 100 * Math.sin(phi) * Math.sin(theta);
+                
+                const pointGeometry = new THREE.SphereGeometry(3, 8, 8);
+                const pointMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.9
+                });
+                const point = new THREE.Mesh(pointGeometry, pointMaterial);
+                point.position.set(x, y, z);
+                scene.add(point);
             });
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (globe) {
+                globe.rotation.y += 0.005;
+            }
+            
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+        }
+        
+        function createSparkleEffect() {
+            const globeContainer = document.getElementById('hero-github-globe');
+            
+            // Create sparkle effect
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.innerHTML = ['✨', '⭐', '🌟', '💫', '🚀'][Math.floor(Math.random() * 5)];
+                sparkle.style.position = 'fixed';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.fontSize = '1.5rem';
+                sparkle.style.zIndex = '1000';
+                
+                const rect = globeContainer.getBoundingClientRect();
+                sparkle.style.left = (rect.left + Math.random() * 400) + 'px';
+                sparkle.style.top = (rect.top + Math.random() * 400) + 'px';
+                
+                sparkle.style.animation = 'sparkleEffect 2s ease-out forwards';
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 2000);
+            }
+            
+            // Globe pulse effect
+            globeContainer.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                globeContainer.style.transform = 'scale(1)';
+            }, 200);
+        }
+        
+        function updateGlobeTheme() {
+            // Theme updates are handled by CSS for the fallback
+            // Three.js globe will maintain its own colors
         }
 
         // Add sparkle animation
@@ -809,9 +1183,25 @@
 
         // ===== INITIALIZE EVERYTHING =====
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
             initializeTheme();
             createStars();
-            initializeGlobe();
+            
+            // Initialize globe with proper error handling
+            if (typeof THREE !== 'undefined') {
+                console.log('Three.js loaded successfully');
+                setTimeout(() => {
+                    console.log('Attempting to initialize globe...');
+                    initializeGlobe();
+                }, 500);
+            } else {
+                console.error('Three.js failed to load');
+                // Show fallback message
+                const globeContainer = document.getElementById('globeViz');
+                if (globeContainer) {
+                    globeContainer.innerHTML = '<div style="width: 400px; height: 400px; border-radius: 50%; background: linear-gradient(45deg, #768064, #4C583E); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold;">🌍 Global Jobs</div>';
+                }
+            }
         });
     </script>
 </body>

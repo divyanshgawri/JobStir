@@ -59,17 +59,82 @@
             color: var(--dark-color);
         }
         
-        /* Animated Background */
-        .animated-bg {
+        /* ===== LIGHT THEME (DEFAULT) ===== */
+        body {
+            background: linear-gradient(135deg, #DADED8 0%, #FFFFFF 100%);
+            color: #2C3424;
+        }
+        
+        /* ===== DARK THEME ===== */
+        body.dark {
+            background: linear-gradient(135deg, #2C3424 0%, #1a1f16 50%, #4C583E 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #FFFFFF;
+        }
+        
+        body.dark h1, body.dark h2, body.dark h3, body.dark h4, body.dark h5, body.dark h6 {
+            color: #FFFFFF;
+        }
+        
+        body.dark p, body.dark span {
+            color: #F5F5F5;
+        }
+        
+        body.dark .text-muted {
+            color: #E0E0E0 !important;
+        }
+        
+        /* ===== FLOATING STARS ===== */
+        .stars-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: var(--hero-gradient);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            color: rgba(76, 88, 62, 0.4);
+            font-size: 12px;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+        
+        body.dark .star {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .floating-star {
+            position: absolute;
+            color: rgba(76, 88, 62, 0.3);
+            font-size: 10px;
+            animation: float-up 8s infinite linear;
+        }
+        
+        body.dark .floating-star {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100px) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
         }
         
         @keyframes gradientShift {
@@ -78,50 +143,52 @@
             100% { background-position: 0% 50%; }
         }
         
-        /* Enhanced Navbar */
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ===== NAVBAR ===== */
         .navbar {
             background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(20px);
-            box-shadow: var(--shadow-light);
+            box-shadow: 0 5px 15px rgba(44, 52, 36, 0.08);
             transition: all 0.3s ease;
+        }
+        
+        body.dark .navbar {
+            background: rgba(44, 52, 36, 0.95) !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         .navbar-brand {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
             font-size: 1.8rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #768064 !important;
+        }
+        
+        body.dark .navbar-brand {
+            color: #DADED8 !important;
         }
         
         .nav-link {
             font-weight: 500;
-            color: var(--dark-color) !important;
+            color: #2C3424 !important;
             transition: all 0.3s ease;
-            position: relative;
+        }
+        
+        body.dark .nav-link {
+            color: #FFFFFF !important;
         }
         
         .nav-link:hover {
-            color: var(--primary-color) !important;
+            color: #768064 !important;
             transform: translateY(-2px);
         }
         
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-primary);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
+        body.dark .nav-link:hover {
+            color: #DADED8 !important;
         }
         
         /* Hero Section */
@@ -402,8 +469,8 @@
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="animated-bg"></div>
+    <!-- Stars Background -->
+    <div class="stars-container" id="starsContainer"></div>
 
     <!-- Enhanced Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
@@ -678,15 +745,64 @@
     
     <!-- Enhanced JavaScript -->
     <script>
-        // Theme Reader - applies theme set from main page
-        const body = document.body;
-        const savedTheme = localStorage.getItem('jobstir-theme') || 'light';
+        // ===== READ THEME FROM HOMEPAGE =====
+        function applyStoredTheme() {
+            const body = document.body;
+            const savedTheme = localStorage.getItem('theme');
+            console.log('Job listings page - saved theme:', savedTheme);
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                console.log('Job listings page - applied dark theme');
+            }
+        }
+        
+        // Apply theme immediately (not just on DOMContentLoaded)
+        const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
-            body.classList.add('dark');
+            document.body.classList.add('dark');
+        }
+        
+        // ===== FLOATING STARS ANIMATION =====
+        function createStars() {
+            const container = document.getElementById('starsContainer');
+            if (!container) return;
+            
+            // Create static twinkling stars
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.innerHTML = ['✦', '✧', '⋆', '✩', '⭐'][Math.floor(Math.random() * 5)];
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.fontSize = (Math.random() * 6 + 8) + 'px';
+                container.appendChild(star);
+            }
+            
+            // Create floating stars
+            setInterval(() => {
+                if (Math.random() < 0.3) {
+                    const floatingStar = document.createElement('div');
+                    floatingStar.className = 'floating-star';
+                    floatingStar.innerHTML = ['✦', '✧', '⋆'][Math.floor(Math.random() * 3)];
+                    floatingStar.style.left = Math.random() * 100 + '%';
+                    floatingStar.style.bottom = '0px';
+                    floatingStar.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                    container.appendChild(floatingStar);
+                    
+                    setTimeout(() => {
+                        if (floatingStar.parentNode) {
+                            floatingStar.remove();
+                        }
+                    }, 8000);
+                }
+            }, 2000);
         }
         
         // Initialize functions
         document.addEventListener('DOMContentLoaded', () => {
+            applyStoredTheme();
+            createStars();
             animateOnScroll();
             loadSampleJobs();
         });
