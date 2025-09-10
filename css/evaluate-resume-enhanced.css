@@ -1,6 +1,40 @@
 /* Enhanced Resume Evaluator Styles - Using Main Theme Colors */
 
 /* =============================================
+   DARK MODE OVERRIDES
+   ============================================= */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --card-bg: #ffffff;
+    --border-color: #dee2e6;
+    --input-bg: #ffffff;
+    --input-text: #212529;
+}
+
+.dark {
+    --bg-primary: #1a1f16;
+    --bg-secondary: #2c3424;
+    --text-primary: #f8f9fa;
+    --text-secondary: #adb5bd;
+    --card-bg: #2c3424;
+    --border-color: #495057;
+    --input-bg: #343a40;
+    --input-text: #f8f9fa;
+}
+
+/* =============================================
+   BASE STYLES
+   ============================================= */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* =============================================
    HERO SECTION - CONSISTENT WITH MAIN THEME
    ============================================= */
 .hero-section {
@@ -1248,6 +1282,7 @@ input[type="checkbox"]:checked + .toggle-slider::before {
     }
     
     .action-buttons {
+        /* color: #212529; */
         flex-wrap: wrap;
         justify-content: center;
     }

@@ -206,6 +206,99 @@ class JobStirCore {
         return { success: true, data };
     }
 
+    /**
+     * Send a password reset email to the user
+     * @param {string} email - User's email address
+     * @returns {Promise<{success: boolean, data: any}>}
+     */
+    async resetPassword(email) {
+        try {
+            if (!this.supabase) {
+                console.warn('Password reset is not available in demo mode');
+                return { success: true, data: { email } };
+            }
+
+            const { data, error } = await this.supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password.html`
+            });
+
+            if (error) throw error;
+            return { success: true, data };
+        } catch (error) {
+            console.error('Password reset error:', error);
+            throw new Error(error.message || 'Failed to send password reset email');
+        }
+    }
+
+    /**
+     * Update user's password using a recovery token
+     * @param {string} token - Password reset token from URL
+     * @param {string} newPassword - New password
+     * @returns {Promise<{success: boolean, data: any}>}
+     */
+    async updatePassword(token, newPassword) {
+        try {
+            if (!this.supabase) {
+                console.warn('Password update is not available in demo mode');
+                return { success: true, data: { updated: true } };
+            }
+
+            // First, update the session with the token
+            const { data: sessionData, error: sessionError } = await this.supabase.auth.verifyOtp({
+                token_hash: token,
+                type: 'recovery',
+                email: '' // Email will be extracted from the token
+            });
+
+            if (sessionError) throw sessionError;
+
+            // Then update the password
+            const { data, error } = await this.supabase.auth.updateUser({
+                password: newPassword
+            });
+
+            if (error) throw error;
+            return { success: true, data };
+        } catch (error) {
+            console.error('Update password error:', error);
+            throw new Error(error.message || 'Failed to update password');
+        }
+    }
+
+    /**
+     * Update the current user's password (requires user to be signed in)
+     * @param {string} currentPassword - Current password
+     * @param {string} newPassword - New password
+     * @returns {Promise<{success: boolean, data: any}>}
+     */
+    async changePassword(currentPassword, newPassword) {
+        try {
+            if (!this.supabase) {
+                console.warn('Password change is not available in demo mode');
+                return { success: true, data: { updated: true } };
+            }
+
+            // First, reauthenticate the user
+            const { data: authData, error: authError } = await this.supabase.auth.signInWithPassword({
+                email: this.currentUser.email,
+                password: currentPassword
+            });
+
+            if (authError) throw authError;
+
+            // Then update the password
+            const { data, error } = await this.supabase.auth.updateUser({
+                password: newPassword
+            });
+
+            if (error) throw error;
+            return { success: true, data };
+        } catch (error) {
+            console.error('Change password error:', error);
+            throw new Error(error.message || 'Failed to change password');
+        }
+    }
+
     async signInWithLinkedIn() {
         if (!this.supabase) throw new Error('LinkedIn sign-in requires Supabase configuration');
         const { data, error } = await this.supabase.auth.signInWithOAuth({
@@ -803,6 +896,12 @@ window.authService = {
     signUp: (data) => jobStirCore.signUp(data),
     signIn: (data) => jobStirCore.signIn(data),
     signOut: () => jobStirCore.signOut(),
+    resetPassword: (email) => jobStirCore.resetPassword(email),
+    updatePassword: (token, newPassword) => jobStirCore.updatePassword(token, newPassword),
+    changePassword: (currentPassword, newPassword) => jobStirCore.changePassword(currentPassword, newPassword),
+    signInWithGoogle: () => jobStirCore.signInWithGoogle(),
+    signInWithGithub: () => jobStirCore.signInWithGithub(),
+    signInWithLinkedIn: () => jobStirCore.signInWithLinkedIn(),
     currentUser: jobStirCore.currentUser
 };
 window.dbService = {

@@ -38,7 +38,7 @@
 /* Buttons inside content blocks */
 .dark .content-section .btn,
 .dark .hero-content .btn,
-.dark .card .btn {
+.dark .card .btn .action-buttons {
 	background: var(--card-bg) !important;
 	color: var(--text-dark) !important;
 	border-color: var(--border-color) !important;

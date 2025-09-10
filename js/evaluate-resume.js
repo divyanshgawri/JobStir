@@ -174,34 +174,72 @@ class ResumeEvaluator {
     }
 
     bindEvents() {
-        // File upload handling
-        this.pdfUpload.addEventListener('change', (e) => this.handlePdfUpload(e));
-        
-        // Character counter
-        this.jobDescription.addEventListener('input', () => this.updateCharCount());
-        
-        // Main analyze button
-        this.analyzeButton.addEventListener('click', () => this.analyzeResume());
-        
-        // Reset button
-        this.resetButton.addEventListener('click', () => this.resetForm());
-        
-        // Tab navigation
-        this.tabButtons.forEach(button => {
-            button.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
-        });
-        
-        // Enhanced event bindings
-        this.realTimeToggle?.addEventListener('change', (e) => this.toggleRealTimeMode(e.target.checked));
-        this.exportButton?.addEventListener('click', () => this.exportAnalysis());
-        this.compareButton?.addEventListener('click', () => this.showComparisonModal());
-        this.settingsButton?.addEventListener('click', () => this.showSettingsModal());
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
-        
-        // Initial character count
-        this.updateCharCount();
+        try {
+            // File upload
+            if (this.pdfUpload) {
+                this.pdfUpload.addEventListener('change', (e) => this.handlePdfUpload(e));
+            }
+            
+            // Character counter
+            if (this.jobDescription) {
+                this.jobDescription.addEventListener('input', () => this.updateCharCount());
+            }
+            
+            // Main analyze button
+            if (this.analyzeButton) {
+                this.analyzeButton.addEventListener('click', () => this.analyzeResume());
+            }
+            
+            // Reset button
+            if (this.resetButton) {
+                this.resetButton.addEventListener('click', () => this.resetForm());
+            }
+            
+            // Tab navigation
+            if (this.tabButtons && this.tabButtons.length > 0) {
+                this.tabButtons.forEach(button => {
+                    try {
+                        if (button && button.dataset && button.dataset.tab) {
+                            button.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+                        }
+                    } catch (error) {
+                        console.error('Error binding tab button:', error);
+                    }
+                });
+            }
+            
+            // Enhanced event bindings with null checks and error handling
+            const bindWithErrorHandling = (element, event, handler) => {
+                if (!element) return;
+                try {
+                    element.addEventListener(event, handler);
+                } catch (error) {
+                    console.error(`Error binding ${event} to element:`, error);
+                }
+            };
+            
+            bindWithErrorHandling(this.realTimeToggle, 'change', (e) => {
+                try {
+                    this.toggleRealTimeMode(e.target.checked);
+                } catch (error) {
+                    console.error('Error in realTimeToggle handler:', error);
+                }
+            });
+            
+            bindWithErrorHandling(this.exportButton, 'click', () => this.exportAnalysis().catch(console.error));
+            bindWithErrorHandling(this.compareButton, 'click', () => this.showComparisonModal().catch(console.error));
+            bindWithErrorHandling(this.settingsButton, 'click', () => this.showSettingsModal().catch(console.error));
+            
+            // Keyboard shortcuts - using global function
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+            
+            // Initial character count
+            this.updateCharCount();
+            
+        } catch (error) {
+            console.error('Error in bindEvents:', error);
+            throw error; // Re-throw to be caught by the global error handler
+        }
     }
 
     async handlePdfUpload(event) {
@@ -1220,43 +1258,106 @@ window.logout = function() {
 window.resumeEvaluator = null;
 
 // Initialize the resume evaluator when the page loads
-document.addEventListener('DOMContentLoaded', () => {
+const initResumeEvaluator = () => {
     try {
+        console.log('Initializing Resume Evaluator...');
+        
+        // Check if required elements exist
+        if (!document.getElementById('resume-text') || !document.getElementById('job-description')) {
+            console.warn('Required form elements not found. Delaying initialization...');
+            setTimeout(initResumeEvaluator, 500);
+            return;
+        }
+        
+        // Initialize the evaluator
         window.resumeEvaluator = new ResumeEvaluator();
         
         // Initialize Feather Icons
-        feather.replace();
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        } else {
+            console.warn('Feather Icons not loaded');
+        }
         
-        // Update authentication UI
-        updateAuthUI();
+        // Update authentication UI if function exists
+        if (typeof updateAuthUI === 'function') {
+            updateAuthUI();
+        }
         
-        // Add global error handler
-        window.addEventListener('error', (event) => {
-            console.error('Global error:', event.error);
-            if (window.resumeEvaluator) {
-                window.resumeEvaluator.showError('An unexpected error occurred. Please refresh the page.');
-            }
-        });
-        
-        // Add unhandled promise rejection handler
-        window.addEventListener('unhandledrejection', (event) => {
-            console.error('Unhandled promise rejection:', event.reason);
-            if (window.resumeEvaluator) {
-                window.resumeEvaluator.showError('An error occurred during processing. Please try again.');
-            }
-        });
+        console.log('Resume Evaluator initialized successfully');
         
     } catch (error) {
         console.error('Failed to initialize resume evaluator:', error);
-        document.body.innerHTML += `
-            <div class="initialization-error">
-                <h3>Initialization Error</h3>
-                <p>Failed to load the resume evaluator. Please refresh the page.</p>
-                <button onclick="window.location.reload()">Refresh Page</button>
-            </div>
+        
+        // Show user-friendly error message
+        const errorContainer = document.createElement('div');
+        errorContainer.style.background = '#f8d7da';
+        errorContainer.style.color = '#721c24';
+        errorContainer.style.padding = '1rem';
+        errorContainer.style.margin = '1rem 0';
+        errorContainer.style.borderRadius = '4px';
+        errorContainer.style.border = '1px solid #f5c6cb';
+        errorContainer.innerHTML = `
+            <h3 style="margin-top: 0;">Initialization Error</h3>
+            <p>Failed to initialize the resume evaluator. Please refresh the page to try again.</p>
+            <p><small>Error details: ${error.message}</small></p>
         `;
+        
+        const container = document.querySelector('.container') || document.body;
+        if (container) {
+            container.prepend(errorContainer);
+        }
+    }
+};
+
+// Add global error handlers
+window.addEventListener('error', (event) => {
+    console.error('Global error:', event.error);
+    if (window.resumeEvaluator && typeof window.resumeEvaluator.showError === 'function') {
+        window.resumeEvaluator.showError('An unexpected error occurred. Please refresh the page.');
     }
 });
+
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+    if (window.resumeEvaluator && typeof window.resumeEvaluator.showError === 'function') {
+        window.resumeEvaluator.showError('An error occurred during processing. Please try again.');
+    }
+});
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initResumeEvaluator);
+} else {
+    initResumeEvaluator();
+}
+
+// Add error display styles
+const errorStyles = document.createElement('style');
+errorStyles.textContent = `
+    .initialization-error {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        text-align: center;
+        z-index: 9999;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .initialization-error button {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 0.5rem;
+    }
+`;
+document.head.appendChild(errorStyles);
 
 // Authentication UI Management (same as home.js)
 function updateAuthUI() {

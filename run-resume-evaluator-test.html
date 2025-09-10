@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Evaluator Test Runner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resume Evaluator Test Runner</h1>
+        
+        <div class="test-section">
+            <h2>Test Resume Evaluator</h2>
+            <p>This will test the resume evaluator functionality.</p>
+            <button id="runTest">Run Tests</button>
+            <button id="clearLog">Clear Log</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test Output</h3>
+            <div id="output">Click 'Run Tests' to start testing...</div>
+        </div>
+    </div>
+
+    <!-- Include required scripts -->
+    <script src="js/client-resume-evaluator.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        const runTestBtn = document.getElementById('runTest');
+        const clearLogBtn = document.getElementById('clearLog');
+        
+        // Initialize the evaluator
+        let evaluator;
+        
+        // Log messages to the output div
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = type;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            output.appendChild(logEntry);
+            output.scrollTop = output.scrollHeight;
+            console[type === 'error' ? 'error' : 'log'](message);
+        }
+        
+        // Clear the log
+        function clearLog() {
+            output.innerHTML = '';
+            log('Log cleared. Ready for new tests...');
+        }
+        
+        // Test 1: Check if ClientResumeEvaluator is available
+        function testEvaluatorAvailability() {
+            log('Testing if ClientResumeEvaluator is available...');
+            if (typeof ClientResumeEvaluator === 'function') {
+                log('✅ ClientResumeEvaluator is available', 'success');
+                return true;
+            } else {
+                log('❌ ClientResumeEvaluator is not available', 'error');
+                return false;
+            }
+        }
+        
+        // Test 2: Create an instance of the evaluator
+        function testEvaluatorInitialization() {
+            log('Initializing ClientResumeEvaluator...');
+            try {
+                evaluator = new ClientResumeEvaluator();
+                log('✅ ClientResumeEvaluator initialized successfully', 'success');
+                return true;
+            } catch (error) {
+                log(`❌ Failed to initialize ClientResumeEvaluator: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        // Test 3: Test basic resume evaluation
+        async function testBasicEvaluation() {
+            log('\n--- Starting Enhanced Resume Evaluation Test ---');
+            
+            const testResume = `John Doe
+Senior Full Stack Developer
+📧 john.doe@example.com | 📞 (123) 456-7890 | 🌐 linkedin.com/in/johndoe
+
+TECHNICAL SUMMARY
+• Full Stack Development: 5+ years in JavaScript, TypeScript, Node.js, React
+• Cloud & DevOps: AWS (EC2, S3, Lambda), Docker, Kubernetes, CI/CD Pipelines
+• Additional Technologies: Azure, GCP, Python, GraphQL, RESTful APIs
+• Methodologies: Agile/Scrum, TDD, Microservices Architecture
+
+PROFESSIONAL EXPERIENCE
+
+Senior Software Engineer | Tech Company Inc. | 2020 - Present
+• Led a team of 5 developers in building a customer-facing web application using React and Node.js, improving user engagement by 40%
+• Designed and implemented CI/CD pipelines using GitHub Actions and Docker, reducing deployment time by 60%
+• Migrated legacy systems to AWS cloud infrastructure, cutting operational costs by 35%
+• Mentored 3 junior developers, improving team productivity by 25%
+• Implemented Kubernetes for container orchestration, achieving 99.9% uptime
+
+Software Engineer | Previous Company | 2018 - 2020
+• Developed RESTful APIs using Node.js and Express, handling 10,000+ daily requests
+• Integrated Azure services for enhanced application scalability and reliability
+• Reduced API response time by 45% through performance optimization
+
+TECHNICAL SKILLS
+• Languages: JavaScript, TypeScript, Python, Java
+• Frontend: React, Redux, HTML5, CSS3, Tailwind CSS
+• Backend: Node.js, Express, Django
+• Cloud: AWS, Azure, GCP, Docker, Kubernetes
+• Databases: MongoDB, PostgreSQL, Redis
+• Tools: Git, GitHub Actions, Jenkins, Jira
+
+EDUCATION
+B.S. in Computer Science
+State University | 2015 - 2019
+• GPA: 3.7/4.0
+• Relevant Coursework: Cloud Computing, Data Structures, Algorithms
+
+CERTIFICATIONS
+• AWS Certified Solutions Architect - Associate
+• Microsoft Certified: Azure Developer Associate
+• Google Cloud Professional Cloud Architect (In Progress)
+
+PROJECTS
+Cloud Migration Project
+• Led migration of on-premises infrastructure to AWS, reducing costs by 40%
+• Implemented auto-scaling and load balancing for high availability
+
+E-commerce Platform
+• Built a full-stack e-commerce site using MERN stack
+• Integrated payment gateways and implemented JWT authentication`;
+
+            const testJob = `We are looking for a Senior Full Stack Developer with:
+- 5+ years of experience in JavaScript and Node.js
+- Strong experience with React and modern frontend frameworks
+- Experience with cloud platforms (AWS/Azure/GCP)
+- Knowledge of containerization and orchestration (Docker, Kubernetes)
+- Experience with CI/CD pipelines
+- Strong problem-solving skills and ability to work in Agile teams`;
+
+            log('Running evaluation with sample resume and job description...');
+            
+            try {
+                if (!evaluator || typeof evaluator.evaluateResume !== 'function') {
+                    throw new Error('Evaluator not properly initialized');
+                }
+                
+                const result = await evaluator.evaluateResume(testResume, testJob);
+                
+                // Log basic results
+                log('✅ Evaluation completed successfully', 'success');
+                log('\n--- Evaluation Results ---', 'info');
+                log(`Total Score: ${result.total_score || 'N/A'}%`);
+                log(`Skills Match: ${result.skills_score || 'N/A'}%`);
+                log(`Experience Match: ${result.experience_score || 'N/A'}%`);
+                
+                // Log matched keywords if available
+                if (result.matched_keywords && result.matched_keywords.length > 0) {
+                    log(`\n✅ Matched Keywords (${result.matched_keywords.length}): ${result.matched_keywords.join(', ')}`, 'success');
+                }
+                
+                // Log missing keywords if available
+                if (result.missing_keywords && result.missing_keywords.length > 0) {
+                    log(`⚠️ Missing Keywords (${result.missing_keywords.length}): ${result.missing_keywords.join(', ')}`, 'warning');
+                }
+                
+                // Log ATS score if available
+                if (result.ats_analysis) {
+                    log(`\n📊 ATS Analysis: ${result.ats_analysis.overall_score || 'N/A'}%`, 'info');
+                }
+                
+                // Log salary estimate if available
+                if (result.salary_estimate) {
+                    const range = result.salary_estimate.estimated_range;
+                    log(`💰 Estimated Salary: $${range?.min?.toLocaleString() || 'N/A'} - $${range?.max?.toLocaleString() || 'N/A'}`, 'info');
+                }
+                
+                return true;
+                
+            } catch (error) {
+                log(`❌ Evaluation failed: ${error.message}`, 'error');
+                console.error('Evaluation error:', error);
+                return false;
+            }
+        }
+        
+        // Run all tests
+        async function runAllTests() {
+            clearLog();
+            log('🚀 Starting Resume Evaluator Tests...');
+            
+            // Test 1: Check if evaluator is available
+            const isAvailable = testEvaluatorAvailability();
+            if (!isAvailable) return;
+            
+            // Test 2: Initialize the evaluator
+            const isInitialized = testEvaluatorInitialization();
+            if (!isInitialized) return;
+            
+            // Test 3: Run basic evaluation
+            await testBasicEvaluation();
+            
+            log('\n🎉 All tests completed!');
+        }
+        
+        // Event listeners
+        runTestBtn.addEventListener('click', runAllTests);
+        clearLogBtn.addEventListener('click', clearLog);
+        
+        // Initial log
+        clearLog();
+    </script>
+</body>
+</html>

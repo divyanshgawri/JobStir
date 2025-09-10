@@ -356,42 +356,17 @@ class ProfileManager {
         if (!session) throw new Error('No session found');
 
         const user = JSON.parse(session);
-        const supabase = window.getSupabaseClient();
+        const supabase = window.jobStirCore?.supabase || window.getSupabaseClient?.();
+        
+        if (!supabase) {
+            console.warn('Supabase client not available, using localStorage fallback');
+            const profileData = this.prepareProfileData(formId, formData);
+            this.saveToLocalStorage(user, profileData);
+            return;
+        }
         
         // Prepare profile data based on form
-        let profileData = {};
-        
-        switch (formId) {
-            case 'personal-form':
-                profileData = {
-                    first_name: formData.get('first-name'),
-                    last_name: formData.get('last-name'),
-                    phone: formData.get('phone'),
-                    location: formData.get('location'),
-                    bio: formData.get('bio')
-                };
-                break;
-                
-            case 'preferences-form':
-                profileData = {
-                    job_titles: formData.get('job-titles'),
-                    salary_min: parseInt(formData.get('salary-min')) || null,
-                    salary_max: parseInt(formData.get('salary-max')) || null,
-                    job_types: formData.getAll('job-types'),
-                    remote_preference: formData.get('remote-pref')
-                };
-                break;
-                
-            case 'notifications-form':
-                profileData = {
-                    email_job_matches: formData.has('email-job-matches'),
-                    email_application_updates: formData.has('email-application-updates'),
-                    email_newsletter: formData.has('email-newsletter'),
-                    push_new_jobs: formData.has('push-new-jobs'),
-                    push_messages: formData.has('push-messages')
-                };
-                break;
-        }
+        const profileData = this.prepareProfileData(formId, formData);
 
         profileData.updated_at = new Date().toISOString();
 
@@ -401,9 +376,13 @@ class ProfileManager {
                 const { data, error } = await supabase
                     .from('user_profiles')
                     .upsert({
+                        id: user.id,  // Use id as the primary key
                         user_id: user.id,
                         email: user.email,
-                        ...profileData
+                        ...profileData,
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'id'  // Handle conflicts on the id column
                     })
                     .select();
 
@@ -432,6 +411,46 @@ class ProfileManager {
         }
     }
 
+    prepareProfileData(formId, formData) {
+        let profileData = {};
+        
+        switch (formId) {
+            case 'personal-form':
+                profileData = {
+                    first_name: formData.get('first-name') || '',
+                    last_name: formData.get('last-name') || '',
+                    phone: formData.get('phone') || '',
+                    location: formData.get('location') || '',
+                    bio: formData.get('bio') || ''
+                };
+                break;
+                
+            case 'preferences-form':
+                profileData = {
+                    job_titles: formData.get('job-titles') || '',
+                    salary_min: parseInt(formData.get('salary-min')) || null,
+                    salary_max: parseInt(formData.get('salary-max')) || null,
+                    job_types: formData.getAll('job-types') || [],
+                    remote_preference: formData.get('remote-pref') || 'any'
+                };
+                break;
+                
+            case 'notifications-form':
+                profileData = {
+                    notifications: {
+                        email_job_matches: formData.has('email-job-matches'),
+                        email_application_updates: formData.has('email-application-updates'),
+                        email_newsletter: formData.has('email-newsletter'),
+                        push_new_jobs: formData.has('push-new-jobs'),
+                        push_messages: formData.has('push-messages')
+                    }
+                };
+                break;
+        }
+        
+        return profileData;
+    }
+    
     saveToLocalStorage(user, profileData) {
         const profiles = JSON.parse(localStorage.getItem('jobstir_profiles') || '{}');
         const userProfile = profiles[user.id] || {};
