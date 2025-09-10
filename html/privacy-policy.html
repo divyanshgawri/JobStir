@@ -8,10 +8,235 @@
     <link rel="stylesheet" href="../css/jobstir-unified.css">
     <link rel="stylesheet" href="../css/legal-pages.css">
     <link rel="stylesheet" href="../css/theme-overrides.css">
+    <style>
+        /* Enhanced Legal Page Styles */
+        body {
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background Elements */
+        .bg-shape {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            z-index: -1;
+        }
+        
+        .bg-shape-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--olive);
+            top: -100px;
+            left: -100px;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .bg-shape-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--cypress);
+            bottom: -150px;
+            right: -100px;
+            animation: float 18s ease-in-out infinite reverse;
+        }
+        
+        .bg-shape-3 {
+            width: 200px;
+            height: 200px;
+            background: var(--cedar);
+            top: 50%;
+            right: 10%;
+            animation: float 12s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+        }
+        
+        .legal-header {
+            background: linear-gradient(135deg, rgba(118, 128, 100, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+        }
+        
+        .legal-header .legal-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+        }
+        
+        .legal-summary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+            border-left: 4px solid var(--olive);
+            max-width: 800px;
+            margin: 2rem auto 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .legal-summary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .toc-container {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .toc-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0.8;
+        }
+        
+        .toc-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .toc-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc-list li {
+            margin-bottom: 0.75rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .toc-list a {
+            color: var(--olive);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toc-list a:hover {
+            color: var(--cypress);
+            transform: translateX(5px);
+        }
+        
+        .toc-list i {
+            margin-right: 0.5rem;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .section-header {
+            padding: 0.75rem 1.25rem;
+            margin: 3rem 0 1.5rem;
+            background: linear-gradient(90deg, rgba(118, 128, 100, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+        }
+        
+        .section-header i {
+            color: var(--olive);
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 8px 25px rgba(118, 128, 100, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .back-to-top i {
+            transition: transform 0.3s ease;
+        }
+        
+        .back-to-top:hover i {
+            transform: translateY(-3px);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--cypress);
+            transform: translateY(-3px);
+        }
+        
+        /* Dark mode adjustments */
+        body.dark .legal-summary {
+            background: linear-gradient(135deg, rgba(44, 52, 36, 0.8) 0%, rgba(44, 52, 36, 0.6) 100%);
+            color: #e0e0e0;
+        }
+        
+        body.dark .toc-container {
+            background: rgba(0, 0, 0, 0.2);
+            color: #e0e0e0;
+        }
+        
+        body.dark .toc-list a {
+            color: var(--aloe);
+        }
+        
+        body.dark .toc-list a:hover {
+            color: white;
+        }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 </head>
 <body>
+    <!-- Background Shapes -->
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+    <div class="bg-shape bg-shape-3"></div>
     <header class="top-nav">
         <div class="container nav-content">
             <div class="logo">
@@ -56,14 +281,46 @@
 
     <main class="legal-content">
         <div class="container">
-            <div class="legal-header">
-                <h1>Privacy Policy</h1>
-                <p class="last-updated">Last updated: January 2025</p>
+            <div class="legal-header text-center py-5">
+                <div class="legal-icon">
+                    <i data-feather="shield" width="48" height="48"></i>
+                </div>
+                <h1 class="display-4 fw-bold mb-3">Privacy Policy</h1>
+                <p class="lead text-muted">Last updated: January 2025</p>
+                <div class="legal-summary mt-4 p-4 rounded-3">
+                    <p class="mb-0">This Privacy Policy explains how JobStir collects, uses, and protects your personal information when you use our services. We're committed to protecting your privacy and ensuring your data is handled securely.</p>
+                </div>
+            </div>
+            
+            <!-- Table of Contents -->
+            <div class="toc-container mb-5 p-4 rounded-3">
+                <h5 class="mb-3"><i data-feather="list" class="me-2"></i>Table of Contents</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="toc-list">
+                            <li><a href="#information-we-collect"><i data-feather="chevron-right"></i> Information We Collect</a></li>
+                            <li><a href="#how-we-use-information"><i data-feather="chevron-right"></i> How We Use Information</a></li>
+                            <li><a href="#data-sharing"><i data-feather="chevron-right"></i> Data Sharing</a></li>
+                            <li><a href="#data-security"><i data-feather="chevron-right"></i> Data Security</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="toc-list">
+                            <li><a href="#your-rights"><i data-feather="chevron-right"></i> Your Rights</a></li>
+                            <li><a href="#cookies"><i data-feather="chevron-right"></i> Cookies</a></li>
+                            <li><a href="#policy-changes"><i data-feather="chevron-right"></i> Policy Changes</a></li>
+                            <li><a href="#contact-us"><i data-feather="chevron-right"></i> Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div class="legal-body">
-                <section>
-                    <h2>1. Information We Collect</h2>
+                <section id="information-we-collect" class="mb-5">
+                    <div class="section-header d-flex align-items-center mb-4">
+                        <i data-feather="file-text" class="me-3"></i>
+                        <h2 class="mb-0">1. Information We Collect</h2>
+                    </div>
                     <p>At JobStir, we collect information you provide directly to us, such as when you create an account, upload your resume, apply for jobs, or contact us for support.</p>
                     
                     <h3>Personal Information</h3>
@@ -147,11 +404,20 @@
                     <p>We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "Last updated" date.</p>
                 </section>
 
-                <section>
-                    <h2>11. Contact Us</h2>
-                    <p>If you have any questions about this Privacy Policy, please contact us at:</p>
-                    <div class="contact-info">
-                        <p><strong>Email:</strong> privacy@jobstir.com</p>
+                <section id="contact-us" class="mb-5">
+                    <div class="section-header d-flex align-items-center mb-4">
+                        <i data-feather="mail" class="me-3"></i>
+                        <h2 class="mb-0">11. Contact Us</h2>
+                    </div>
+                    <p>If you have any questions about this Privacy Policy, please don't hesitate to reach out to our privacy team:</p>
+                    <div class="contact-info p-4 rounded-3 bg-light">
+                        <div class="d-flex align-items-center mb-3">
+                            <i data-feather="mail" class="me-3"></i>
+                            <div>
+                                <h5 class="mb-1">Email Us</h5>
+                                <p class="mb-0"><a href="mailto:privacy@jobstir.com">privacy@jobstir.com</a></p>
+                            </div>
+                        </div>
                         <p><strong>Address:</strong> JobStir Privacy Team<br>
                         123 Innovation Drive<br>
                         San Francisco, CA 94105</p>
@@ -159,7 +425,55 @@
                 </section>
             </div>
         </div>
+        <!-- Back to top button -->
+        <a href="#" class="back-to-top" id="backToTop" title="Back to top">
+            <i data-feather="arrow-up"></i>
+        </a>
     </main>
+    
+    <script>
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Initialize Feather Icons
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            
+            // Add animation to section headers on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Add animation to all sections
+            document.querySelectorAll('section').forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(section);
+            });
+        });
+    </script>
 
     <footer class="footer">
         <div class="container">

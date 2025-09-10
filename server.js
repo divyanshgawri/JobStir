@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const slowDown = require('express-slow-down');
 const path = require('path');
 const fs = require('fs');
 const morgan = require('morgan');
@@ -13,14 +14,46 @@ const morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware
+// Rate limiting configuration
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again after 15 minutes',
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true
+});
+
+// Slow down repeated requests
+const speedLimiter = slowDown({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    delayAfter: 50, // allow 50 requests per 15 minutes, then...
+    delayMs: 500 // begin adding 500ms of delay per request above 50
+});
+
+// Apply rate limiting to all API routes
+app.use('/api/', apiLimiter);
+app.use(speedLimiter);
+
+// Enhanced Security Headers Middleware
+app.use((req, res, next) => {
+    // Security Headers
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+});
+
+// Security middleware with enhanced CSP
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
             scriptSrc: [
                 "'self'",
-                "'unsafe-inline'",
+                "'strict-dynamic'",
                 "https://cdn.jsdelivr.net",
                 "https://cdnjs.cloudflare.com",
                 "https://www.google-analytics.com",
@@ -28,7 +61,7 @@ app.use(helmet({
             ],
             styleSrc: [
                 "'self'",
-                "'unsafe-inline'",
+                "'unsafe-inline'", // Required for some libraries
                 "https://fonts.googleapis.com",
                 "https://cdn.jsdelivr.net",
                 "https://cdnjs.cloudflare.com"
@@ -42,12 +75,30 @@ app.use(helmet({
                 "'self'",
                 "data:",
                 "https:",
-                "blob:"
+                "blob:",
+                "https://*.supabase.co"
             ],
             connectSrc: [
                 "'self'",
                 "https://*.supabase.co",
                 "https://www.google-analytics.com"
+            ],
+            frameSrc: [
+                "'self'"
+            ],
+            formAction: [
+                "'self'"
+            ],
+            frameAncestors: [
+                "'none'"
+            ],
+            objectSrc: [
+                "'none'"
+            ],
+            baseUri: [
+                "'self'"
+            ],
+            upgradeInsecureRequests: []
             ]
         }
     },

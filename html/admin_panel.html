@@ -1,513 +1,205 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../js/theme-manager.js"></script>
-    <title>Admin Panel - JobStir ✨</title>
+    <title>Admin Dashboard | JobStir</title>
+    <meta name="description" content="JobStir Admin Dashboard - Manage your recruitment platform">
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+    
+    <!-- Theme Manager -->
+    <script src="../js/theme-manager.js" defer></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/theme-overrides.css">
-    
-    <link rel="stylesheet" href="../css/admin_panel.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <!-- Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <style>
-        :root {
-            /* Earthy Color Palette */
-            --moss: #2C3424;
-            --cypress: #4C583E;
-            --olive: #768064;
-            --cedar: #959581;
-            --aloe: #DADED8;
-            --white: #FFFFFF;
-            
-            /* Theme Variables */
-            --primary-color: var(--olive);
-            --secondary-color: var(--cypress);
-            --accent-color: var(--cedar);
-            --success-color: var(--olive);
-            --warning-color: #D4AF37;
-            --danger-color: #8B4513;
-            --dark-color: var(--moss);
-            --light-color: var(--aloe);
-            
-            /* Gradients */
-            --gradient-primary: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
-            --gradient-secondary: linear-gradient(135deg, var(--cedar) 0%, var(--olive) 100%);
-            --gradient-success: linear-gradient(135deg, var(--olive) 0%, var(--cypress) 100%);
-            --hero-gradient: linear-gradient(135deg, var(--moss) 0%, var(--cypress) 50%, var(--olive) 100%);
-            
-            /* Shadows */
-            --shadow-light: 0 5px 15px rgba(44, 52, 36, 0.08);
-            --shadow-medium: 0 10px 30px rgba(44, 52, 36, 0.15);
-            --shadow-heavy: 0 20px 60px rgba(44, 52, 36, 0.25);
-        }
-        
-        /* Dark Mode */
-        .dark {
-            --primary-color: var(--cedar);
-            --secondary-color: var(--olive);
-            --dark-color: var(--aloe);
-            --light-color: var(--moss);
-            --hero-gradient: linear-gradient(135deg, var(--moss) 0%, #1a1f16 50%, var(--cypress) 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--hero-gradient);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            font-family: 'Inter', sans-serif;
-            color: var(--dark-color);
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Admin Layout */
-        .admin-layout {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Sidebar */
-        .admin-sidebar {
-            width: 280px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow-medium);
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
-        }
-
-        .sidebar-header {
-            padding: 2rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .admin-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1.5rem;
-        }
-
-        .admin-user {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .admin-avatar {
-            width: 50px;
-            height: 50px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .admin-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .admin-name {
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-
-        .admin-role {
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        /* Sidebar Navigation */
-        .sidebar-nav {
-            flex: 1;
-            padding: 1rem 0;
-        }
-
-        .sidebar-nav ul {
-            list-style: none;
-        }
-
-        .sidebar-nav .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 2rem;
-            color: var(--dark-color);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .sidebar-nav .nav-link:hover {
-            background: rgba(102, 126, 234, 0.1);
-            border-left-color: var(--primary-color);
-            transform: translateX(5px);
-        }
-
-        .sidebar-nav .nav-link.active {
-            background: var(--gradient-primary);
-            color: white;
-            border-left-color: var(--primary-color);
-        }
-
-        /* Sidebar Footer */
-        .sidebar-footer {
-            padding: 2rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .logout-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1rem;
-            background: var(--gradient-secondary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-        }
-
-        /* Main Content */
-        .admin-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow-light);
-            overflow: hidden;
-        }
-
-        /* Header */
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .sidebar-toggle {
-            background: none;
-            border: none;
-            padding: 0.5rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-toggle:hover {
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        #page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* Theme Toggle */
-        .theme-switch-wrapper {
-            display: flex;
-            align-items: center;
-        }
-
-        .theme-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .theme-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0,0,0,0.2);
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-        }
-
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(24px);
-        }
-
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-        /* Notifications */
-        .notification-btn {
-            position: relative;
-            background: none;
-            border: none;
-            padding: 0.75rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .notification-btn:hover {
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: var(--gradient-secondary);
-            color: white;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* Content Area */
-        .admin-content {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        /* Cards */
-        .stat-card, .chart-card, .activity-card, .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-light);
-            transition: all 0.3s ease;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-card:hover, .chart-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-heavy);
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .btn-secondary {
-            background: rgba(108, 117, 125, 0.1);
-            color: var(--dark-color);
-            border: 1px solid rgba(108, 117, 125, 0.2);
-        }
-
-        .btn-success {
-            background: var(--gradient-success);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-            color: white;
-        }
-
-        /* Tables */
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-light);
-        }
-
-        .table th, .table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .table th {
-            background: var(--gradient-primary);
-            color: white;
-            font-weight: 600;
-        }
-
-        /* Forms */
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        /* Star effects */
-        .star {
-            color: #ffd700;
-            animation: starTwinkle 2s infinite;
-        }
-
-        .star:nth-child(2) { animation-delay: 0.2s; }
-        .star:nth-child(3) { animation-delay: 0.4s; }
-        .star:nth-child(4) { animation-delay: 0.6s; }
-        .star:nth-child(5) { animation-delay: 0.8s; }
-
-        @keyframes starTwinkle {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .admin-layout {
-                flex-direction: column;
-            }
-            
-            .admin-sidebar {
-                width: 100%;
-                height: auto;
-            }
-            
-            .admin-content {
-                padding: 1rem;
-            }
-        }
-    </style>
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/admin_panel.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <!-- Admin Scripts -->
+    <script src="../js/admin_panel.js" defer></script>
 </head>
 <body>
-    <div class="admin-layout">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="sidebar-header">
+    <!-- Main Content -->
+    <div class="admin-main">
+        <!-- Header -->
+        <div class="admin-header">
+            <!-- Header Left -->
+            <div class="header-left">
+                <!-- Sidebar Toggle -->
+                <button class="sidebar-toggle">
+                    <i data-feather="menu"></i>
+                </button>
+                <!-- Page Title -->
+                <h1 id="page-title">Admin Dashboard</h1>
+            </div>
+            <!-- Header Right -->
+            <div class="header-right">
+                <!-- Theme Toggle -->
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <!-- Notifications -->
+                <button class="notification-btn">
+                    <i data-feather="bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <!-- Logout Button -->
+                <button class="logout-btn">
+                    <i data-feather="log-out"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+        <!-- Content Area -->
+        <div class="admin-content">
+            <!-- Cards -->
+            <div class="stat-card">
+                <!-- Card Content -->
+                <h2>Statistics</h2>
+                <p>This is some sample text.</p>
+            </div>
+            <div class="chart-card">
+                <!-- Card Content -->
+                <h2>Charts</h2>
+                <p>This is some sample text.</p>
+            </div>
+            <div class="activity-card">
+                <!-- Card Content -->
+                <h2>Activity</h2>
+                <p>This is some sample text.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
                 <div class="admin-logo">
-                    <i data-feather="shield"></i>
-                    <span>JobStir Admin</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="logo-icon">
+                        <path d="M12 2L1 12h3v9h6v-6h4v6h6v-9h3L12 2z"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span>JobStir</span>
+                        <span class="logo-subtext">Admin Panel</span>
+                    </div>
                 </div>
                 <div class="admin-user">
-                    <div class="admin-avatar">
-                        <i data-feather="user"></i>
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=0D9488&color=fff" alt="Admin" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name">Admin User</div>
+                        <div class="user-email">admin@jobstir.com</div>
                     </div>
-                    <div class="admin-info">
-                        <span class="admin-name" id="admin-name">Admin</span>
-                        <span class="admin-role">Super Admin</span>
-                    </div>
+                    <button class="user-menu-btn">
+                        <i data-feather="chevron-down"></i>
+                    </button>
                 </div>
             </div>
 
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="#dashboard" class="nav-link active" data-tab="dashboard">
-                        <i data-feather="bar-chart-2"></i>
-                        <span>Dashboard</span>
-                    </a></li>
-                    <li><a href="#users" class="nav-link" data-tab="users">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-tab="dashboard-tab">
+                            <i data-feather="layout"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-section">
+                        <div class="nav-section-title">Management</div>
+                        <ul>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="users-tab">
+                                    <i data-feather="users"></i>
+                                    <span>Users</span>
+                                    <span class="badge badge-primary">24</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="jobs-tab">
+                                    <i data-feather="briefcase"></i>
+                                    <span>Jobs</span>
+                                    <span class="badge badge-success">156</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="applications-tab">
+                                    <i data-feather="file-text"></i>
+                                    <span>Applications</span>
+                                    <span class="badge badge-warning">342</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="companies-tab">
+                                    <i data-feather="building"></i>
+                                    <span>Companies</span>
+                                    <span class="badge">42</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-section">
+                        <div class="nav-section-title">Content</div>
+                        <ul>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="pages-tab">
+                                    <i data-feather="file"></i>
+                                    <span>Pages</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="blog-tab">
+                                    <i data-feather="edit-3"></i>
+                                    <span>Blog</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="media-tab">
+                                    <i data-feather="image"></i>
+                                    <span>Media Library</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-section">
+                        <div class="nav-section-title">System</div>
+                        <ul>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="analytics-tab">
+                                    <i data-feather="bar-chart-2"></i>
+                                    <span>Analytics</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="settings-tab">
+                                    <i data-feather="settings"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-tab="security-tab">
+                                    <i data-feather="shield"></i>
+                                    <span>Security</span>
+                                    <span class="badge badge-danger">3</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                         <i data-feather="users"></i>
                         <span>User Management</span>
                     </a></li>
@@ -537,12 +229,20 @@
                     </a></li>
                 </ul>
             </nav>
-
+            
             <div class="sidebar-footer">
-                <button onclick="logout()" class="logout-btn">
+                <div class="theme-switch-wrapper">
+                    <i data-feather="moon" class="moon-icon"></i>
+                    <label class="theme-switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <i data-feather="sun" class="sun-icon"></i>
+                </div>
+                <a href="#" class="nav-link" id="logout-btn">
                     <i data-feather="log-out"></i>
                     <span>Logout</span>
-                </button>
+                </a>
             </div>
         </aside>  
       <!-- Main Content -->
@@ -550,22 +250,106 @@
             <!-- Top Bar -->
             <header class="admin-header">
                 <div class="header-left">
-                    <button class="sidebar-toggle" id="sidebar-toggle">
+                    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
                         <i data-feather="menu"></i>
                     </button>
-                    <h1 id="page-title">Dashboard</h1>
-                </div>
-                <div class="header-right">
-                    <div class="theme-switch-wrapper">
-                        <label class="theme-switch" for="admin-dark-mode-toggle">
-                            <input type="checkbox" id="admin-dark-mode-toggle" class="dark-mode-toggle" />
-                            <div class="slider round">
-                                <i data-feather="sun" class="sun-icon"></i>
-                                <i data-feather="moon" class="moon-icon"></i>
-                            </div>
-                        </label>
+                    <div class="breadcrumbs">
+                        <span class="breadcrumb-item">Dashboard</span>
+                        <span class="breadcrumb-divider">/</span>
+                        <span class="breadcrumb-item active">Overview</span>
                     </div>
+                </div>
+                
+                <div class="header-search">
+                    <i data-feather="search"></i>
+                    <input type="text" placeholder="Search..." class="search-input">
+                </div>
+                
+                <div class="header-actions">
+                    <button class="btn btn-icon btn-ghost" title="Create New">
+                        <i data-feather="plus"></i>
+                    </button>
+                    
                     <div class="notifications">
+                        <button class="btn btn-icon btn-ghost notification-btn" aria-label="Notifications">
+                            <i data-feather="bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <div class="notifications-dropdown">
+                            <div class="notifications-header">
+                                <h6>Notifications</h6>
+                                <a href="#" class="mark-all-read">Mark all as read</a>
+                            </div>
+                            <div class="notifications-list">
+                                <a href="#" class="notification-item unread">
+                                    <div class="notification-icon bg-primary">
+                                        <i data-feather="user-plus"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p><strong>New user registered</strong></p>
+                                        <small>2 minutes ago</small>
+                                    </div>
+                                </a>
+                                <a href="#" class="notification-item unread">
+                                    <div class="notification-icon bg-success">
+                                        <i data-feather="briefcase"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p><strong>New job posted</strong> - Senior Developer at Tech Corp</p>
+                                        <small>1 hour ago</small>
+                                    </div>
+                                </a>
+                                <a href="#" class="notification-item">
+                                    <div class="notification-icon bg-warning">
+                                        <i data-feather="alert-triangle"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p><strong>Security alert</strong> - Unusual login attempt detected</p>
+                                        <small>3 hours ago</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="notifications-footer">
+                                <a href="#" class="view-all">View all notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-menu">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="User menu">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=0D9488&color=fff" alt="Admin" class="user-avatar">
+                            <span class="user-name">Admin User</span>
+                            <i data-feather="chevron-down" class="dropdown-icon"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <div class="user-info">
+                                <img src="https://ui-avatars.com/api/?name=Admin+User&background=0D9488&color=fff" alt="Admin" class="user-avatar-lg">
+                                <div class="user-details">
+                                    <h6>Admin User</h6>
+                                    <span class="text-muted">Administrator</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item">
+                                <i data-feather="user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i data-feather="settings"></i>
+                                <span>Account Settings</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i data-feather="mail"></i>
+                                <span>Messages</span>
+                                <span class="badge badge-primary">3</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item text-danger">
+                                <i data-feather="log-out"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>    <div class="notifications">
                         <button class="notification-btn" id="notification-btn">
                             <i data-feather="bell"></i>
                             <span class="notification-badge" id="notification-count">3</span>
@@ -585,60 +369,18 @@
 
                 <!-- Dashboard Tab -->
                 <section id="dashboard-tab" class="tab-content active">
-                    <div class="dashboard-grid">
-                        <!-- Stats Cards -->
-                        <div class="stats-row">
-                            <div class="stat-card">
-                                <div class="stat-icon users">
-                                    <i data-feather="users"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h3>Total Users</h3>
-                                    <p class="stat-number" id="total-users">0</p>
-                                    <span class="stat-change positive">+12% this month</span>
-                                    <div class="star-rating">
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                    </div>
-                                </div>
+                    <div class="dashboard-header">
+                        <h1>Dashboard Overview</h1>
+                        <div class="dashboard-actions">
+                            <div class="date-range-picker">
+                                <i data-feather="calendar"></i>
+                                <span>Last 30 Days</span>
+                                <i data-feather="chevron-down" class="ml-1"></i>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-icon jobs">
-                                    <i data-feather="briefcase"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h3>Active Jobs</h3>
-                                    <p class="stat-number" id="active-jobs">0</p>
-                                    <span class="stat-change positive">+8% this month</span>
-                                    <div class="star-rating">
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon applications">
-                                    <i data-feather="file-text"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h3>Applications</h3>
-                                    <p class="stat-number" id="total-applications">0</p>
-                                    <span class="stat-change positive">+25% this month</span>
-                                    <div class="star-rating">
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                        <i class="fas fa-star star"></i>
-                                    </div>
-                                </div>
-                            </div>
+                            <button class="btn btn-primary">
+                                <i data-feather="download" class="mr-1"></i>
+                                Export Report
+                            </button>
                             <div class="stat-card">
                                 <div class="stat-icon revenue">
                                     <i data-feather="dollar-sign"></i>
@@ -1156,78 +898,161 @@
                 <!-- Security Tab -->
                 <section id="security-tab" class="tab-content">
                     <div class="tab-header">
-                        <h2>Security Settings</h2>
+                        <h2>Security Center</h2>
                         <div class="tab-actions">
-                            <button class="btn btn-danger" onclick="showModal('security-scan-modal')">
-                                <i data-feather="shield"></i>
-                                Run Security Scan
+                            <button class="btn btn-primary" onclick="runSecurityAudit()">
+                                <i data-feather="shield"></i> Run Security Audit
+                            </button>
+                            <button class="btn btn-secondary" onclick="showModal('security-settings-modal')">
+                                <i data-feather="settings"></i> Security Settings
                             </button>
                         </div>
                     </div>
 
-                    <div class="security-sections">
-                        <div class="security-section">
-                            <h3>Login Security</h3>
-                            <div class="security-items">
-                                <div class="security-item">
-                                    <div class="security-info">
-                                        <h4>Two-Factor Authentication</h4>
-                                        <p>Require 2FA for admin accounts</p>
+                    <div class="security-dashboard">
+                        <div class="row">
+                            <!-- Security Score Card -->
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <div class="security-score" id="security-score">
+                                            <div class="score-circle">
+                                                <span>0</span>
+                                                <small>Score</small>
+                                            </div>
+                                        </div>
+                                        <h5 class="mt-3">Security Status</h5>
+                                        <p class="text-muted">Last audit: <span id="last-audit">Never</span></p>
                                     </div>
-                                    <label class="toggle-label">
-                                        <input type="checkbox" name="require-2fa" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
                                 </div>
-                                <div class="security-item">
-                                    <div class="security-info">
-                                        <h4>Session Timeout</h4>
-                                        <p>Automatic logout after inactivity</p>
+                            </div>
+
+                            <!-- Threat Detection -->
+                            <div class="col-md-5 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Threat Detection</h5>
+                                        <span class="badge bg-danger" id="threat-count">0</span>
                                     </div>
-                                    <select id="session-timeout">
-                                        <option value="30">30 minutes</option>
-                                        <option value="60" selected>1 hour</option>
-                                        <option value="120">2 hours</option>
-                                        <option value="240">4 hours</option>
-                                    </select>
+                                    <div class="card-body p-0">
+                                        <div class="threat-list" id="threat-list">
+                                            <div class="text-center p-4 text-muted">
+                                                <i data-feather="shield" width="24" height="24" class="mb-2"></i>
+                                                <p>No recent threats detected</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="security-item">
-                                    <div class="security-info">
-                                        <h4>Failed Login Attempts</h4>
-                                        <p>Lock account after failed attempts</p>
+                            </div>
+
+                            <!-- Rate Limit Status -->
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Rate Limits</h5>
                                     </div>
-                                    <select id="failed-attempts">
-                                        <option value="3">3 attempts</option>
-                                        <option value="5" selected>5 attempts</option>
-                                        <option value="10">10 attempts</option>
-                                    </select>
+                                    <div class="card-body">
+                                        <div class="rate-limit-status">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>API Requests</span>
+                                                <span id="api-usage">0/100 per 15m</span>
+                                            </div>
+                                            <div class="progress mb-3">
+                                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>Login Attempts</span>
+                                                <span id="login-usage">0/5 per hour</span>
+                                            </div>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="security-section">
-                            <h3>System Security</h3>
-                            <div class="security-items">
-                                <div class="security-item">
-                                    <div class="security-info">
-                                        <h4>Rate Limiting</h4>
-                                        <p>Limit API requests per minute</p>
-                                    </div>
-                                    <input type="number" id="rate-limit" value="100" min="10" max="1000">
+                        <!-- Recent Security Events -->
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Recent Security Events</h5>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="refreshSecurityEvents()">
+                                    <i data-feather="refresh-cw" width="14" height="14"></i> Refresh
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>Event</th>
+                                                <th>IP Address</th>
+                                                <th>Severity</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="security-events">
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted py-4">
+                                                    <i data-feather="shield-off" width="24" height="24" class="mb-2"></i>
+                                                    <p>No security events recorded</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="security-item">
-                                    <div class="security-info">
-                                        <h4>IP Whitelist</h4>
-                                        <p>Restrict admin access to specific IPs</p>
+                            </div>
+                        </div>
+
+                        <!-- Backup & Restore -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Backup & Restore</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Create Backup</h6>
+                                        <p class="text-muted small mb-3">Create a complete backup of your system data.</p>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="backup-users" checked>
+                                            <label class="form-check-label" for="backup-users">
+                                                Users & Accounts
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="backup-jobs" checked>
+                                            <label class="form-check-label" for="backup-jobs">
+                                                Job Listings
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="backup-applications" checked>
+                                            <label class="form-check-label" for="backup-applications">
+                                                Job Applications
+                                            </label>
+                                        </div>
+                                        <button class="btn btn-primary" onclick="createBackup()">
+                                            <i data-feather="download-cloud"></i> Create Backup
+                                        </button>
                                     </div>
-                                    <button class="btn btn-secondary btn-small" onclick="manageIPWhitelist()">Manage</button>
-                                </div>
-                                <div class="security-item">
-                                    <div class="security-info">
-                                        <h4>Security Logs</h4>
-                                        <p>View security-related events</p>
+                                    <div class="col-md-6">
+                                        <h6>Restore Backup</h6>
+                                        <p class="text-muted small mb-3">Restore your system from a previous backup.</p>
+                                        <div class="input-group mb-3">
+                                            <input type="file" class="form-control" id="backup-file" accept=".json">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="restoreBackup()">
+                                                Upload & Restore
+                                            </button>
+                                        </div>
+                                        <div class="alert alert-warning">
+                                            <i data-feather="alert-triangle" class="me-2"></i>
+                                            Restoring a backup will overwrite existing data. Make sure to create a backup first.
+                                        </div>
                                     </div>
-                                    <button class="btn btn-secondary btn-small" onclick="viewSecurityLogs()">View Logs</button>
                                 </div>
                             </div>
                         </div>
@@ -1237,6 +1062,9 @@
         </main>
     </div>
 
+    <!-- Security Module -->
+    <script src="../js/admin-security.js"></script>
+    
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -1250,6 +1078,421 @@
     
     <script>
         feather.replace();
+        
+        // Initialize admin security
+        let adminSecurity = null;
+        
+        // Initialize when the document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize security module after admin panel is loaded
+            if (window.adminPanel) {
+                adminSecurity = new AdminSecurity(window.adminPanel);
+                loadSecurityData();
+            }
+        });
+        
+        // Security functions
+        async function loadSecurityData() {
+            // Load security events
+            await refreshSecurityEvents();
+            
+            // Update security score
+            updateSecurityScore();
+            
+            // Update rate limits
+            updateRateLimits();
+        }
+
+        async function refreshSecurityEvents() {
+            if (!adminSecurity) return;
+            
+            const events = adminSecurity.getSuspiciousActivities(10);
+            const tbody = document.getElementById('security-events');
+            
+            if (events.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i data-feather="shield-off" width="24" height="24" class="mb-2"></i>
+                            <p>No security events recorded</p>
+                        </td>
+                    </tr>`;
+                feather.replace();
+                return;
+            }
+            
+            tbody.innerHTML = events.map(event => `
+                <tr>
+                    <td>${new Date(event.timestamp).toLocaleString()}</td>
+                    <td>${event.action}</td>
+                    <td>${event.ip || 'N/A'}</td>
+                    <td><span class="badge bg-${getSeverityBadgeClass(event.severity)}">${event.severity}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewSecurityEvent('${event.id}')">
+                            <i data-feather="eye" width="14" height="14"></i> Details
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Update threat count
+            document.getElementById('threat-count').textContent = events.filter(e => e.severity === 'high').length;
+            
+            feather.replace();
+        }
+
+        function getSeverityBadgeClass(severity) {
+            switch (severity.toLowerCase()) {
+                case 'high': return 'danger';
+                case 'medium': return 'warning';
+                case 'low': return 'info';
+                default: return 'secondary';
+            }
+        }
+
+        async function runSecurityAudit() {
+            if (!adminSecurity) return;
+            
+            try {
+                const result = await adminSecurity.runSecurityAudit();
+                showMessage('success', 'Security audit completed successfully');
+                updateSecurityScore(result.score);
+                
+                // Show audit results
+                document.getElementById('last-audit').textContent = new Date().toLocaleString();
+                
+                // Update UI with audit results
+                console.log('Security audit results:', result);
+                
+            } catch (error) {
+                console.error('Security audit failed:', error);
+                showMessage('error', 'Failed to run security audit: ' + error.message);
+            }
+        }
+
+        function updateSecurityScore(score = 0) {
+            const scoreElement = document.getElementById('security-score');
+            const circle = scoreElement.querySelector('.score-circle');
+            const valueElement = circle.querySelector('span');
+            
+            // Animate score update
+            let currentScore = parseInt(valueElement.textContent) || 0;
+            const targetScore = score;
+            const duration = 1000; // 1 second
+            const step = (targetScore - currentScore) / (duration / 16); // 60fps
+            
+            const updateScore = () => {
+                currentScore += step;
+                
+                if ((step > 0 && currentScore >= targetScore) || 
+                    (step < 0 && currentScore <= targetScore)) {
+                    currentScore = targetScore;
+                } else {
+                    requestAnimationFrame(updateScore);
+                }
+                
+                const roundedScore = Math.round(currentScore);
+                valueElement.textContent = roundedScore;
+                
+                // Update circle color based on score
+                circle.style.background = `conic-gradient(
+                    ${getScoreColor(roundedScore)} ${(roundedScore / 100) * 360}deg, 
+                    #e9ecef 0deg
+                )`;
+            };
+            
+            updateScore();
+        }
+
+        function getScoreColor(score) {
+            if (score >= 80) return '#28a745'; // Green
+            if (score >= 50) return '#ffc107'; // Yellow
+            return '#dc3545'; // Red
+        }
+
+        function updateRateLimits() {
+            if (!adminSecurity) return;
+            
+            // Get current rate limits from the security module
+            const apiLimits = adminSecurity.getRateLimitStatus('api');
+            const loginLimits = adminSecurity.getRateLimitStatus('login');
+            
+            // Update API rate limit UI
+            const apiUsed = apiLimits ? apiLimits.used : 0;
+            const apiMax = apiLimits ? apiLimits.limit : 100;
+            const apiUsage = document.getElementById('api-usage');
+            const apiProgress = document.querySelector('.progress-bar');
+            
+            apiUsage.textContent = `${apiUsed}/${apiMax} per 15m`;
+            const apiPercentage = Math.min(100, (apiUsed / apiMax) * 100);
+            apiProgress.style.width = `${apiPercentage}%`;
+            apiProgress.classList.toggle('bg-danger', apiPercentage > 90);
+            apiProgress.classList.toggle('bg-warning', apiPercentage > 70 && apiPercentage <= 90);
+            
+            // Update login rate limit UI
+            const loginUsed = loginLimits ? loginLimits.used : 0;
+            const loginMax = loginLimits ? loginLimits.limit : 5;
+            const loginUsage = document.getElementById('login-usage');
+            const loginProgress = document.querySelector('.progress-bar.bg-warning');
+            
+            loginUsage.textContent = `${loginUsed}/${loginMax} per hour`;
+            const loginPercentage = Math.min(100, (loginUsed / loginMax) * 100);
+            loginProgress.style.width = `${loginPercentage}%`;
+            loginProgress.classList.toggle('bg-danger', loginPercentage > 80);
+            loginProgress.classList.toggle('bg-warning', loginPercentage <= 80);
+        }
+
+        async function createBackup() {
+            if (!adminSecurity) return;
+            
+            try {
+                const options = {
+                    includeUsers: document.getElementById('backup-users').checked,
+                    includeJobs: document.getElementById('backup-jobs').checked,
+                    includeApplications: document.getElementById('backup-applications').checked
+                };
+                
+                showLoading('Creating backup...');
+                const backup = await adminSecurity.createBackup(options);
+                
+                // Download backup file
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `jobstir-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showMessage('success', 'Backup created and downloaded successfully');
+                
+            } catch (error) {
+                console.error('Backup failed:', error);
+                showMessage('error', 'Failed to create backup: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function restoreBackup() {
+            const fileInput = document.getElementById('backup-file');
+            if (!fileInput.files.length) {
+                showMessage('warning', 'Please select a backup file');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = async (e) => {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    if (!confirm('WARNING: This will overwrite existing data. Are you sure you want to continue?')) {
+                        return;
+                    }
+                    
+                    showLoading('Restoring backup...');
+                    await adminSecurity.restoreBackup(backupData);
+                    showMessage('success', 'Backup restored successfully');
+                    
+                    // Refresh the page to show updated data
+                    setTimeout(() => window.location.reload(), 1500);
+                    
+                } catch (error) {
+                    console.error('Restore failed:', error);
+                    showMessage('error', 'Failed to restore backup: ' + error.message);
+                } finally {
+                    hideLoading();
+                }
+            };
+            
+            reader.onerror = () => {
+                showMessage('error', 'Error reading backup file');
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function viewSecurityEvent(eventId) {
+            if (!adminSecurity) return;
+            
+            const event = adminSecurity.getSuspiciousActivities().find(e => e.id === eventId);
+            if (!event) {
+                showMessage('warning', 'Event not found');
+                return;
+            }
+            
+            // Show event details in a modal
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Security Event Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <h6>Event ID</h6>
+                                    <p>${event.id}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Timestamp</h6>
+                                    <p>${new Date(event.timestamp).toLocaleString()}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <h6>Severity</h6>
+                                    <span class="badge bg-${getSeverityBadgeClass(event.severity)}">${event.severity}</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>IP Address</h6>
+                                    <p>${event.ip || 'N/A'}</p>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h6>Action</h6>
+                                <p>${event.action}</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6>Details</h6>
+                                <pre class="bg-light p-3 rounded">${JSON.stringify(event.details || {}, null, 2)}</pre>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" onclick="markAsFalsePositive('${event.id}')">
+                                Mark as False Positive
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const modalInstance = new bootstrap.Modal(modal);
+            modalInstance.show();
+            
+            // Remove the modal from DOM when hidden
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        }
+        
+        function markAsFalsePositive(eventId) {
+            if (!adminSecurity) return;
+            
+            if (confirm('Are you sure you want to mark this event as a false positive?')) {
+                adminSecurity.markAsFalsePositive(eventId);
+                refreshSecurityEvents();
+                bootstrap.Modal.getInstance(document.querySelector('.modal.show')).hide();
+                showMessage('success', 'Event marked as false positive');
+            }
+        }
+        
+        function showMessage(type, message) {
+            // Use Bootstrap's toast for notifications
+            const toastContainer = document.getElementById('toast-container') || createToastContainer();
+            const toastId = 'toast-' + Date.now();
+            
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = 'toast align-items-center text-white bg-' + 
+                (type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'success') + 
+                ' border-0';
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i data-feather="${type === 'error' ? 'alert-circle' : type === 'warning' ? 'alert-triangle' : 'check-circle'}" class="me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast, { autohide: true, delay: 5000 });
+            bsToast.show();
+            
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+            
+            feather.replace();
+        }
+        
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toast-container';
+            container.style.position = 'fixed';
+            container.style.top = '20px';
+            container.style.right = '20px';
+            container.style.zIndex = '1100';
+            container.style.width = '300px';
+            document.body.appendChild(container);
+            return container;
+        }
+        
+        function showLoading(message) {
+            // Create or update loading overlay
+            let overlay = document.getElementById('loading-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'loading-overlay';
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                overlay.style.display = 'flex';
+                overlay.style.justifyContent = 'center';
+                overlay.style.alignItems = 'center';
+                overlay.style.zIndex = '2000';
+                
+                const spinner = document.createElement('div');
+                spinner.className = 'spinner-border text-light me-3';
+                spinner.role = 'status';
+                
+                const text = document.createElement('span');
+                text.id = 'loading-text';
+                text.className = 'text-white';
+                text.textContent = message;
+                
+                overlay.appendChild(spinner);
+                overlay.appendChild(text);
+                document.body.appendChild(overlay);
+            } else {
+                document.getElementById('loading-text').textContent = message;
+                overlay.style.display = 'flex';
+            }
+        }
+        
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+        
+        // Periodically update rate limits and threat detection
+        setInterval(() => {
+            if (document.getElementById('security-tab').classList.contains('active')) {
+                updateRateLimits();
+                refreshSecurityEvents();
+            }
+        }, 30000); // Update every 30 seconds
     </script>
     
     <!-- Bootstrap JS -->
