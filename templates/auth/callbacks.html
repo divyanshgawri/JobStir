@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Redirecting...</title>
+  <script>
+    window.onload = function() {
+      const params = new URLSearchParams(window.location.hash.substring(1));
+      const access = params.get("access_token");
+      const refresh = params.get("refresh_token");
+
+      if (access && refresh) {
+        // Redirect to backend with tokens in query
+        window.location.href = `/auth/callback?access_token=${access}&refresh_token=${refresh}`;
+      } else {
+        window.location.href = "/login";
+      }
+    }
+  </script>
+</head>
+<body>
+  Redirecting...
+</body>
+</html>

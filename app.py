@@ -1,7 +1,8 @@
 import os
 import json
 import uuid 
-from datetime import datetime
+from datetime import datetime, timedelta
+from types import SimpleNamespace
 from functools import wraps
 from pydantic import ValidationError as PydanticValidationError
 import requests
@@ -16,8 +17,9 @@ from flask_mail import Mail, Message
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError,Email
 from flask_bcrypt import Bcrypt
 import logging
-from sentence_transformers import SentenceTransformer, util
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+from sentence_transformers import SentenceTransformer, util
 # --- Flask-Dance for Google OAuth ---
 # LLM related imports
 from groq import RateLimitError, Groq
@@ -34,6 +36,9 @@ from supabase import create_client
 import warnings
 warnings.filterwarnings("ignore")
 
+# Add these imports at the top with your other imports
+
+from urllib.parse import urlencode,urlparse
 # Load environment variables
 load_dotenv()
 os.environ['GROQ_API_KEY'] = os.getenv('GROQ_API_KEY')
@@ -47,21 +52,12 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024
-app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_hex(32))
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31)
+app.config['SESSION_COOKIE_SECURE'] = True  # For HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 
-# Database configuration
-# --- Google OAuth Configuration ---
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
-app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
 
-# --- Initialize Flask Extensions and Blueprints ---
-# google_bp = make_google_blueprint(
-#     client_id=app.config["GOOGLE_OAUTH_CLIENT_ID"],
-#     client_secret=app.config["GOOGLE_OAUTH_CLIENT_SECRET"],
-#     scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
-# )
-# app.register_blueprint(google_bp, url_prefix="/login")
 
 print("DEBUG: Initializing SentenceTransformer model...")
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -118,19 +114,30 @@ class KnockoutCriterion(BaseModel):
 
 class KnockoutQuestions(BaseModel):
     criteria: List[KnockoutCriterion]
+
+# Update your login_required decorator
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # This checks for our Supabase user info in the session
         if 'user_info' not in session:
             flash("Please log in to access this page.", "warning")
             return redirect(url_for('login'))
-        # You could add token validation here with supabase.auth.get_user() for extra security
-        g.user_id = session['user_info'].get('id') # Store user ID in g for the request
-        g.is_hr = session['user_info'].get('is_hr', False)
+        
+        # Optional: Verify the session is still valid with Supabase
+        try:
+            user = supabase.auth.get_user()
+            if not user.user:
+                flash("Your session has expired. Please log in again.", "warning")
+                session.clear()
+                return redirect(url_for('login'))
+        except:
+            # If verification fails, clear session and redirect to login
+            flash("Your session has expired. Please log in again.", "warning")
+            session.clear()
+            return redirect(url_for('login'))
+            
         return f(*args, **kwargs)
     return decorated_function
-
 def hr_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -1654,9 +1661,95 @@ def index():
 
     return render_template('index.html', user_logged_in=user_logged_in, is_hr=is_hr, jobs_data=all_jobs_from_db)
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         try:
+#             # Authenticate with Supabase
+#             res = supabase.auth.sign_in_with_password({
+#                 "email": form.email.data,
+#                 "password": form.password.data
+#             })
+            
+#             # Store session info
+#             session['user_session'] = res.session.model_dump()
+#             session['user_info'] = {
+#                 'id': str(res.user.id),
+#                 'email': res.user.email,
+#                 'is_hr': res.user.user_metadata.get('is_hr', False)
+#             }
+            
+#             flash('Logged in successfully!', 'success')
+            
+#             # --- NEW REDIRECT LOGIC ---
+#             # 1. Check if the URL has a 'next' parameter
+#             next_page = request.args.get('next')
+#             if next_page:
+#                 # If it does, redirect the user back to where they were
+#                 return redirect(next_page)
+            
+#             if res.user.last_sign_in_at is None:
+#                 return redirect(url_for('magic_moment'))
+#             # --- END OF NEW LOGIC ---
+            
+#             # 2. If no 'next' page, use the role-based redirect as a fallback
+#             if session['user_info']['is_hr']:
+#                 return redirect(url_for('hr_dashboard'))
+#             else:
+#                 return redirect(url_for('index'))
+#             # --- END OF NEW LOGIC ---
+
+#         except Exception as e:
+#             flash('Invalid email or password.', 'danger')
+            
+#     return render_template('login.html', form=form) 
+
+# Update your existing login route to work with Supabase Auth
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         try:
+#             # Authenticate with Supabase
+#             res = supabase.auth.sign_in_with_password({
+#                 "email": form.email.data,
+#                 "password": form.password.data
+#             })
+            
+#             # Store session info
+#             session['user_session'] = res.session.model_dump()
+#             session['user_info'] = {
+#                 'id': str(res.user.id),
+#                 'email': res.user.email,
+#                 'is_hr': res.user.user_metadata.get('is_hr', False)
+#             }
+            
+#             flash('Logged in successfully!', 'success')
+            
+#             # Redirect logic
+#             next_page = request.args.get('next')
+#             if next_page:
+#                 return redirect(next_page)
+
+#             if res.user.last_sign_in_at is None:
+#                 return redirect(url_for('magic_moment'))
+
+#             if session['user_info']['is_hr']:
+#                 return redirect(url_for('hr_dashboard'))
+#             else:
+#                 return redirect(url_for('index'))
+
+#         except Exception as e:
+#             flash('Invalid email or password.', 'danger')
+            
+#     return render_template('login.html', form=form)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    next_page = request.args.get('next', url_for('index'))
+    
     if form.validate_on_submit():
         try:
             # Authenticate with Supabase
@@ -1672,31 +1765,61 @@ def login():
                 'email': res.user.email,
                 'is_hr': res.user.user_metadata.get('is_hr', False)
             }
-            
+            session.permanent = True
+
             flash('Logged in successfully!', 'success')
-            
-            # --- NEW REDIRECT LOGIC ---
-            # 1. Check if the URL has a 'next' parameter
-            next_page = request.args.get('next')
-            if next_page:
-                # If it does, redirect the user back to where they were
-                return redirect(next_page)
-            
-            if res.user.last_sign_in_at is None:
-                return redirect(url_for('magic_moment'))
-            # --- END OF NEW LOGIC ---
-            
-            # 2. If no 'next' page, use the role-based redirect as a fallback
-            if session['user_info']['is_hr']:
-                return redirect(url_for('hr_dashboard'))
-            else:
-                return redirect(url_for('index'))
-            # --- END OF NEW LOGIC ---
+            return redirect(next_page)
 
         except Exception as e:
+            logging.error(f"Login error: {e}", exc_info=True)
             flash('Invalid email or password.', 'danger')
             
-    return render_template('login.html', form=form) 
+    return render_template('login.html', form=form, next=next_page)
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = RegisterForm()
+    next_page = request.args.get('next', url_for('index'))
+    
+    if form.validate_on_submit():
+        try:
+            # Use Supabase to create the user
+            res = supabase.auth.sign_up({
+                "email": form.email.data,
+                "password": form.password.data,
+                "options": {
+                    "data": {
+                        "is_hr": form.is_hr.data
+                    }
+                }
+            })
+            
+            # IMPORTANT: Supabase sign_up doesn't automatically log the user in
+            # We need to manually sign them in after successful signup
+            if hasattr(res, 'user') and res.user:
+                # Manually sign in the user after successful signup
+                login_res = supabase.auth.sign_in_with_password({
+                    "email": form.email.data,
+                    "password": form.password.data
+                })
+                
+                # Store session info
+                session['user_session'] = login_res.session.model_dump()
+                session['user_info'] = {
+                    'id': str(login_res.user.id),
+                    'email': login_res.user.email,
+                    'is_hr': login_res.user.user_metadata.get('is_hr', False)
+                }
+                session.permanent = True
+            
+            flash('Registration successful! You are now logged in.', 'success')
+            return redirect(next_page)
+            
+        except Exception as e:
+            logging.error(f"Signup error: {e}", exc_info=True)
+            flash(f'Signup failed: {e}', 'danger')
+
+    return render_template('signup.html', form=form, next=next_page)    
 @app.route("/about")
 def about():
     return render_template("about.html")
@@ -1704,6 +1827,68 @@ def about():
 def contact():
     return render_template("contact.html")
 
+# Login routes remain the same
+@app.route('/login/google')
+def google_login():
+    """Redirect to Google OAuth via Supabase"""
+    try:
+        # Determine the appropriate redirect URL based on environment
+        if request.host.startswith('127.0.0.1') or request.host.startswith('localhost'):
+            redirect_to = "http://127.0.0.1:8000/auth/callback"
+        else:
+            redirect_to = "https://jobstir.tech/auth/callback"
+        
+        # Generate the OAuth URL using Supabase
+        oauth_response = supabase.auth.sign_in_with_oauth({
+            "provider": "google",
+            "options": {
+                "redirect_to": redirect_to,
+                "query_params": {
+                    "access_type": "offline",
+                    "prompt": "consent"
+                }
+            }
+        })
+        
+        return redirect(oauth_response.url)
+        
+    except Exception as e:
+        logging.error(f"Google login error: {e}", exc_info=True)
+        flash(f'Google login error: {str(e)}', 'danger')
+        return redirect(url_for('login'))
+
+@app.route('/auth/callback')
+def auth_callback():
+    """Handle OAuth callback from Supabase"""
+    try:
+        code = request.args.get('code')
+        if not code:
+            error = request.args.get('error_description', 'Login failed.')
+            flash(f'Authentication error: {error}', 'danger')
+            return redirect(url_for('login'))
+
+        # Exchange the code for a session
+        session_response = supabase.auth.exchange_code_for_session({"auth_code": code})
+        
+        # Store session and user info
+        session['user_session'] = session_response.session.model_dump()
+        session['user_info'] = {
+            'id': str(session_response.user.id),
+            'email': session_response.user.email,
+            'is_hr': session_response.user.user_metadata.get('is_hr', False)
+        }
+        session.permanent = True
+        
+        flash('Logged in successfully with Google!', 'success')
+        
+        # Get the next page or default to evaluate_resume if they were trying to submit
+        next_page = request.args.get('next', url_for('index'))
+        return redirect(next_page)
+            
+    except Exception as e:
+        logging.error(f"Authentication callback error: {e}", exc_info=True)
+        flash(f'Authentication failed: {str(e)}', 'danger')
+        return redirect(url_for('login'))
 
 @app.route("/submit_contact", methods=["POST"])
 def submit_contact():
@@ -1751,27 +1936,27 @@ def magic_moment():
     # Render the magic moment page for the first time
     return render_template('magic_moment.html')
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        try:
-            # Use Supabase to create the user
-            res = supabase.auth.sign_up({
-                "email": form.email.data, # Assuming RegisterForm uses email
-                "password": form.password.data,
-                "options": {
-                    "data": {
-                        "is_hr": form.is_hr.data
-                    }
-                }
-            })
-            flash('Registration successful! Please check your email to confirm your account.', 'success')
-            return redirect(url_for('login'))
-        except Exception as e:
-            flash(f'Signup failed: {e}', 'danger')
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     form = RegisterForm()
+#     if form.validate_on_submit():
+#         try:
+#             # Use Supabase to create the user
+#             res = supabase.auth.sign_up({
+#                 "email": form.email.data, # Assuming RegisterForm uses email
+#                 "password": form.password.data,
+#                 "options": {
+#                     "data": {
+#                         "is_hr": form.is_hr.data
+#                     }
+#                 }
+#             })
+#             flash('Registration successful! Please check your email to confirm your account.', 'success')
+#             return redirect(url_for('login'))
+#         except Exception as e:
+#             flash(f'Signup failed: {e}', 'danger')
             
-    return render_template('signup.html', form=form)
+#     return render_template('signup.html', form=form)
 @app.route('/logout')
 @login_required # Use the new decorator
 def logout():
@@ -2423,7 +2608,8 @@ def make_current_user():
 def inject_current_user():
     return dict(current_user=make_current_user())
 
-from types import SimpleNamespace
+
+
 @app.route('/evaluate_resume', methods=['GET', 'POST'])
 def evaluate_resume():
     """Handle resume upload, evaluation, and job recommendations."""
@@ -2516,6 +2702,8 @@ def evaluate_resume():
 
             # --- 6. Render results ---
             flash('Resume analyzed successfully!', 'success')
+            print("DEBUG: Final evaluation result being sent to template:", evaluation_result)
+
             return render_template(
                 'evaluate_resume.html',
                 evaluation_result=evaluation_result,
@@ -2539,7 +2727,8 @@ def evaluate_resume():
         return redirect(request.url)
 
     # GET request → Render empty form
-    return render_template('evaluate_resume.html', user_logged_in=user_logged_in,current_user=make_current_user(),uploaded_data=SimpleNamespace(job_description=""))
+    # GET request → Render empty form
+    return render_template('evaluate_resume.html', user_logged_in=user_logged_in,current_user=make_current_user(),uploaded_data={"job_description": ""})
 
 def allowed_file(filename):
     """Checks if the uploaded file has a .pdf extension."""

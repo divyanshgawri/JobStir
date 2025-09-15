@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,38 +27,190 @@
     console.log("✅ Test event 'resume_upload_test' sent to GA");
   });
 </script>
+<style>
+/* Additional styles for auth-required overlay */
+.auth-required-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 12px;
+}
 
+.auth-prompt-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    border: 2px solid #e3f2fd;
+}
+
+.auth-prompt-card h3 {
+    color: #1976d2;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.auth-prompt-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.auth-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.auth-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.auth-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.auth-btn-secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.auth-btn-secondary:hover {
+    background: #667eea;
+    color: white;
+}
+
+.form-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.feature-info {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #667eea;
+}
+
+.feature-info h4 {
+    color: #333;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    color: #555;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.feature-list li:before {
+    content: "✓";
+    color: #4caf50;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.benefit-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.benefit-card h5 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.benefit-card p {
+    color: #666;
+    font-size: 0.85rem;
+    margin: 0;
+}
+</style>
 </head> 
 <body>
     <header class="top-nav">
         <div class="container nav-content">
             <div class="logo"><a href="{{ url_for('index') }}" class ='logo-link'>JOBSTIR</a></div>
             <nav class="main-nav">
-                {% if current_user.is_authenticated %}
-                    {% if current_user.is_hr %}
-                        <a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a>
-                        <a href="{{ url_for('hr_job_upload') }}">Upload Job</a>                    
-                    {% else %}
-                        <a href="{{ url_for('candidate_apply') }}">Apply for Job</a>
-                        <a href="{{ url_for('client_portal') }}">My Applications</a>
-                    {% endif %}
-                {% endif %}                
-                <div class="auth-links">
-                    {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
-                    {% else %}
+                {% if user_logged_in %}
+                    <div class="auth-links">
+                        <span style="color: #666;">Welcome back!</span>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                {% else %}
+                    <div class="auth-links">
                         <a href="{{ url_for('login') }}">Login</a>
                         <a href="{{ url_for('signup') }}">Signup</a>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </nav>
         </div>
     </header>
 
     <section class="hero-section">
-        <div class="contaiJOBSTIRner">
+        <div class="container">
             <h1 class="hero-title">AI Resume Evaluator</h1>
-            <p class="hero-subtitle">Streamline your hiring process with intelligent, data-driven resume analysis.</p>
+            <p class="hero-subtitle">Get instant, intelligent feedback on your resume with our advanced AI analysis.</p>
+            {% if not user_logged_in %}
+                <p style="color: #ff6b35; font-weight: 500; margin-top: 1rem;">
+                    🔒 Sign up or log in to unlock powerful resume insights
+                </p>
+            {% endif %}
         </div>
     </section>
 
@@ -72,41 +226,99 @@
                 </div>
             {% endif %}
         {% endwith %}
-<!-- Waiting Message -->
-<h3 id="loading-message" style="display:none; color:#333; text-align:center; margin-top:20px; font-family:'Inter', sans-serif;">
-  We provide you great insights! Kindly wait 7–12 seconds while we analyze your resume...
-</h3>
+
+        <!-- Waiting Message -->
+        <h3 id="loading-message" style="display:none; color:#333; text-align:center; margin-top:20px; font-family:'Inter', sans-serif;">
+          We provide you great insights! Kindly wait 7–12 seconds while we analyze your resume...
+        </h3>
+
         <div class="dashboard-grid">
             <section class="form-panel data-card">
-                <h2 class="card-title">Upload & Evaluate Candidate</h2>
-                <form method="POST" enctype="multipart/form-data" class="evaluation-form">
+                <h2 class="card-title">Upload & Evaluate Your Resume</h2>
+                
+                {% if not user_logged_in %}
+                    <!-- Information about what users get when they sign up -->
+                    <div class="feature-info">
+                        <h4>🚀 What You'll Get With Free Registration:</h4>
+                        <ul class="feature-list">
+                            <li>Instant AI-powered resume analysis</li>
+                            <li>Detailed scoring breakdown (Skills, Experience, Education, Projects)</li>
+                            <li>Personalized improvement suggestions</li>
+                            <li>Job recommendations based on your profile</li>
+                            <li>Save and track your evaluation history</li>
+                        </ul>
+                    </div>
+
+                    <div class="benefits-grid">
+                        <div class="benefit-card">
+                            <span class="benefit-icon">⚡</span>
+                            <h5>Lightning Fast</h5>
+                            <p>Get results in 7-12 seconds</p>
+                        </div>
+                        <div class="benefit-card">
+                            <span class="benefit-icon">🎯</span>
+                            <h5>Precise Analysis</h5>
+                            <p>AI-powered matching accuracy</p>
+                        </div>
+                        <div class="benefit-card">
+                            <span class="benefit-icon">📊</span>
+                            <h5>Detailed Insights</h5>
+                            <p>Comprehensive score breakdown</p>
+                        </div>
+                        <div class="benefit-card">
+                            <span class="benefit-icon">💼</span>
+                            <h5>Job Matching</h5>
+                            <p>Find perfect job opportunities</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Form Section -->
+                <form method="POST" enctype="multipart/form-data" class="evaluation-form {% if not user_logged_in %}form-disabled{% endif %}">
+                    {% if not user_logged_in %}
+                        <!-- Auth Required Overlay -->
+                        <div class="auth-required-overlay">
+                            <div class="auth-prompt-card">
+                                <h3>🔐 Authentication Required</h3>
+                                <p>Join thousands of job seekers who have improved their resumes with our AI-powered analysis!</p>
+                                <div class="auth-buttons">
+                                    <a href="{{ url_for('signup', next=url_for('evaluate_resume')) }}" class="auth-btn auth-btn-primary">
+                                        Sign Up Free
+                                    </a>
+                                    <a href="{{ url_for('login', next=url_for('evaluate_resume')) }}" class="auth-btn auth-btn-secondary">
+                                        Login
+                                    </a>
+                                </div>
+                                <p style="margin-top: 1rem; font-size: 0.9rem; color: #888;">
+                                    ✨ 100% Free • No Credit Card Required • Instant Access
+                                </p>
+                            </div>
+                        </div>
+                    {% endif %}
+
                     <div class="form-group">
                         <label for="resume" class="form-label">Upload Resume (PDF only):</label>
                         <input type="file" id="resume" name="resume" accept=".pdf" required class="input-file">
                     </div>
                     <div class="form-group">
                         <label for="job_description" class="form-label">Job Description:</label>
-                        <textarea id="job_description" name="job_description" rows="12" placeholder="Paste the full job description here, including responsibilities, requirements, and preferred skills..." required class="input-textarea">{{ uploaded_data.job_description if uploaded_data is defined and uploaded_data.job_description }}
-</textarea>
+                        <textarea id="job_description" name="job_description" rows="12" placeholder="Paste the full job description here, including responsibilities, requirements, and preferred skills..." required class="input-textarea">{{ uploaded_data.job_description if uploaded_data is defined and uploaded_data.job_description }}</textarea>
                     </div>
                     <div class="form-actions">
-                        <button type="submit" class="btn-primary">Analyze Resume</button>
+                        <button type="submit" class="btn-primary">
+                            {% if user_logged_in %}
+                                Analyze Resume
+                            {% else %}
+                                Sign Up to Analyze
+                            {% endif %}
+                        </button>
                     </div>
                 </form>
             </section>
 
             <section class="results-panel-wrapper">
-                {% if evaluation_result and 'total_score' in evaluation_result %}
-                    {# This overlay and blur class ONLY apply if the user is NOT authenticated #}
-                    {% if not current_user.is_authenticated %}
-                        <div class="login-prompt-overlay">
-                            <p class="overlay-message">
-                               Please <a href="{{ url_for('login', next=request.url) }}">Login</a> or <a href="{{ url_for('signup') }}">Sign Up</a> to view the full evaluation results.
-                            </p>
-                        </div>
-                    {% endif %}
-
-                    <div class="results-panel data-card {% if not current_user.is_authenticated %}results-blurred{% endif %}">
+                {% if evaluation_result and evaluation_result.get('total_score') is not none %}
+                    <div class="results-panel data-card">
                         <h2 class="card-title">Evaluation Summary</h2>
                         <div class="score-summary">
                             <div class="score-circle">
@@ -127,42 +339,101 @@
                             </p>
                         </div>
 
-                        <h3 class="section-heading">Score Breakdown:</h3>
-                        <ul class="score-breakdown-list">
-                            <li><strong>Skills Match:</strong> <span>{{ evaluation_result.skills_score }} / 35</span></li>
-                            <li><strong>Experience Match:</strong> <span>{{ evaluation_result.experience_score }} / 25</span></li>
-                            <li><strong>Education Match:</strong> <span>{{ evaluation_result.education_score }} / 20</span></li>
-                            <li><strong>Project Relevance:</strong> <span>{{ evaluation_result.project_score }} / 20</span></li>
-                        </ul>
+                        {% if evaluation_result.get('breakdown') %}
+                            <h3 class="section-heading">Score Breakdown:</h3>
+                            <ul class="score-breakdown-list">
+                                <li><strong>Skills Match:</strong> <span>{{ evaluation_result.breakdown.get('skills_score', 0) }} / 35</span></li>
+                                <li><strong>Experience Match:</strong> <span>{{ evaluation_result.breakdown.get('experience_score', 0) }} / 25</span></li>
+                                <li><strong>Education Match:</strong> <span>{{ evaluation_result.breakdown.get('education_score', 0) }} / 20</span></li>
+                                <li><strong>Project Relevance:</strong> <span>{{ evaluation_result.breakdown.get('project_score', 0) }} / 20</span></li>
+                            </ul>
+                        {% endif %}
 
-                        <h3 class="section-heading">Detailed Reasoning:</h3>
-                        <div class="reasoning-section">
-                            <div class="reasoning-item">
-                                <h4 class="reasoning-title">Skills Reasoning:</h4>
-                                <p class="reasoning-text">{{ evaluation_result.reasoning.skills_reasoning }}</p>
+                        {% if evaluation_result.get('reasoning') %}
+                            <h3 class="section-heading">Detailed Reasoning:</h3>
+                            <div class="reasoning-section">
+                                {% if evaluation_result.reasoning.get('skills_reasoning') %}
+                                    <div class="reasoning-item">
+                                        <h4 class="reasoning-title">Skills Reasoning:</h4>
+                                        <p class="reasoning-text">{{ evaluation_result.reasoning.skills_reasoning }}</p>
+                                    </div>
+                                {% endif %}
+                                {% if evaluation_result.reasoning.get('experience_reasoning') %}
+                                    <div class="reasoning-item">
+                                        <h4 class="reasoning-title">Experience Reasoning:</h4>
+                                        <p class="reasoning-text">{{ evaluation_result.reasoning.experience_reasoning }}</p>
+                                    </div>
+                                {% endif %}
+                                {% if evaluation_result.reasoning.get('education_reasoning') %}
+                                    <div class="reasoning-item">
+                                        <h4 class="reasoning-title">Education Reasoning:</h4>
+                                        <p class="reasoning-text">{{ evaluation_result.reasoning.education_reasoning }}</p>
+                                    </div>
+                                {% endif %}
+                                {% if evaluation_result.reasoning.get('project_reasoning') %}
+                                    <div class="reasoning-item">
+                                        <h4 class="reasoning-title">Project Reasoning:</h4>
+                                        <p class="reasoning-text">{{ evaluation_result.reasoning.project_reasoning }}</p>
+                                    </div>
+                                {% endif %}
+                                {% if evaluation_result.reasoning.get('overall_assessment') %}
+                                    <div class="reasoning-item">
+                                        <h4 class="reasoning-title">Overall Assessment:</h4>
+                                        <p class="reasoning-text">{{ evaluation_result.reasoning.overall_assessment }}</p>
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="reasoning-item">
-                                <h4 class="reasoning-title">Experience Reasoning:</h4>
-                                <p class="reasoning-text">{{ evaluation_result.reasoning.experience_reasoning }}</p>
-                            </div>
-                            <div class="reasoning-item">
-                                <h4 class="reasoning-title">Education Reasoning:</h4>
-                                <p class="reasoning-text">{{ evaluation_result.reasoning.education_reasoning }}</p>
-                            </div>
-                            <div class="reasoning-item">
-                                <h4 class="reasoning-title">Project Reasoning:</h4>
-                                <p class="reasoning-text">{{ evaluation_result.reasoning.project_reasoning }}</p>
-                            </div>
-                            <div class="reasoning-item">
-                                <h4 class="reasoning-title">Overall Assessment:</h4>
-                                <p class="reasoning-text">{{ evaluation_result.reasoning.overall_assessment }}</p>
-                            </div>
-                        </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-            </section>
+                {% else %}
+                    <!-- Show sample results for non-logged in users -->
+                    {% if not user_logged_in %}
+                        <div class="results-panel data-card" style="opacity: 0.7; position: relative;">
+                            <div style="position: absolute; top: 1rem; right: 1rem; background: #ff6b35; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+                                DEMO
+                            </div>
+                            <h2 class="card-title">Sample Evaluation Results</h2>
+                            <p style="color: #666; margin-bottom: 1.5rem; font-style: italic;">
+                                This is what you'll see after uploading your resume:
+                            </p>
+                            <div class="score-summary">
+                                <div class="score-circle">
+                                    <span class="score-value">78</span><span class="score-max"> / 100</span>
+                                </div>
+                                <p class="score-message">Strong Candidate! ✨</p>
+                            </div>
 
+                            <h3 class="section-heading">Score Breakdown:</h3>
+                            <ul class="score-breakdown-list">
+                                <li><strong>Skills Match:</strong> <span>28 / 35</span></li>
+                                <li><strong>Experience Match:</strong> <span>20 / 25</span></li>
+                                <li><strong>Education Match:</strong> <span>16 / 20</span></li>
+                                <li><strong>Project Relevance:</strong> <span>14 / 20</span></li>
+                            </ul>
+
+                            <h3 class="section-heading">Detailed Analysis:</h3>
+                            <div class="reasoning-section">
+                                <div class="reasoning-item">
+                                    <h4 class="reasoning-title">Skills Assessment:</h4>
+                                    <p class="reasoning-text">Your technical skills align well with the position requirements. Strong background in Python, machine learning frameworks...</p>
+                                </div>
+                                <div class="reasoning-item">
+                                    <h4 class="reasoning-title">Experience Evaluation:</h4>
+                                    <p class="reasoning-text">Relevant industry experience demonstrates practical application of skills. Consider highlighting specific achievements...</p>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    {% endif %}
+                    <!-- Call to action overlay -->
+                            
+                {% endif %}
+                
+            </section>
+            
         </div>
+
         {% if recommended_jobs %}
             <section class="recommendations-panel data-card mt-8">
                 <h2 class="card-title">Job Recommendations for You</h2>
@@ -173,7 +444,6 @@
                             <h3 class="rec-job-title">{{ rec_job.job_title }}</h3>
                             <p class="rec-company-name">{{ rec_job.company_name }}</p>
                             <p class="rec-score">Similarity Score: <strong>{{ "%.2f"|format(rec_job.score * 100) }}%</strong></p>
-                            {# Link to apply for the recommended job #}
                             <a href="{{ url_for('candidate_apply') }}?job_id={{ rec_job.job_id }}" class="btn-primary rec-apply-btn">Apply Now</a>
                         </div>
                     {% endfor %}
@@ -181,36 +451,31 @@
             </section>
         {% endif %}
         
-        {% if uploaded_data.parsed_resume %}
-            <section class="debug-info data-card {% if not current_user.is_authenticated %}results-blurred{% endif %}">
-                {% if not current_user.is_authenticated %}
-                    <div class="login-prompt-overlay debug-overlay">
-                        <p class="overlay-message">
-                            Please <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('signup') }}">Sign Up</a> to view parsed resume data.
-                        </p>
-                    </div>
-                {% endif %}
-                <h2 class="card-title">Parsed Resume JSON (for debugging/review):</h2>
+        {% if uploaded_data and uploaded_data.get('parsed_resume') %}
+            <section class="debug-info data-card">
+                <h2 class="card-title">Parsed Resume Data</h2>
                 <pre><code class="language-json">{{ uploaded_data.parsed_resume }}</code></pre>
             </section>
         {% endif %}
+    </main> 
 
-    </main> <footer class="footer-bar">
+    <footer class="footer-bar">
         <div class="container">
             <p>&copy; 2025 JOBSTIR - AI Resume Evaluator. All rights reserved.</p>
         </div>
     </footer>
-</body>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector(".evaluation-form"); // your form class
+    const form = document.querySelector(".evaluation-form");
     const message = document.getElementById("loading-message");
 
-    form.addEventListener("submit", function() {
-        // Show the waiting message
-        message.style.display = "block";
-    });
+    if (form && !form.classList.contains('form-disabled')) {
+        form.addEventListener("submit", function() {
+            message.style.display = "block";
+        });
+    }
 });
 </script>
-
-</html>
+</body>
+</html

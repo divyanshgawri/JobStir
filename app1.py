@@ -3660,7 +3660,6 @@ project_insights_prompt = ChatPromptTemplate.from_messages([
 ])
 project_insights_llm = ChatGroq(model="llama3-8b-8192", temperature=0.3)
 project_insights_chain = project_insights_prompt | project_insights_llm | parser
-
 def generate_project_insights(readme_content: str) -> Optional[dict]:
     """Generates structured insights from a project README using the LLM chain."""
     max_retries = 3
@@ -7324,4 +7323,3 @@ if __name__ == '__main__':
         
     print("DEBUG: About to call app.run(). Server should start now.")
     app.run(debug=True, host='0.0.0.0')
-    print("DEBUG: app.run() has finished (this message appears after server stops).")

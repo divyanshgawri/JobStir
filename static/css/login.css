@@ -13,6 +13,39 @@
     --font-inter: 'Inter', sans-serif;
 }
 
+/* ===== Custom Google Login Button ===== */
+.btn-google {
+    background: linear-gradient(45deg, #128bd7, #6511da);
+    border: none;
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    padding: 12px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(18, 81, 229, 0.736);
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-google i {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.btn-google:hover {
+    background: linear-gradient(45deg, #176ddc, hsl(44, 73%, 45%));
+    box-shadow: 0 6px 20px rgba(53, 134, 234, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-google:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(47, 127, 239, 0.5);
+}
+
 /* --- General Body and HTML structure (consistent with style.css/index.css) --- */
 html, body {
     margin: 0;
