@@ -1836,7 +1836,7 @@ def google_login():
         if request.host.startswith('127.0.0.1') or request.host.startswith('localhost'):
             redirect_to = "http://127.0.0.1:8000/auth/callback"
         else:
-            redirect_to = "https://jobstir.tech/auth/callback"
+            redirect_to = "https://www.jobstir.tech/auth/callback"
         
         # Generate the OAuth URL using Supabase
         oauth_response = supabase.auth.sign_in_with_oauth({
