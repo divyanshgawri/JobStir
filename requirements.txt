@@ -24,11 +24,9 @@ oauth2client
 uuid
 sentence-transformers
 torch
-tf-keras
 supabase
 email_validator
 locust
 langchain_community
 tf-keras
-tensorflow
 gunicorn

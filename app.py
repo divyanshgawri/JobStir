@@ -18,7 +18,7 @@ from wtforms.validators import InputRequired, Length, EqualTo, ValidationError,E
 from flask_bcrypt import Bcrypt
 import logging
 
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from sentence_transformers import SentenceTransformer, util
 # --- Flask-Dance for Google OAuth ---
 # LLM related imports
@@ -2017,6 +2017,168 @@ def hr_job_upload():
 
     return render_template('hr_job_upload.html')
 
+# @app.route('/candidate_apply', methods=['GET', 'POST'])
+# @login_required # Use your new Supabase-aware decorator
+# def candidate_apply():
+#     # --- GET Request Logic ---
+#     if request.method == 'GET':
+#         selected_job_id = request.args.get('job_id')
+#         selected_job_details = None
+        
+#         if selected_job_id:
+#             try:
+#                 response = supabase.table('jobs').select('*').eq('id', selected_job_id).single().execute()
+#                 selected_job_details = response.data
+#             except Exception:
+#                 flash('The job you are looking for was not found.', 'warning')
+
+#         jobs_response = supabase.table('jobs').select('id, job_title, company_name, job_description').order('date_posted', desc=True).execute()
+#         available_jobs = jobs_response.data
+        
+#         return render_template('candidate_apply.html', selected_job=selected_job_details, available_jobs=available_jobs)
+
+#     # --- POST Request Logic ---
+#     if request.method == 'POST':
+#         try:
+#             job_id_to_apply = request.form.get('job_id')
+#             candidate_user_id = session['user_info']['id']
+            
+#             job_response = supabase.table('jobs').select('*').eq('id', job_id_to_apply).single().execute()
+#             selected_job = job_response.data
+#             if not selected_job:
+#                 return jsonify({"error": "Invalid Job ID selected."}), 400
+
+#             resume_file = request.files.get('resume')
+#             if not resume_file or resume_file.filename == "":
+#                 return jsonify({"error": "No resume file selected."}), 400
+            
+#             # 1. Upload resume and extract text
+#             file_content = resume_file.read()
+#             path_in_bucket = f"{candidate_user_id}/{uuid.uuid4()}_{resume_file.filename}"
+#             supabase.storage.from_('resumes').upload(
+#                 file=file_content,
+#                 path=path_in_bucket,
+#                 file_options={"content-type": resume_file.content_type}
+#             )
+#             resume_url = supabase.storage.from_('resumes').get_public_url(path_in_bucket)
+#             resume_text = extract_text_from_pdf(file_content)
+#             if not resume_text:
+#                 return jsonify({"error": "Failed to extract text from resume."}), 400
+            
+#             # 2. Run the main LLM processing pipeline
+#             extracted_info = extract_resume_info_llm(resume_text)
+#             knockout_analysis_result = check_knockout_criteria_python(extracted_info, selected_job)
+            
+#             # This is where eligibility_result is correctly defined
+#             # eligibility_result = evaluate_candidate_llm(extracted_info, selected_job)
+
+#             eligibility_result = get_evaluation_with_reason(extracted_info, selected_job)
+
+#             # 3. Now, generate exam questions based on the eligibility result
+#             exam_questions = None
+#             if "Recommended" in eligibility_result.get("decision", ""):
+#                 job_description = selected_job.get('job_description', '')
+#                 exam_questions = generate_exam_llm(job_description)
+#                 if exam_questions is None:
+#                     eligibility_result["reason"] += " (Note: Exam generation failed.)"
+#                     eligibility_result["decision"] = "Recommended (Exam Gen Failed)"
+        
+#             # 4. Create and save the final application record
+#             application_data = {
+#                 "job_id": selected_job['id'],
+#                 "candidate_user_id": candidate_user_id,
+#                 "submission_date": datetime.now().isoformat(),
+#                 "resume_url": resume_url,
+#                 "eligibility_status": eligibility_result.get("decision"),
+#                 "match_score": eligibility_result.get("score", 0),
+#                 "eligibility_reason": eligibility_result.get("reason", "N/A"),
+#                 "extracted_info": extracted_info,
+#                 "exam_questions": exam_questions,
+#                 "knockout_analysis": knockout_analysis_result,
+#                 "exam_taken": False
+#             }
+#             # supabase.table('candidate_applications').insert(application_data).execute()
+#             insert_response = supabase.table('candidate_applications').insert(application_data).execute()
+
+#             # Verify insert success
+#             if not insert_response.data:
+#                 return jsonify({"error": "Failed to Send Email"}), 500
+
+#             # Now get the new ID
+#             new_application_id = insert_response.data[0]['id']
+
+#             # If candidate is recommended, send email
+#             if "Recommended" in eligibility_result.get("decision", ""):
+#                 candidate_email = extracted_info.get('email')
+#                 candidate_name = extracted_info.get('name', 'Candidate')
+
+#                 send_exam_invitation_email(
+#                     recipient_email=candidate_email,
+#                     candidate_name=candidate_name,
+#                     job_title=selected_job.get('job_title', 'the role'),
+#                     job_id=selected_job['id'],
+#                     application_id=new_application_id,
+#                     decision=eligibility_result.get("decision")
+#                 )
+
+#             return jsonify({"message": "Application submitted successfully!"}), 200
+
+#         except Exception as e:
+#             logging.error(f"Error during application process: {e}", exc_info=True)
+#             return jsonify({"error": f"Failed to process application: {e}"}), 500
+#     return render_template('candidate_apply.html', available_jobs=available_jobs, selected_job=selected_job_details)
+
+
+def send_application_status_email(
+    recipient_email: str,
+    candidate_name: str,
+    job_title: str,
+    decision: str,
+    feedback: str = "",
+    score: int = 0
+):
+    """Sends status email to candidates who don't qualify for exam."""
+    if not app.config.get('MAIL_USERNAME'):
+        logging.error("Email credentials are not set. Cannot send emails.")
+        return False
+
+    try:
+        subject = f"Application Update: {job_title}"
+        
+        # Create encouraging message even for rejections
+        message_html = f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #374151;">Thank you for your application</h2>
+                <p>Dear {candidate_name},</p>
+                <p>Thank you for your interest in the <strong>{job_title}</strong> position at our company.</p>
+                
+                <div style="background-color: #F9FAFB; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #6B7280;">
+                    <h3 style="color: #374151; margin-top: 0;">Application Status</h3>
+                    <p>After careful review of your application, your current status is: <strong>{decision}</strong></p>
+                    
+                    {f'<div style="margin-top: 15px;"><h4 style="color: #374151;">Feedback for your professional growth:</h4><p style="color: #4B5563;">{feedback}</p></div>' if feedback else ''}
+                </div>
+                
+                <p>We appreciate the time you took to apply and encourage you to continue developing your skills and apply for future opportunities with us.</p>
+                <p>We wish you the best in your career journey!</p>
+                
+                <p>Best regards,<br>The JobStir Recruitment Team</p>
+            </div>
+        """
+
+        msg = Message(
+            subject=subject,
+            recipients=[recipient_email],
+            html=message_html
+        )
+        mail.send(msg)
+        logging.info(f"Application status email sent to {recipient_email} (Score: {score})")
+        return True
+
+    except Exception as e:
+        logging.error(f"Failed to send status email to {recipient_email}: {e}", exc_info=True)
+        return False
+    
 @app.route('/candidate_apply', methods=['GET', 'POST'])
 @login_required # Use your new Supabase-aware decorator
 def candidate_apply():
@@ -2040,6 +2202,9 @@ def candidate_apply():
     # --- POST Request Logic ---
     if request.method == 'POST':
         try:
+            # Define the threshold constant
+            MATCH_THRESHOLD = 70
+            
             job_id_to_apply = request.form.get('job_id')
             candidate_user_id = session['user_info']['id']
             
@@ -2069,19 +2234,30 @@ def candidate_apply():
             extracted_info = extract_resume_info_llm(resume_text)
             knockout_analysis_result = check_knockout_criteria_python(extracted_info, selected_job)
             
-            # This is where eligibility_result is correctly defined
-            # eligibility_result = evaluate_candidate_llm(extracted_info, selected_job)
-
+            # Get evaluation with score and decision
             eligibility_result = get_evaluation_with_reason(extracted_info, selected_job)
-
-            # 3. Now, generate exam questions based on the eligibility result
+            
+            # Extract score for threshold check
+            candidate_score = eligibility_result.get("score", 0)
+            decision = eligibility_result.get("decision", "")
+            
+            # 3. Generate exam questions ONLY if score meets threshold
             exam_questions = None
-            if "Recommended" in eligibility_result.get("decision", ""):
+            should_send_exam_email = False
+            
+            if candidate_score >= MATCH_THRESHOLD and "Recommended" in decision:
+                # Candidate qualifies for exam
                 job_description = selected_job.get('job_description', '')
                 exam_questions = generate_exam_llm(job_description)
+                should_send_exam_email = True
+                
                 if exam_questions is None:
                     eligibility_result["reason"] += " (Note: Exam generation failed.)"
                     eligibility_result["decision"] = "Recommended (Exam Gen Failed)"
+                    should_send_exam_email = False
+            else:
+                # Candidate doesn't meet threshold - no exam needed
+                logging.info(f"Candidate score ({candidate_score}) below threshold ({MATCH_THRESHOLD}). No exam generated.")
         
             # 4. Create and save the final application record
             application_data = {
@@ -2095,43 +2271,99 @@ def candidate_apply():
                 "extracted_info": extracted_info,
                 "exam_questions": exam_questions,
                 "knockout_analysis": knockout_analysis_result,
-                "exam_taken": False
+                "exam_taken": False if exam_questions else None  # Set to None if no exam needed
             }
-            # supabase.table('candidate_applications').insert(application_data).execute()
+            
+            # Insert application into database
             insert_response = supabase.table('candidate_applications').insert(application_data).execute()
 
             # Verify insert success
             if not insert_response.data:
-                return jsonify({"error": "Failed to Send Email"}), 500
+                return jsonify({"error": "Failed to save application"}), 500
 
-            # Now get the new ID
+            # Get the new application ID
             new_application_id = insert_response.data[0]['id']
 
-            # If candidate is recommended, send email
-            if "Recommended" in eligibility_result.get("decision", ""):
-                candidate_email = extracted_info.get('email')
-                candidate_name = extracted_info.get('name', 'Candidate')
+            # 5. Send email based on eligibility and score
+            candidate_email = extracted_info.get('email')
+            candidate_name = extracted_info.get('name', 'Candidate')
+            
+            if candidate_email:
+                if should_send_exam_email:
+                    # Send exam invitation email for high-scoring candidates
+                    send_exam_invitation_email(
+                        recipient_email=candidate_email,
+                        candidate_name=candidate_name,
+                        job_title=selected_job.get('job_title', 'the role'),
+                        job_id=selected_job['id'],
+                        application_id=new_application_id,
+                        decision=eligibility_result.get("decision"),
+                        
+                    )
+                    logging.info(f"Exam invitation sent to {candidate_email} (Score: {candidate_score})")
+                else:
+                    # Send rejection/feedback email for low-scoring candidates
+                    send_application_status_email(
+                        recipient_email=candidate_email,
+                        candidate_name=candidate_name,
+                        job_title=selected_job.get('job_title', 'the role'),
+                        decision=eligibility_result.get("decision"),
+                        feedback=eligibility_result.get("reason", ""),
+                        score=candidate_score
+                    )
+                    logging.info(f"Status email sent to {candidate_email} (Score: {candidate_score})")
+            else:
+                logging.warning(f"No email found for candidate in application {new_application_id}")
 
-                send_exam_invitation_email(
-                    recipient_email=candidate_email,
-                    candidate_name=candidate_name,
-                    job_title=selected_job.get('job_title', 'the role'),
-                    job_id=selected_job['id'],
-                    application_id=new_application_id,
-                    decision=eligibility_result.get("decision")
-                )
-
-            return jsonify({"message": "Application submitted successfully!"}), 200
+            return jsonify({
+                "message": "Application submitted successfully!",
+                "score": candidate_score,
+                "exam_eligible": should_send_exam_email
+            }), 200
 
         except Exception as e:
             logging.error(f"Error during application process: {e}", exc_info=True)
             return jsonify({"error": f"Failed to process application: {e}"}), 500
+            
     return render_template('candidate_apply.html', available_jobs=available_jobs, selected_job=selected_job_details)
 
-# --- Helper Function for Sending Candidate Approval Email ---
+
+
+# # --- Helper Function for Sending Candidate Approval Email ---
+# def send_candidate_approval_email(recipient_email: str, candidate_name: str, job_title: str):
+#     """
+#     Sends an email to the candidate notifying them of their approval.
+#     """
+#     if not app.config.get('MAIL_USERNAME') or not app.config.get('MAIL_PASSWORD'):
+#         logging.warning("Email credentials not set. Skipping approval email sending.")
+#         return False
+
+#     try:
+#         msg = Message(
+#             subject=f"Congratulations! Your Application for {job_title} Has Been Approved!",
+#             recipients=[recipient_email],
+#             html=f"""
+#             <p>Dear {candidate_name},</p>
+#             <p>We are thrilled to inform you that your application for the <strong>{job_title}</strong> position has been <strong>approved</strong>!</p>
+#             <p>The JobStir team found your qualifications and performance outstanding.</p>
+#             <p>Our HR team will be in touch shortly to discuss the next steps, including offer details and onboarding.</p>
+#             <p>We look forward to welcoming you to the team!</p>
+#             <p>Best regards,</p>
+#             <p>The JobStir Recruitment Team</p>
+#             """
+#         )
+#         mail.send(msg)
+#         logging.info(f"Approval email sent to {recipient_email} for job {job_title}.")
+#         return True
+#     except Exception as e:
+#         logging.error(f"Failed to send approval email to {recipient_email}: {e}", exc_info=True)
+#         return False
+
+
 def send_candidate_approval_email(recipient_email: str, candidate_name: str, job_title: str):
     """
-    Sends an email to the candidate notifying them of their approval.
+    Sends an email to the candidate notifying them of their final approval/hire decision.
+    This is sent after they complete the exam successfully.
     """
     if not app.config.get('MAIL_USERNAME') or not app.config.get('MAIL_PASSWORD'):
         logging.warning("Email credentials not set. Skipping approval email sending.")
@@ -2139,16 +2371,52 @@ def send_candidate_approval_email(recipient_email: str, candidate_name: str, job
 
     try:
         msg = Message(
-            subject=f"Congratulations! Your Application for {job_title} Has Been Approved!",
+            subject=f"Congratulations! You've Been Selected for {job_title}",
             recipients=[recipient_email],
             html=f"""
-            <p>Dear {candidate_name},</p>
-            <p>We are thrilled to inform you that your application for the <strong>{job_title}</strong> position has been <strong>approved</strong>!</p>
-            <p>The JobStir team found your qualifications and performance outstanding.</p>
-            <p>Our HR team will be in touch shortly to discuss the next steps, including offer details and onboarding.</p>
-            <p>We look forward to welcoming you to the team!</p>
-            <p>Best regards,</p>
-            <p>The JobStir Recruitment Team</p>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc; padding: 30px; border-radius: 10px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #16a34a; margin: 0; font-size: 28px;">🎉 Congratulations!</h1>
+                </div>
+                
+                <div style="background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <p style="font-size: 16px; color: #374151; margin-bottom: 20px;">Dear <strong>{candidate_name}</strong>,</p>
+                    
+                    <p style="font-size: 16px; color: #374151; line-height: 1.6;">
+                        We are <strong>thrilled</strong> to inform you that you have been <strong>selected</strong> for the 
+                        <strong style="color: #3B82F6;">{job_title}</strong> position!
+                    </p>
+                    
+                    <div style="background-color: #f0f9ff; border-left: 4px solid #3B82F6; padding: 15px; margin: 20px 0;">
+                        <p style="margin: 0; color: #1e40af; font-weight: 500;">
+                            Your application and assessment performance were outstanding, and we're excited to welcome you to our team!
+                        </p>
+                    </div>
+                    
+                    <h3 style="color: #374151; margin-top: 25px;">Next Steps:</h3>
+                    <ul style="color: #4B5563; line-height: 1.6;">
+                        <li>Our HR team will contact you within <strong>24-48 hours</strong></li>
+                        <li>We'll discuss offer details, salary, and benefits</li>
+                        <li>We'll provide onboarding information and start date</li>
+                        <li>Any questions will be addressed during this call</li>
+                    </ul>
+                    
+                    <p style="color: #374151; margin-top: 20px;">
+                        We look forward to having you join the JobStir team and contribute to our continued success!
+                    </p>
+                    
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                        <p style="color: #6B7280; margin: 0;">
+                            Best regards,<br>
+                            <strong>The JobStir Recruitment Team</strong>
+                        </p>
+                    </div>
+                </div>
+                
+                <p style="text-align: center; color: #9CA3AF; font-size: 12px; margin-top: 20px;">
+                    This is an automated message from JobStir. Please do not reply to this email.
+                </p>
+            </div>
             """
         )
         mail.send(msg)
@@ -2156,6 +2424,69 @@ def send_candidate_approval_email(recipient_email: str, candidate_name: str, job
         return True
     except Exception as e:
         logging.error(f"Failed to send approval email to {recipient_email}: {e}", exc_info=True)
+        return False
+
+def send_exam_invitation_email(
+    recipient_email: str, 
+    candidate_name: str, 
+    job_title: str, 
+    job_id: str, 
+    application_id: str,
+    decision: str,
+    send_exam_link: bool = True
+):
+    """Sends an email to the candidate with exam invitation for qualifying candidates."""
+    if not app.config.get('MAIL_USERNAME'):
+        logging.error("Email credentials are not set. Cannot send emails.")
+        raise ConnectionError("Email service is not configured on the server.")
+
+    try:
+        if send_exam_link:
+            # High-scoring candidate - send exam invitation
+            subject = f"Congratulations! Assessment Invitation for {job_title}"
+            exam_url = url_for('get_exam', job_id=job_id, candidate_id=application_id, _external=True)
+            message_html = f"""
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #3B82F6;">Congratulations, {candidate_name}!</h2>
+                    <p>We are pleased to inform you that your application for the <strong>{job_title}</strong> position has been <strong>accepted for the next stage</strong>.</p>
+                    <p>Based on your qualifications and experience, you have been selected to take our technical assessment.</p>
+                    
+                    <div style="background-color: #F3F4F6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3 style="color: #1F2937; margin-top: 0;">Next Steps:</h3>
+                        <p>Please complete the online assessment by clicking the link below. This will help us evaluate your technical skills for the role.</p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            <a href="{exam_url}" style="display: inline-block; padding: 12px 24px; background-color: #3B82F6; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Take Assessment Now</a>
+                        </p>
+                    </div>
+                    
+                    <p><strong>Important:</strong> Please complete the assessment within 48 hours of receiving this email.</p>
+                    <p>If you have any questions, please don't hesitate to reach out to us.</p>
+                    <p>Best regards,<br>The JobStir Recruitment Team</p>
+                </div>
+            """
+        else:
+            # This shouldn't be called with send_exam_link=False, but keeping for safety
+            subject = f"Application Update for {job_title}"
+            message_html = f"""
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <p>Dear {candidate_name},</p>
+                    <p>Thank you for applying for the <strong>{job_title}</strong> position.</p>
+                    <p>Your application status: <strong>{decision}</strong></p>
+                    <p>Best regards,<br>The JobStir Recruitment Team</p>
+                </div>
+            """
+
+        msg = Message(
+            subject=subject,
+            recipients=[recipient_email],
+            html=message_html
+        )
+        mail.send(msg)
+        logging.info(f"Exam invitation email sent to {recipient_email} for application {application_id}")
+        return True
+
+    except Exception as e:
+        logging.error(f"Failed to send exam invitation to {recipient_email}: {e}", exc_info=True)
         return False
 
 
