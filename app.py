@@ -1576,11 +1576,11 @@ Compare the candidate resume **strictly against the extracted JD elements**.
   "project_score": 0,
   "total_score": 0,
   "reasoning": {
-    "skills_reasoning": "<Explain exact rationale for score; highlight transferable skills without scoring them; identify gaps>",
-    "experience_reasoning": "<Explain direct relevance; highlight accomplishments, red flags, transferable skills>",
-    "education_reasoning": "<Explain direct match; note academic rigor or strong performance without awarding points if not aligned>",
-    "project_reasoning": "<Explain direct technical relevance; highlight problem-solving, initiative, innovation; note gaps>",
-    "overall_assessment": "<Holistic summary: career trajectory, strengths, gaps, growth potential, recruiter recommendations>"
+    "skills_reasoning": "<Explain exact rationale for score; highlight transferable skills without scoring them; identify gaps also some improvements>",
+    "experience_reasoning": "<Explain direct relevance; highlight accomplishments, red flags, transferable skills also some improvements>",
+    "education_reasoning": "<Explain direct match; note academic rigor or strong performance without awarding points if not aligned also some improvements>",
+    "project_reasoning": "<Explain direct technical relevance; highlight problem-solving, initiative, innovation; note gaps also some improvements>",
+    "overall_assessment": "<Holistic summary: career trajectory, strengths, gaps, growth potential, recruiter recommendations also some improvements>"
   }
 }
 
@@ -1621,7 +1621,7 @@ def get_resume_score_with_breakdown(resume_json: dict, job_description: str) -> 
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile", # This model is specified in the prompt template for detailed reasoning
             messages=evaluation_messages,
-            temperature=0, # Low temperature for consistent, factual output
+            temperature=0.1, # Low temperature for consistent, factual output
             max_tokens=1000, # Sufficient tokens for detailed reasoning
             response_format={"type": "json_object"} # Ensure JSON output for structured data
         )
