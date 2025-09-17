@@ -69,7 +69,8 @@ def get_embedding_model():
     if embedding_model is None:
         try:
             print("DEBUG: Initializing SentenceTransformer model...")
-            embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+            # embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+            embedding_model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
             print("DEBUG: SentenceTransformer model initialized.")
         except Exception as e:
             logging.error(f"Failed to load embedding model: {e}")
