@@ -18,7 +18,7 @@ from wtforms.validators import InputRequired, Length, EqualTo, ValidationError,E
 from flask_bcrypt import Bcrypt
 import logging
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from sentence_transformers import SentenceTransformer, util
 # --- Flask-Dance for Google OAuth ---
 # LLM related imports
