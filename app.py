@@ -59,9 +59,23 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 
 
-print("DEBUG: Initializing SentenceTransformer model...")
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-print("DEBUG: SentenceTransformer model initialized.")
+# print("DEBUG: Initializing SentenceTransformer model...")
+# embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+# print("DEBUG: SentenceTransformer model initialized.")
+embedding_model = None
+
+def get_embedding_model():
+    global embedding_model
+    if embedding_model is None:
+        try:
+            print("DEBUG: Initializing SentenceTransformer model...")
+            embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+            print("DEBUG: SentenceTransformer model initialized.")
+        except Exception as e:
+            logging.error(f"Failed to load embedding model: {e}")
+            raise
+    return embedding_model
+
 
 
 bcrypt = Bcrypt(app)
@@ -2676,15 +2690,15 @@ def evaluate_resume():
                 'id, job_title, company_name, job_description'
             ).execute()
             all_jobs_in_db = jobs_response.data or []
-
-            resume_embedding = embedding_model.encode(resume_text, convert_to_tensor=True)
+            model = get_embedding_model()
+            resume_embedding = model.encode(resume_text, convert_to_tensor=True)
             job_recommendations_raw = []
 
             for job in all_jobs_in_db:
                 description = job.get('job_description')
                 if not description:
                     continue
-                job_embedding = embedding_model.encode(description, convert_to_tensor=True)
+                job_embedding = model.encode(description, convert_to_tensor=True)
                 similarity_score = util.pytorch_cos_sim(resume_embedding, job_embedding).item()
 
                 job_recommendations_raw.append({
