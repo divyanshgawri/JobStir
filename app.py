@@ -3105,6 +3105,6 @@ def privacy_policy():
 def terms_of_service():
     return render_template('terms_of_service.html')
 # --- Main execution block ---
-PORT = int(os.environ.get("PORT", 8000))
+PORT = int(os.environ.get("PORT", 8080))
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=PORT)
